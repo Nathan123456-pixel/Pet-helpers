@@ -3,249 +3,548 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pet Helpers 🐾</title>
+  <title>Pet Helpers — Animal Recovery Service</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --navy:     #0d2d5e;
+      --navy-mid: #1a4080;
+      --navy-lt:  #1e3a6e;
+      --red:      #c8102e;
+      --gold:     #e8a010;
+      --bg:       #eef0f4;
+      --surface:  #ffffff;
+      --border:   #c9d1d9;
+      --text:     #1a1f2b;
+      --muted:    #57606a;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Nunito', Arial, sans-serif;
-      color: #1a1a2e;
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text);
       min-height: 100vh;
-      background: linear-gradient(-45deg, #ff6b6b, #ff9f43, #48dbfb, #ff9ff3, #54a0ff, #5f27cd);
-      background-size: 500% 500%;
-      animation: bgShift 8s ease infinite;
-    }
-    @keyframes bgShift {
-      0%   { background-position: 0%   50%; }
-      25%  { background-position: 50%  0%;  }
-      50%  { background-position: 100% 50%; }
-      75%  { background-position: 50%  100%;}
-      100% { background-position: 0%   50%; }
+      background: var(--bg);
+      font-size: 16px;
+      line-height: 1.5;
     }
 
-    /* Animated floating paws */
-    .paw { position: fixed; font-size: 2.2rem; pointer-events: none; z-index: 0; animation: floatPaw linear infinite; opacity: 0; }
-    .paw:nth-child(1)  { left:  5%; animation-duration: 9s;  animation-delay: 0s;   }
-    .paw:nth-child(2)  { left: 15%; animation-duration: 12s; animation-delay: 1.5s; }
-    .paw:nth-child(3)  { left: 25%; animation-duration: 8s;  animation-delay: 3s;   }
-    .paw:nth-child(4)  { left: 38%; animation-duration: 11s; animation-delay: 0.8s; }
-    .paw:nth-child(5)  { left: 50%; animation-duration: 10s; animation-delay: 2s;   }
-    .paw:nth-child(6)  { left: 62%; animation-duration: 7s;  animation-delay: 4s;   }
-    .paw:nth-child(7)  { left: 73%; animation-duration: 13s; animation-delay: 1s;   }
-    .paw:nth-child(8)  { left: 84%; animation-duration: 9s;  animation-delay: 3.5s; }
-    .paw:nth-child(9)  { left: 92%; animation-duration: 11s; animation-delay: 0.5s; }
-    .paw:nth-child(10) { left: 45%; animation-duration: 8s;  animation-delay: 2.5s; }
-    @keyframes floatPaw {
-      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0;   }
-      10%  { opacity: 0.18; }
-      90%  { opacity: 0.18; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0;   }
-    }
+    .paw { display: none; }
 
-    main { position: relative; z-index: 1; }
+    /* ── Government bar ── */
+    .gov-bar {
+      background: #070f1f;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.68rem;
+      padding: 5px 28px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
 
     /* ── Header ── */
     header {
-      background: linear-gradient(135deg, #ff6535 0%, #ff9a3c 100%);
-      color: white; padding: 14px 28px;
-      display: flex; align-items: center; gap: 12px;
-      box-shadow: 0 4px 16px rgba(255,101,53,0.35);
-      position: sticky; top: 0; z-index: 1000;
+      background: var(--navy);
+      border-bottom: 4px solid var(--red);
+      color: white;
+      padding: 0 28px;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      min-height: 68px;
     }
-    header h1 { font-size: 1.5rem; font-weight: 800; cursor: pointer; letter-spacing: -0.3px; }
-    #headerRight { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-    #headerRight span { color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.88rem; }
-    #headerRight a { color: white; text-decoration: none; background: rgba(255,255,255,0.22); padding: 7px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; transition: background 0.2s; }
-    #headerRight a:hover { background: rgba(255,255,255,0.38); }
+    .header-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      background: var(--red);
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-right: 20px;
+      margin-left: -28px;
+    }
+    header h1 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      line-height: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 14px 0;
+    }
+    header h1 small {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.55;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      margin-bottom: 3px;
+    }
+    #headerRight { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    #headerRight span { color: rgba(255,255,255,0.65); font-size: 0.85rem; }
+    #headerRight a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 7px 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      transition: background 0.15s;
+    }
+    #headerRight a:hover { background: rgba(255,255,255,0.2); }
 
     /* ── Nav ── */
-    nav { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); display: flex; gap: 4px; padding: 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.5); flex-wrap: wrap; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    nav a { text-decoration: none; color: #6c757d; font-weight: 700; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 0.88rem; transition: all 0.18s; }
-    nav a:hover { color: #ff6535; background: #fff4f0; }
-    nav a.active { background: linear-gradient(135deg, #ff6535, #ff9a3c); color: white; box-shadow: 0 3px 10px rgba(255,101,53,0.3); }
+    nav {
+      background: var(--navy-lt);
+      display: flex;
+      padding: 0 0 0 68px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 999;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    nav a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      padding: 12px 18px;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-size: 0.79rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    nav a:hover { color: rgba(255,255,255,0.9); }
+    nav a.active { color: white; border-bottom-color: var(--gold); }
 
     /* ── Layout ── */
-    main { max-width: 720px; margin: 32px auto; padding: 0 20px 80px; }
-    h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 18px; color: #1a1a2e; }
-    h3 { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    main { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    h2 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
 
     /* ── Card ── */
     .card {
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1.5px solid rgba(255,255,255,0.7);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 8px 32px rgba(31,38,135,0.08);
-      margin-bottom: 24px;
-      transition: all 0.25s;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--navy);
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(31,38,135,0.13); }
 
     /* ── Forms ── */
-    label { display: block; font-weight: 700; margin-bottom: 6px; margin-top: 16px; font-size: 0.88rem; color: #495057; letter-spacing: 0.2px; }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 5px;
+      margin-top: 18px;
+      font-size: 0.75rem;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
     label:first-of-type { margin-top: 0; }
-    input, select, textarea { width: 100%; padding: 11px 15px; border: 2px solid #e8ecef; border-radius: 10px; font-size: 0.95rem; font-family: 'Nunito', Arial, sans-serif; transition: all 0.18s; background: #fafbfc; color: #1a1a2e; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: #ff6535; background: white; box-shadow: 0 0 0 4px rgba(255,101,53,0.1); }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--navy);
+      border-radius: 0;
+      font-size: 0.95rem;
+      font-family: 'Source Sans 3', sans-serif;
+      background: #fafbfc;
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+      border-left-color: var(--red);
+      background: #fff;
+    }
     textarea { resize: vertical; min-height: 90px; }
 
     /* ── Buttons ── */
-    button { margin-top: 20px; background: linear-gradient(135deg, #ff6535, #ff9a3c); color: white; border: none; padding: 13px 30px; border-radius: 25px; font-size: 0.98rem; font-weight: 700; font-family: 'Nunito', Arial, sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(255,101,53,0.3); }
-    button:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(255,101,53,0.4); }
-    button:active { transform: translateY(0); }
+    button {
+      margin-top: 22px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Source Sans 3', sans-serif;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      transition: background 0.15s;
+    }
+    button:hover { background: var(--navy-mid); }
 
     /* ── Output Box ── */
-    .output-box { display: none; margin-top: 24px; background: linear-gradient(135deg, #fff9f6, #fff4ef); border: 2px dashed #ffb38a; border-radius: 14px; padding: 20px; }
-    .output-box p { white-space: pre-wrap; font-size: 0.93rem; line-height: 1.75; color: #1a1a2e; }
-    .copy-btn { margin-top: 14px; background: linear-gradient(135deg, #00c896, #00a87a); box-shadow: 0 4px 12px rgba(0,200,150,0.3); font-size: 0.9rem; padding: 10px 22px; }
-    .copy-btn:hover { box-shadow: 0 7px 18px rgba(0,200,150,0.4); }
+    .output-box {
+      display: none;
+      margin-top: 22px;
+      background: #f4f6fa;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--navy);
+      padding: 22px;
+    }
+    .output-box p { white-space: pre-wrap; font-size: 0.93rem; line-height: 1.8; color: var(--text); }
+    .copy-btn { background: var(--red); font-size: 0.79rem; padding: 9px 22px; margin-top: 14px; }
+    .copy-btn:hover { background: #9e0b22; }
 
     /* ── Pet Cards ── */
     .pet-card {
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(255,255,255,0.7);
-      border-left: 5px solid #ff6535;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      transition: all 0.22s;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--navy);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: box-shadow 0.15s;
     }
-    .pet-card:nth-child(2) { border-left-color: #00c896; }
+    .pet-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+    .pet-card:nth-child(2) { border-left-color: #0d6e6e; }
     .pet-card:nth-child(3) { border-left-color: #4361ee; }
     .pet-card:nth-child(4) { border-left-color: #7b2ff7; }
-    .pet-card:nth-child(5) { border-left-color: #00b4d8; }
-    .pet-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(0,0,0,0.12); }
-    .pet-card h3 { color: #ff6535; font-size: 1.1rem; }
-    .pet-card p { font-size: 0.88rem; margin-bottom: 5px; color: #495057; }
-    .pet-card p a { color: #00c896; font-weight: 700; text-decoration: none; }
+    .pet-card:nth-child(5) { border-left-color: #c8102e; }
+    .pet-card h3 { color: var(--navy); font-size: 0.95rem; }
+    .pet-card p { font-size: 0.88rem; margin-bottom: 5px; color: var(--muted); }
+    .pet-card p a { color: var(--red); font-weight: 700; text-decoration: none; }
     .pet-card p a:hover { text-decoration: underline; }
 
     /* ── Tags ── */
-    .tag { display: inline-block; background: linear-gradient(135deg, #ff6535, #ff9a3c); color: white; border-radius: 20px; padding: 3px 12px; font-size: 0.76rem; font-weight: 700; margin-right: 5px; margin-bottom: 8px; }
-    .tag.reward { background: linear-gradient(135deg, #00c896, #00a87a); }
+    .tag {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      margin-right: 5px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .tag.reward { background: var(--red); }
 
     /* ── Empty State ── */
     .empty-msg { text-align: center; color: #adb5bd; font-size: 1rem; padding: 52px 0; }
-    .empty-msg::before { content: '🔍'; display: block; font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-msg::before { content: '—'; display: block; font-size: 1.5rem; margin-bottom: 10px; opacity: 0.4; }
 
     /* ── Hero ── */
-    .hero { background: linear-gradient(135deg, #ff6535 0%, #ff9a3c 65%, #ffb347 100%); border-radius: 22px; padding: 56px 32px 48px; text-align: center; color: white; margin-bottom: 24px; box-shadow: 0 10px 36px rgba(255,101,53,0.35); position: relative; overflow: hidden; }
-    .hero::before { content: '🐾'; position: absolute; font-size: 9rem; opacity: 0.07; top: -8px; right: 8px; pointer-events: none; }
-    .hero-emoji { font-size: 3.5rem; margin-bottom: 14px; display: block; }
-    .hero h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.12); }
-    .hero p { font-size: 1.05rem; margin-bottom: 34px; opacity: 0.92; max-width: 480px; margin-left: auto; margin-right: auto; }
-
-    /* ── Big Buttons ── */
-    .big-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .big-btn { text-decoration: none; background: rgba(255,255,255,0.2); backdrop-filter: blur(6px); color: white; padding: 15px 24px; border-radius: 14px; font-size: 0.98rem; font-weight: 800; text-align: center; border: 2px solid rgba(255,255,255,0.38); box-shadow: 0 4px 14px rgba(0,0,0,0.1); transition: all 0.2s; cursor: pointer; margin-top: 0; font-family: 'Nunito', Arial, sans-serif; }
-    .big-btn:hover { background: rgba(255,255,255,0.35); transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.15); }
+    .hero {
+      background: var(--navy);
+      padding: 60px 48px 52px;
+      color: white;
+      margin-bottom: 28px;
+      border-bottom: 5px solid var(--red);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Subtle grid overlay */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .hero-emoji { display: none; }
+    .hero-rule { width: 56px; height: 4px; background: var(--gold); margin-bottom: 28px; }
+    .hero h2 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: white;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      opacity: 0.75;
+      max-width: 460px;
+      line-height: 1.65;
+      position: relative;
+      z-index: 1;
+    }
+    .big-btn-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .big-btn {
+      text-decoration: none;
+      background: var(--red);
+      color: white;
+      padding: 13px 22px;
+      font-size: 0.79rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-top: 0;
+      font-family: 'Source Sans 3', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      transition: background 0.15s;
+    }
+    .big-btn:hover { background: #9e0b22; }
+    .big-btn:nth-child(2),
+    .big-btn:nth-child(3) {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.85);
+    }
+    .big-btn:nth-child(2):hover,
+    .big-btn:nth-child(3):hover { background: rgba(255,255,255,0.1); }
 
     /* ── How it Works Steps ── */
-    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .step { background: #f8f9fa; border-radius: 14px; padding: 22px 16px; text-align: center; border: 1.5px solid #e8ecef; }
-    .step-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
-    .step h3 { font-size: 0.92rem; color: #ff6535; margin-bottom: 6px; }
-    .step p { font-size: 0.82rem; color: #6c757d; line-height: 1.5; }
-    @media (max-width: 500px) { .steps { grid-template-columns: 1fr; } .hero h2 { font-size: 1.7rem; } }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); background: var(--border); gap: 1px; margin-bottom: 0; }
+    .step {
+      background: var(--surface);
+      padding: 28px 22px;
+      text-align: left;
+      position: relative;
+    }
+    .step-num {
+      font-family: 'Source Serif 4', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--navy);
+      opacity: 0.08;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .step-icon { display: none; }
+    .step h3 { font-size: 0.78rem; color: var(--navy); margin-bottom: 8px; }
+    .step p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+    @media (max-width: 500px) {
+      .steps { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 2rem; }
+      .hero { padding: 40px 28px 36px; }
+    }
 
     /* ── Success / Error ── */
-    .success-msg { display: none; background: linear-gradient(135deg, #e8f8f0, #d4f5e5); border: 2px solid #00c896; border-radius: 12px; padding: 16px; margin-top: 16px; color: #007a5e; font-weight: 700; text-align: center; }
-    .error-msg { display: none; background: #fff0f0; border: 2px solid #ff4d4d; border-radius: 10px; padding: 10px 14px; color: #cc0000; margin-top: 12px; font-weight: 600; }
+    .success-msg { display: none; background: #e6f4ea; border: 1px solid #a8d5b5; border-left: 5px solid #2d7a4f; padding: 14px 18px; margin-top: 16px; color: #1a4d2e; font-weight: 600; text-align: left; }
+    .error-msg { display: none; background: #fdf0f0; border: 1px solid #e09090; border-left: 5px solid var(--red); padding: 10px 14px; color: #6b1111; margin-top: 12px; font-weight: 600; }
 
     /* ── Map ── */
-    .map-container { height: 420px; border-radius: 14px; overflow: hidden; margin-bottom: 8px; border: 2px solid #e8ecef; }
+    .map-container { height: 420px; overflow: hidden; margin-bottom: 8px; border: 1px solid var(--border); }
 
     /* ── Photos ── */
-    .pet-photo { width: 100%; max-height: 210px; object-fit: cover; border-radius: 10px; margin-bottom: 14px; }
-    .photo-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none; }
+    .pet-photo { width: 100%; max-height: 200px; object-fit: cover; margin-bottom: 14px; }
+    .photo-preview { width: 100%; max-height: 180px; object-fit: cover; margin-top: 10px; display: none; }
 
     /* ── Toggle Buttons ── */
-    .view-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
-    .view-toggle button, .auth-toggle button { background: white; color: #6c757d; border: 2px solid #e8ecef; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.88rem; margin-top: 0; box-shadow: none; transition: all 0.18s; }
-    .view-toggle button:hover, .auth-toggle button:hover { border-color: #ff6535; color: #ff6535; transform: none; box-shadow: none; }
-    .view-toggle button.active, .auth-toggle button.active { background: linear-gradient(135deg, #ff6535, #ff9a3c); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(255,101,53,0.3); }
-    .auth-toggle { display: flex; gap: 8px; margin-bottom: 24px; }
-    .auth-toggle button { flex: 1; }
+    .view-toggle { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); width: fit-content; }
+    .view-toggle button, .auth-toggle button {
+      background: var(--surface);
+      color: var(--muted);
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 9px 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.76rem;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.15s;
+    }
+    .view-toggle button:last-child, .auth-toggle button:last-child { border-right: none; }
+    .view-toggle button:hover, .auth-toggle button:hover { background: #eef0f4; color: var(--text); transform: none; box-shadow: none; }
+    .view-toggle button.active, .auth-toggle button.active { background: var(--navy); color: white; }
+    .auth-toggle { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); }
+    .auth-toggle button { flex: 1; border-right: 1px solid var(--border); }
 
     /* ── Chat ── */
-    .chat-section { border-top: 2px solid #f0f3f7; margin-top: 16px; padding-top: 16px; }
-    .chat-shelter-header { background: linear-gradient(135deg, #fff9f6, #fff4ef); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 0.87rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; border: 1.5px solid #ffd4c2; }
-    .chat-shelter-header strong { color: #ff6535; }
-    .chat-shelter-header a { color: #00c896; font-weight: 700; text-decoration: none; }
-    .chat-messages { max-height: 250px; overflow-y: auto; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .chat-msg { background: #f4f6fb; border-radius: 12px 12px 12px 4px; padding: 10px 14px; font-size: 0.87rem; line-height: 1.5; }
-    .chat-msg strong { color: #ff6535; font-size: 0.8rem; }
+    .chat-section { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px; }
+    .chat-shelter-header {
+      background: #f0f3f8;
+      border-left: 4px solid var(--navy);
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.87rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chat-shelter-header strong { color: var(--navy); }
+    .chat-shelter-header a { color: var(--red); font-weight: 700; text-decoration: none; }
+    .chat-messages { max-height: 250px; overflow-y: auto; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-msg { background: #f0f3f8; border-left: 3px solid var(--border); padding: 10px 14px; font-size: 0.87rem; line-height: 1.5; }
+    .chat-msg strong { color: var(--navy); font-size: 0.8rem; }
     .chat-msg .time { color: #adb5bd; font-size: 0.74rem; margin-left: 6px; }
-    .chat-msg .msg-text { margin-top: 3px; white-space: pre-wrap; color: #1a1a2e; word-break: break-word; }
-    .chat-msg img { border-radius: 8px; max-width: 100%; max-height: 140px; object-fit: cover; margin-top: 6px; display: block; }
+    .chat-msg .msg-text { margin-top: 3px; white-space: pre-wrap; color: var(--text); word-break: break-word; }
+    .chat-msg img { max-width: 100%; max-height: 140px; object-fit: cover; margin-top: 6px; display: block; }
     .chat-input-row { display: flex; gap: 8px; align-items: center; }
-    .chat-input-row input { flex: 1; margin: 0; border-radius: 20px; padding: 10px 15px; }
-    .chat-input-row button { margin-top: 0; padding: 10px 20px; font-size: 0.87rem; border-radius: 20px; box-shadow: none; }
-    .chat-input-row button:hover { transform: none; box-shadow: none; }
-    .chat-toggle-btn { margin-top: 12px; background: white; color: #ff6535; border: 2px solid #ffd4c2; padding: 7px 16px; border-radius: 20px; font-size: 0.83rem; font-weight: 700; cursor: pointer; box-shadow: none; transition: all 0.18s; }
-    .chat-toggle-btn:hover { background: #fff4f0; transform: none; box-shadow: none; }
-    .chat-login-note { color: #adb5bd; font-size: 0.83rem; text-align: center; padding: 6px 0; }
-    .general-chat-wrap { background: rgba(255,255,255,0.82); backdrop-filter: blur(14px); border: 1.5px solid rgba(255,255,255,0.7); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(31,38,135,0.08); }
+    .chat-input-row input { flex: 1; margin: 0; padding: 10px 12px; }
+    .chat-input-row button { margin-top: 0; padding: 10px 20px; font-size: 0.76rem; }
+    .chat-input-row button:hover { transform: none; }
+    .chat-toggle-btn {
+      margin-top: 12px;
+      background: transparent;
+      color: var(--navy);
+      border: 1px solid var(--navy);
+      padding: 7px 16px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chat-toggle-btn:hover { background: var(--navy); color: white; transform: none; }
+    .chat-login-note { color: var(--muted); font-size: 0.83rem; text-align: center; padding: 6px 0; }
+    .general-chat-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--navy);
+      padding: 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
     .general-chat-wrap .chat-messages { max-height: 420px; }
 
     /* ── Page Banners ── */
     .page-banner {
-      border-radius: 20px;
-      padding: 30px 28px 26px;
-      margin-bottom: 24px;
+      background: var(--navy);
       color: white;
+      padding: 36px 36px 32px;
+      margin-bottom: 28px;
+      border-bottom: 4px solid var(--red);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.15);
     }
-    .page-banner::after {
-      content: attr(data-emoji);
+    .page-banner::before {
+      content: '';
       position: absolute;
-      font-size: 7rem;
-      opacity: 0.13;
-      right: 20px;
-      bottom: -10px;
-      line-height: 1;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
       pointer-events: none;
     }
-    .page-banner h2 { color: white; font-size: 1.8rem; margin-bottom: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-    .page-banner p  { opacity: 0.9; font-size: 0.95rem; }
-    .banner-lost    { background: linear-gradient(135deg, #ff6535 0%, #ff9a3c 100%); }
-    .banner-found   { background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%); }
-    .banner-shelter { background: linear-gradient(135deg, #7b2ff7 0%, #5a1adc 100%); }
-    .banner-chat    { background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); }
-    .banner-account { background: linear-gradient(135deg, #4a90e2 0%, #1565c0 100%); }
+    .page-banner::after { display: none; }
+    .page-banner h2 {
+      font-family: 'Source Serif 4', serif;
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .page-banner p  { color: rgba(255,255,255,0.65); font-size: 0.95rem; position: relative; }
+    .banner-lost, .banner-found, .banner-shelter, .banner-chat, .banner-account {
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .banner-found   { border-bottom-color: #0d6e6e; }
+    .banner-shelter { border-bottom-color: #4361ee; }
+    .banner-chat    { border-bottom-color: var(--gold); }
+    .banner-account { border-bottom-color: #888; }
 
     /* ── Page fade-in ── */
-    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-    #page-home, #page-lost, #page-found, #page-shelter, #page-account, #page-chat { animation: fadeUp 0.3s ease; }
-
-    /* ── Header ── */
-    header { position: relative; z-index: 1001; }
-    nav    { position: relative; z-index: 1000; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    #page-home, #page-lost, #page-found, #page-shelter, #page-account, #page-chat { animation: fadeUp 0.2s ease; }
 
     /* ── Facts ── */
-    .facts-card { background: linear-gradient(135deg, #5f27cd, #341f97); color: white; border-radius: 20px; padding: 28px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 28px rgba(95,39,205,0.35); }
-    .facts-card::after { content: '💡'; position: absolute; font-size: 6rem; opacity: 0.1; right: 16px; bottom: -8px; pointer-events: none; }
-    .facts-card h2 { color: white; margin-bottom: 18px; }
-    .fact-display { min-height: 70px; display: flex; align-items: center; justify-content: center; }
-    .fact-text { font-size: 1.05rem; line-height: 1.65; text-align: center; opacity: 0.95; animation: factFade 0.5s ease; }
-    @keyframes factFade { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    .fact-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-    .fact-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.2s; }
-    .fact-dot.active { background: white; transform: scale(1.3); }
-    .fact-nav { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
-    .fact-nav button { margin-top: 0; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 8px 20px; font-size: 0.88rem; box-shadow: none; border-radius: 20px; }
-    .fact-nav button:hover { background: rgba(255,255,255,0.35); transform: none; box-shadow: none; }
+    .facts-card {
+      background: var(--navy);
+      color: white;
+      padding: 32px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .facts-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .facts-card h2 { color: white; margin-bottom: 18px; position: relative; z-index: 1; }
+    .fact-display { min-height: 64px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+    .fact-text { font-size: 1rem; line-height: 1.7; text-align: center; color: rgba(255,255,255,0.9); animation: factFade 0.3s ease; }
+    @keyframes factFade { from { opacity:0; } to { opacity:1; } }
+    .fact-dots { display: flex; justify-content: center; gap: 6px; margin-top: 16px; position: relative; z-index: 1; }
+    .fact-dot { width: 12px; height: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.2s; }
+    .fact-dot.active { background: var(--gold); }
+    .fact-nav { display: flex; justify-content: center; gap: 8px; margin-top: 16px; position: relative; z-index: 1; }
+    .fact-nav button {
+      margin-top: 0;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.8);
+      padding: 6px 18px;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: none;
+    }
+    .fact-nav button:hover { background: rgba(255,255,255,0.2); color: white; transform: none; box-shadow: none; }
+
+    /* ── How it Works section wrapper ── */
+    .card:has(.steps) { padding: 0; overflow: hidden; border-top-color: var(--navy); }
+    .card:has(.steps) h2 { padding: 28px 28px 20px; margin-bottom: 0; border-bottom: 1px solid var(--border); }
 
     /* ── Footer ── */
-    footer { text-align: center; padding: 28px 20px; color: #adb5bd; font-size: 0.82rem; }
-    footer strong { color: #ff6535; }
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 0.78rem;
+      letter-spacing: 0.3px;
+    }
+    footer strong { color: rgba(255,255,255,0.85); }
+
+    /* ── Filter bar ── */
+    div[style*="display:flex"][style*="margin-bottom:18px"] {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      margin-bottom: 16px !important;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -261,9 +560,14 @@
 <div class="paw">🐾</div>
 <div class="paw">🐾</div>
 
+<div class="gov-bar">Official Animal Recovery &amp; Reunification Service</div>
+
 <header>
-  <span style="font-size:1.8rem;">🐾</span>
-  <h1 onclick="showPage('home')">Pet Helpers</h1>
+  <div class="header-badge">🐾</div>
+  <h1 onclick="showPage('home')">
+    <small>City Animal Services</small>
+    Pet Helpers
+  </h1>
   <span id="headerRight"></span>
 </header>
 
@@ -273,7 +577,7 @@
   <a onclick="showPage('found')" id="nav-found">Shelter Listings</a>
   <a onclick="showPage('shelter')" id="nav-shelter">Post a Found Pet</a>
   <a onclick="showPage('account')" id="nav-account">Account</a>
-  <a onclick="showPage('chat')" id="nav-chat">💬 Chat</a>
+  <a onclick="showPage('chat')" id="nav-chat">Bulletin Board</a>
 </nav>
 
 <main>
@@ -281,18 +585,18 @@
   <!-- ===== HOME ===== -->
   <div id="page-home">
     <div class="hero">
-      <span class="hero-emoji">🐾</span>
-      <h2>Find help. Find your pet.</h2>
-      <p>Pet Helpers connects people who lost a pet with shelters who may have found one.</p>
+      <div class="hero-rule"></div>
+      <h2>Find help.<br>Find your pet.</h2>
+      <p>Pet Helpers connects people who've lost an animal with shelters and finders who may have it in their care.</p>
       <div class="big-btn-row">
-        <button class="big-btn" onclick="showPage('lost')">🐶 I Lost My Pet</button>
-        <button class="big-btn" onclick="showPage('found')">🏠 Shelter Listings</button>
-        <button class="big-btn" onclick="showPage('shelter')">📋 Post a Found Pet</button>
+        <button class="big-btn" onclick="showPage('lost')">Report a Missing Animal</button>
+        <button class="big-btn" onclick="showPage('found')">Search Found Animals</button>
+        <button class="big-btn" onclick="showPage('shelter')">Submit a Found Animal</button>
       </div>
     </div>
 
     <div class="facts-card">
-      <h2>💡 Did You Know?</h2>
+      <h2>Did You Know?</h2>
       <div class="fact-display">
         <p class="fact-text" id="factText"></p>
       </div>
@@ -304,22 +608,22 @@
     </div>
 
     <div class="card">
-      <h2>How it works</h2>
+      <h2>How the Service Works</h2>
       <div class="steps">
         <div class="step">
-          <span class="step-icon">📝</span>
-          <h3>1. Fill the form</h3>
-          <p>Enter your pet's details and get a ready-to-send message in seconds.</p>
+          <div class="step-num">01</div>
+          <h3>Complete the Form</h3>
+          <p>Enter your animal's details and receive a ready-to-distribute notice.</p>
         </div>
         <div class="step">
-          <span class="step-icon">📲</span>
-          <h3>2. Share it</h3>
-          <p>Copy and paste the message into WhatsApp, Nextdoor, or any chat app.</p>
+          <div class="step-num">02</div>
+          <h3>Distribute</h3>
+          <p>Share the notice via messaging apps, community boards, or local groups.</p>
         </div>
         <div class="step">
-          <span class="step-icon">🏠</span>
-          <h3>3. Check shelters</h3>
-          <p>Browse listings to see if a shelter near you has found your missing pet.</p>
+          <div class="step-num">03</div>
+          <h3>Check the Registry</h3>
+          <p>Browse shelter listings to see if a registered finder has your animal.</p>
         </div>
       </div>
     </div>
@@ -328,12 +632,12 @@
   <!-- ===== LOST PET ===== -->
   <div id="page-lost" style="display:none;">
     <div class="page-banner banner-lost" data-emoji="🐶">
-      <h2>I Lost My Pet</h2>
-      <p>Fill in the details and get a ready-to-send message in seconds.</p>
+      <h2>Report a Missing Animal</h2>
+      <p>Complete the form below to generate a notice you can share with your community.</p>
     </div>
     <div class="card">
-      <h2>🐶 Tell us about your pet</h2>
-      <p style="margin-bottom:20px;color:#6c757d;font-size:0.95rem;">We'll build a clear, specific message you can paste into WhatsApp, Nextdoor, or any chat app.</p>
+      <h2>Tell us about your pet</h2>
+      <p style="margin-bottom:20px;color:#57606a;font-size:0.95rem;">Provide accurate details below. A formatted notice will be generated for distribution via messaging apps, social platforms, or printed flyers.</p>
       <form id="lostForm">
         <label for="lost-ownerName">Your name</label>
         <input type="text" id="lost-ownerName" placeholder="e.g. Sarah" required />
@@ -366,12 +670,12 @@
         <input type="file" id="lost-photo" accept="image/*" />
         <img id="lost-photoPreview" class="photo-preview" alt="Pet photo preview" />
 
-        <button type="submit">✨ Generate My Message</button>
+        <button type="submit">Generate Message</button>
       </form>
       <div class="output-box" id="lost-outputBox">
         <img id="lost-outputPhoto" class="photo-preview" style="margin-bottom:12px;" alt="Pet photo" />
         <p id="lost-outputText"></p>
-        <button class="copy-btn" id="lost-copyBtn" type="button">📋 Copy Message</button>
+        <button class="copy-btn" id="lost-copyBtn" type="button">Copy Message</button>
         <p id="lost-chat-note" style="display:none;margin-top:14px;color:#00856a;font-size:0.88rem;font-weight:700;">
           ✅ Your report was shared to the <a onclick="showPage('chat')" style="color:#00856a;cursor:pointer;text-decoration:underline;">Community Chat</a>.
         </p>
@@ -382,8 +686,8 @@
   <!-- ===== SHELTER LISTINGS ===== -->
   <div id="page-found" style="display:none;">
     <div class="page-banner banner-found" data-emoji="🏠">
-      <h2>Shelter Listings</h2>
-      <p>Pets being looked after — call the shelter if you recognise yours.</p>
+      <h2>Found Animal Registry</h2>
+      <p>Animals currently in care — contact the listed shelter if you recognise yours.</p>
     </div>
 
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;align-items:center;">
@@ -416,8 +720,8 @@
   <!-- ===== POST A FOUND PET ===== -->
   <div id="page-shelter" style="display:none;">
     <div class="page-banner banner-shelter" data-emoji="📋">
-      <h2>Post a Found Pet</h2>
-      <p>Shelters and finders — help owners locate their missing pets.</p>
+      <h2>Submit a Found Animal Report</h2>
+      <p>Shelters and finders: register an animal in your care so owners can locate it.</p>
     </div>
     <div class="card" id="shelter-loginPrompt" style="display:none;text-align:center;padding:44px 28px;">
       <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
@@ -426,8 +730,8 @@
       <button class="big-btn" onclick="showPage('account')" style="background:linear-gradient(135deg,#ff6535,#ff9a3c);border:none;box-shadow:0 4px 14px rgba(255,101,53,0.3);">Go to Account</button>
     </div>
     <div class="card" id="shelter-postForm">
-      <h2>📋 Post a Found Pet</h2>
-      <p style="margin-bottom:20px;color:#6c757d;font-size:0.95rem;">Shelters and finders: post a pet you're looking after so owners can find you.</p>
+      <h2>Post a Found Pet</h2>
+      <p style="margin-bottom:20px;color:#57606a;font-size:0.95rem;">Register an animal in your care. Your listing will appear in the Found Animal Registry so owners can identify and contact you.</p>
       <form id="shelterForm">
         <label for="shelter-contactName">Your name or shelter name</label>
         <input type="text" id="shelter-contactName" placeholder="e.g. Happy Paws Shelter" required />
@@ -457,7 +761,7 @@
         <input type="file" id="shelter-photo" accept="image/*" />
         <img id="shelter-photoPreview" class="photo-preview" alt="Pet photo preview" />
 
-        <button type="submit">📤 Post Listing</button>
+        <button type="submit">Post Listing</button>
       </form>
       <div class="success-msg" id="shelter-successMsg">
         ✅ Listing posted! <a onclick="showPage('found')" style="cursor:pointer;color:#007a5e;text-decoration:underline;">View all shelter listings →</a>
@@ -469,7 +773,7 @@
   <div id="page-account" style="display:none;">
     <div class="page-banner banner-account" data-emoji="👤">
       <h2>Your Account</h2>
-      <p>Log in or sign up to post found pets and chat with shelters.</p>
+      <p>Sign in or register to submit found animal reports and message shelters.</p>
     </div>
     <div class="card" id="account-loggedInCard" style="display:none;text-align:center;padding:44px 28px;">
       <div style="font-size:4rem;margin-bottom:12px;">👤</div>
@@ -489,7 +793,7 @@
         <label for="account-loginPass">Password</label>
         <input type="password" id="account-loginPass" placeholder="Your password" required />
         <button type="submit">Log In</button>
-        <div class="error-msg" id="account-loginError">Username or password is wrong. Try again.</div>
+        <div class="error-msg" id="account-loginError"></div>
       </form>
       <form id="account-signupForm" style="display:none;">
         <h2>Create an account ✨</h2>
@@ -498,7 +802,7 @@
         <label for="account-signupPass">Choose a password</label>
         <input type="password" id="account-signupPass" placeholder="At least 4 characters" required minlength="4" />
         <button type="submit">Create Account</button>
-        <div class="error-msg" id="account-signupError">That username is already taken. Try another.</div>
+        <div class="error-msg" id="account-signupError"></div>
       </form>
     </div>
   </div>
@@ -506,12 +810,12 @@
   <!-- ===== COMMUNITY CHAT ===== -->
   <div id="page-chat" style="display:none;">
     <div class="page-banner banner-chat" data-emoji="💬">
-      <h2>Community Chat</h2>
-      <p>Talk to pet owners and shelters in your area.</p>
+      <h2>Public Bulletin Board</h2>
+      <p>A shared space for pet owners and animal shelters to communicate.</p>
     </div>
     <div class="general-chat-wrap">
-      <h2>💬 Community Chat</h2>
-      <p style="margin-bottom:20px;color:#6c757d;font-size:0.95rem;">Chat with other pet owners and shelters. Anyone can read — log in to send a message.</p>
+      <h2>Community Chat</h2>
+      <p style="margin-bottom:20px;color:#57606a;font-size:0.95rem;">Anyone may read messages. Sign in to post.</p>
       <div class="chat-messages" id="general-chat-msgs"></div>
       <p class="chat-login-note" id="general-chat-login-note" style="display:none;">
         <a onclick="showPage('account')" style="color:#ff6535;cursor:pointer;font-weight:700;">Log in</a> to send a message.
@@ -526,27 +830,50 @@
 </main>
 
 <footer>
-  Made with ❤️ — <strong>Pet Helpers</strong> — helping reunite pets and families
+  Made with care — <strong>Pet Helpers</strong> — Animal Recovery &amp; Reunification Service
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  // ─────────────────────────────────────────────────────────
+  // Paste your Supabase URL and anon key here to enable shelter listings and the community chat. You can create a free Supabase project at https://supabase.com/ and find these in the project settings under "API".
+  // ─────────────────────────────────────────────────────────
+  const SUPABASE_URL  = 'https://ikbyjcjydgpgvvwekdlo.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_64EsJ_0OwBWgmr4fM2A6WA_WNzup2Db';
+
+  let db;
+  try {
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  } catch(e) {
+    console.warn('Supabase init failed:', e);
+    db = null;
+  }
+
+  const CONFIGURED = !!db && !SUPABASE_URL.includes('your-project.supabase.co');
+
+  if (!CONFIGURED) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const bar = document.createElement('div');
+      bar.style.cssText = 'background:#b8860b;color:#fff;text-align:center;padding:10px 20px;font-size:0.82rem;font-weight:700;letter-spacing:0.3px;position:sticky;top:72px;z-index:998;';
+      bar.textContent = '⚠ Supabase is not configured — open index.html and fill in your SUPABASE_URL and SUPABASE_ANON key.';
+      document.body.insertBefore(bar, document.querySelector('nav').nextSibling);
+    });
+  }
+
+  // Session lives in sessionStorage (cleared when tab closes)
   const SESSION_KEY = 'petHelpers_session';
-  const USERS_KEY   = 'petHelpers_users';
-  const STORAGE_KEY = 'petHelpers_shelterListings';
+  function getCurrentUser() { return sessionStorage.getItem(SESSION_KEY); }
 
   function esc(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-  function getCurrentUser() { return localStorage.getItem(SESSION_KEY); }
-  function getUsers()       { try { return JSON.parse(localStorage.getItem(USERS_KEY))   || []; } catch { return []; } }
-  function getListings()    { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
 
   // ── Header ──────────────────────────────────────────────
   function updateHeader() {
     const user = getCurrentUser();
     document.getElementById('headerRight').innerHTML = user
-      ? `<span>Hi, ${esc(user)}</span><a onclick="showPage('account')">Account</a>`
+      ? `<span>Hi, ${esc(user)}</span><a onclick="logoutUser()">Sign Out</a>`
       : `<a onclick="showPage('account')">Log in</a>`;
   }
 
@@ -567,7 +894,7 @@
     window.scrollTo(0, 0);
   }
 
-  // ── Lost Pet Page ────────────────────────────────────────
+  // ── Lost Pet ─────────────────────────────────────────────
   let lostPhotoData = null;
 
   document.getElementById('lost-photo').addEventListener('change', function() {
@@ -583,7 +910,7 @@
     reader.readAsDataURL(file);
   });
 
-  document.getElementById('lostForm').addEventListener('submit', function(e) {
+  document.getElementById('lostForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const owner   = document.getElementById('lost-ownerName').value.trim();
     const pet     = document.getElementById('lost-petName').value.trim();
@@ -595,7 +922,7 @@
     const reward  = document.getElementById('lost-reward').value.trim();
     const rewardLine = reward ? `\nReward: ${reward}` : '';
 
-    document.getElementById('lost-outputText').textContent =
+    const msgText =
 `LOST PET — Please help!
 
 Hi, my name is ${owner} and my ${species.toLowerCase()} "${pet}" has gone missing.
@@ -606,20 +933,16 @@ Date lost: ${date}
 ${rewardLine}
 If you've seen ${pet}, please contact me at: ${contact}
 
-Thank you so much for sharing this message! 🙏`;
+Thank you so much for sharing this message!`;
+
+    document.getElementById('lost-outputText').textContent = msgText;
 
     const outPhoto = document.getElementById('lost-outputPhoto');
     outPhoto.style.display = lostPhotoData ? 'block' : 'none';
     if (lostPhotoData) outPhoto.src = lostPhotoData;
 
-    const msgText = document.getElementById('lost-outputText').textContent;
     const user = getCurrentUser() || owner;
-    saveMsg('general', {
-      username: user,
-      text: msgText,
-      photo: lostPhotoData || null,
-      time: new Date().toLocaleTimeString()
-    });
+    await saveMsg('general', { username: user, text: msgText, photo: lostPhotoData || null, time: new Date().toLocaleTimeString() });
 
     const box = document.getElementById('lost-outputBox');
     box.style.display = 'block';
@@ -629,12 +952,12 @@ Thank you so much for sharing this message! 🙏`;
 
   document.getElementById('lost-copyBtn').addEventListener('click', function() {
     navigator.clipboard.writeText(document.getElementById('lost-outputText').textContent).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '📋 Copy Message', 2000);
+      this.textContent = 'Copied!';
+      setTimeout(() => this.textContent = 'Copy Message', 2000);
     });
   });
 
-  // ── Shelter Post Page ────────────────────────────────────
+  // ── Shelter Post ─────────────────────────────────────────
   let shelterPhotoData = null;
 
   function checkShelterAuth() {
@@ -673,69 +996,81 @@ Thank you so much for sharing this message! 🙏`;
 
     const locationText = document.getElementById('shelter-locationText').value.trim();
     const coords = await geocode(locationText);
-    const listings = getListings();
-    listings.unshift({
-      contactName:  document.getElementById('shelter-contactName').value.trim(),
+
+    const { error } = await db.from('listings').insert({
+      id:           Date.now().toString(),
+      contact_name: document.getElementById('shelter-contactName').value.trim(),
       phone:        document.getElementById('shelter-phone').value.trim(),
-      petName:      document.getElementById('shelter-petName').value.trim(),
+      pet_name:     document.getElementById('shelter-petName').value.trim(),
       species:      document.getElementById('shelter-species').value,
       reward:       document.getElementById('shelter-reward').value.trim(),
-      locationText,
-      lat:          coords ? coords.lat : null,
-      lng:          coords ? coords.lng : null,
+      location_text: locationText,
+      lat:          coords?.lat ?? null,
+      lng:          coords?.lng ?? null,
       description:  document.getElementById('shelter-description').value.trim(),
       photo:        shelterPhotoData,
-      postedBy:     getCurrentUser(),
-      date:         new Date().toLocaleDateString(),
-      id:           Date.now().toString()
+      posted_by:    getCurrentUser(),
+      date:         new Date().toLocaleDateString()
     });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(listings));
+
+    btn.textContent = 'Post Listing';
+    btn.disabled = false;
+
+    if (error) { alert('Could not save listing: ' + error.message); return; }
 
     this.reset();
     shelterPhotoData = null;
     document.getElementById('shelter-photoPreview').style.display = 'none';
-    btn.textContent = '📤 Post Listing';
-    btn.disabled = false;
     const msg = document.getElementById('shelter-successMsg');
     msg.style.display = 'block';
     msg.scrollIntoView({ behavior: 'smooth' });
   });
 
-  // ── Shelter Listings Page ────────────────────────────────
+  // ── Shelter Listings ─────────────────────────────────────
   let leafletMap = null;
 
-  function renderListings(filterSpecies) {
-    let listings = getListings();
-    if (filterSpecies) listings = listings.filter(p => p.species === filterSpecies);
+  async function fetchListings(filterSpecies) {
+    let q = db.from('listings').select('*').order('created_at', { ascending: false });
+    if (filterSpecies) q = q.eq('species', filterSpecies);
+    const { data, error } = await q;
+    if (error) { console.error(error); return []; }
+    return data || [];
+  }
+
+  async function renderListings(filterSpecies) {
     const container = document.getElementById('found-listingsContainer');
+    container.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;font-size:0.9rem;">Loading…</p>';
+    const listings = await fetchListings(filterSpecies);
+
     if (listings.length === 0) {
       container.innerHTML = filterSpecies
         ? `<p class="empty-msg">No ${filterSpecies.toLowerCase()}s posted yet.</p>`
-        : '<p class="empty-msg">No pets posted yet. Check back soon!</p>';
+        : '<p class="empty-msg">No animals posted yet. Check back soon!</p>';
       return;
     }
+
     container.innerHTML = listings.map((p, i) => {
       const cid = p.id || ('idx' + i);
       return `
       <div class="pet-card">
-        ${p.photo ? `<img src="${p.photo}" class="pet-photo" alt="Photo of ${esc(p.petName)}" />` : ''}
-        <h3>${esc(p.petName)} &mdash; ${esc(p.species)}</h3>
+        ${p.photo ? `<img src="${p.photo}" class="pet-photo" alt="Photo of ${esc(p.pet_name)}" />` : ''}
+        <h3>${esc(p.pet_name)} &mdash; ${esc(p.species)}</h3>
         <span class="tag">${esc(p.species)}</span>
-        ${p.reward ? `<span class="tag reward">🎁 Reward: ${esc(p.reward)}</span>` : ''}
-        <p><strong>Posted by:</strong> ${esc(p.contactName)}</p>
-        <p><strong>📞 Phone:</strong> <a href="tel:${esc(p.phone)}">${esc(p.phone)}</a></p>
-        ${p.locationText ? `<p><strong>📍 Found near:</strong> ${esc(p.locationText)}</p>` : ''}
-        ${p.description  ? `<p><strong>Details:</strong> ${esc(p.description)}</p>`        : ''}
-        <p style="color:#adb5bd;font-size:0.78rem;margin-top:8px;">Posted on ${esc(p.date)}</p>
-        <button class="chat-toggle-btn" onclick="toggleListingChat('${cid}')">💬 Chat with ${esc(p.contactName)}</button>
+        ${p.reward ? `<span class="tag reward">Reward: ${esc(p.reward)}</span>` : ''}
+        <p><strong>Posted by:</strong> ${esc(p.contact_name)}</p>
+        <p><strong>Phone:</strong> <a href="tel:${esc(p.phone)}">${esc(p.phone)}</a></p>
+        ${p.location_text ? `<p><strong>Found near:</strong> ${esc(p.location_text)}</p>` : ''}
+        ${p.description   ? `<p><strong>Details:</strong> ${esc(p.description)}</p>`       : ''}
+        <p style="color:#adb5bd;font-size:0.78rem;margin-top:8px;">Posted ${esc(p.date)}</p>
+        <button class="chat-toggle-btn" onclick="toggleListingChat('${cid}')">Message ${esc(p.contact_name)}</button>
         <div id="listing-chat-${cid}" class="chat-section" style="display:none;">
           <div class="chat-shelter-header">
-            <span><strong>${esc(p.contactName)}</strong> — ${esc(p.petName)}</span>
-            <a href="tel:${esc(p.phone)}">📞 ${esc(p.phone)}</a>
+            <span><strong>${esc(p.contact_name)}</strong> — ${esc(p.pet_name)}</span>
+            <a href="tel:${esc(p.phone)}">${esc(p.phone)}</a>
           </div>
           <div class="chat-messages" id="listing-chat-msgs-${cid}"></div>
           <p class="chat-login-note" id="listing-chat-login-${cid}"></p>
-          <div class="chat-input-row" id="listing-chat-row-${cid}">
+          <div class="chat-input-row" id="listing-chat-row-${cid}" style="display:none;">
             <input type="text" id="listing-chat-input-${cid}" placeholder="Type a message…"
               onkeypress="if(event.key==='Enter')sendListingMsg('${cid}')" />
             <button onclick="sendListingMsg('${cid}')">Send</button>
@@ -745,9 +1080,8 @@ Thank you so much for sharing this message! 🙏`;
     }).join('');
   }
 
-  function renderMap(filterSpecies) {
-    let listings = getListings().filter(p => p.lat && p.lng);
-    if (filterSpecies) listings = listings.filter(p => p.species === filterSpecies);
+  async function renderMap(filterSpecies) {
+    const listings = (await fetchListings(filterSpecies)).filter(p => p.lat && p.lng);
     if (!leafletMap) {
       const center = listings.length > 0 ? [listings[0].lat, listings[0].lng] : [20, 0];
       leafletMap = L.map('found-map').setView(center, listings.length > 0 ? 13 : 2);
@@ -759,9 +1093,9 @@ Thank you so much for sharing this message! 🙏`;
     const bounds = [];
     listings.forEach(p => {
       L.marker([p.lat, p.lng]).addTo(leafletMap).bindPopup(
-        `<strong>${esc(p.petName)}</strong> (${esc(p.species)})<br>
-         ${p.photo ? `<img src="${p.photo}" style="width:120px;border-radius:6px;margin:6px 0;display:block;"/>` : ''}
-         📞 ${esc(p.phone)}<br><em>${esc(p.contactName)}</em>`
+        `<strong>${esc(p.pet_name)}</strong> (${esc(p.species)})<br>
+         ${p.photo ? `<img src="${p.photo}" style="width:120px;border-radius:3px;margin:6px 0;display:block;"/>` : ''}
+         ${esc(p.phone)}<br><em>${esc(p.contact_name)}</em>`
       );
       bounds.push([p.lat, p.lng]);
     });
@@ -784,15 +1118,15 @@ Thank you so much for sharing this message! 🙏`;
     if (leafletMap) leafletMap.invalidateSize();
   }
 
-  function applyFilter() {
+  async function applyFilter() {
     const sel = document.getElementById('found-filterSpecies').value;
-    renderListings(sel);
-    if (document.getElementById('found-mapView').style.display !== 'none') renderMap(sel);
+    await renderListings(sel);
+    if (document.getElementById('found-mapView').style.display !== 'none') await renderMap(sel);
   }
 
   document.getElementById('found-filterSpecies').addEventListener('change', applyFilter);
 
-  // ── Account Page ─────────────────────────────────────────
+  // ── Account ──────────────────────────────────────────────
   function checkAccountPage() {
     const user = getCurrentUser();
     document.getElementById('account-loggedInCard').style.display = user ? 'block' : 'none';
@@ -801,7 +1135,7 @@ Thank you so much for sharing this message! 🙏`;
   }
 
   function logoutUser() {
-    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
     checkAccountPage();
     updateHeader();
     showPage('home');
@@ -821,53 +1155,102 @@ Thank you so much for sharing this message! 🙏`;
     document.getElementById('account-btnLogin').classList.remove('active');
   }
 
-  document.getElementById('account-loginForm').addEventListener('submit', function(e) {
+  document.getElementById('account-signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const username = document.getElementById('account-loginUser').value.trim();
-    const password = document.getElementById('account-loginPass').value;
-    if (getUsers().find(u => u.username === username && u.password === password)) {
-      localStorage.setItem(SESSION_KEY, username);
-      checkAccountPage();
-      updateHeader();
-      showPage('home');
-    } else {
-      document.getElementById('account-loginError').style.display = 'block';
-    }
-  });
-
-  document.getElementById('account-signupForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    const btn      = this.querySelector('button');
+    const errEl    = document.getElementById('account-signupError');
     const username = document.getElementById('account-signupUser').value.trim();
     const password = document.getElementById('account-signupPass').value;
-    const users = getUsers();
-    if (users.find(u => u.username === username)) {
-      document.getElementById('account-signupError').style.display = 'block';
+
+    btn.textContent = 'Creating account…';
+    btn.disabled    = true;
+    errEl.style.display = 'none';
+
+    // Check if username already taken
+    const { data: existing, error: checkErr } = await db
+      .from('users').select('username').eq('username', username).maybeSingle();
+
+    if (checkErr && checkErr.code !== 'PGRST116') {
+      errEl.textContent   = 'Error: ' + checkErr.message + ' — have you run the Supabase SQL setup?';
+      errEl.style.display = 'block';
+      btn.textContent = 'Create Account'; btn.disabled = false;
       return;
     }
-    users.push({ username, password });
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    localStorage.setItem(SESSION_KEY, username);
+
+    if (existing) {
+      errEl.textContent   = 'That username is already taken. Try another.';
+      errEl.style.display = 'block';
+      btn.textContent = 'Create Account'; btn.disabled = false;
+      return;
+    }
+
+    const { error } = await db.from('users').insert({ username, password });
+
+    if (error) {
+      errEl.textContent   = 'Sign-up failed: ' + error.message;
+      errEl.style.display = 'block';
+      btn.textContent = 'Create Account'; btn.disabled = false;
+      return;
+    }
+
+    sessionStorage.setItem(SESSION_KEY, username);
     checkAccountPage();
     updateHeader();
     showPage('home');
   });
 
-  // ── Chat ─────────────────────────────────────────────────
-  function getChat(key)    { try { return JSON.parse(localStorage.getItem('petHelpers_chat_' + key)) || []; } catch { return []; } }
+  document.getElementById('account-loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn      = this.querySelector('button');
+    const errEl    = document.getElementById('account-loginError');
+    const username = document.getElementById('account-loginUser').value.trim();
+    const password = document.getElementById('account-loginPass').value;
 
-  function saveMsg(key, msg) {
-    const msgs = getChat(key);
-    msgs.push(msg);
-    if (msgs.length > 100) msgs.splice(0, msgs.length - 100);
-    localStorage.setItem('petHelpers_chat_' + key, JSON.stringify(msgs));
+    btn.textContent = 'Signing in…';
+    btn.disabled    = true;
+    errEl.style.display = 'none';
+
+    const { data, error } = await db
+      .from('users').select('username').eq('username', username).eq('password', password).maybeSingle();
+
+    if (error) {
+      errEl.textContent   = 'Login error: ' + error.message;
+      errEl.style.display = 'block';
+      btn.textContent = 'Log In'; btn.disabled = false;
+      return;
+    }
+
+    if (data) {
+      sessionStorage.setItem(SESSION_KEY, username);
+      checkAccountPage();
+      updateHeader();
+      showPage('home');
+    } else {
+      errEl.textContent   = 'Incorrect username or password.';
+      errEl.style.display = 'block';
+      btn.textContent = 'Log In'; btn.disabled = false;
+    }
+  });
+
+  // ── Chat ─────────────────────────────────────────────────
+  async function saveMsg(channel, msg) {
+    await db.from('chat_messages').insert({
+      channel,
+      username: msg.username,
+      text:     msg.text,
+      photo:    msg.photo || null,
+      time:     msg.time
+    });
   }
 
-  function renderChatMsgs(key, containerId) {
-    const msgs = getChat(key);
+  async function renderChatMsgs(channel, containerId) {
+    const { data: msgs } = await db.from('chat_messages')
+      .select('*').eq('channel', channel)
+      .order('created_at', { ascending: true }).limit(100);
     const el = document.getElementById(containerId);
     if (!el) return;
-    el.innerHTML = msgs.length === 0
-      ? '<p style="color:#adb5bd;text-align:center;padding:16px 0;font-size:0.87rem;">No messages yet. Say hello!</p>'
+    el.innerHTML = (!msgs || msgs.length === 0)
+      ? '<p style="color:#adb5bd;text-align:center;padding:16px 0;font-size:0.87rem;">No messages yet.</p>'
       : msgs.map(m => `<div class="chat-msg">
           <strong>${esc(m.username)}</strong><span class="time">${esc(m.time)}</span>
           ${m.photo ? `<img src="${m.photo}" />` : ''}
@@ -876,47 +1259,47 @@ Thank you so much for sharing this message! 🙏`;
     el.scrollTop = el.scrollHeight;
   }
 
-  function loadGeneralChat() {
-    renderChatMsgs('general', 'general-chat-msgs');
+  async function loadGeneralChat() {
+    await renderChatMsgs('general', 'general-chat-msgs');
     const user = getCurrentUser();
     document.getElementById('general-chat-login-note').style.display  = user ? 'none'  : 'block';
     document.getElementById('general-chat-input-row').style.display   = user ? 'flex'  : 'none';
   }
 
-  function sendGeneralMsg() {
+  async function sendGeneralMsg() {
     const user = getCurrentUser();
     if (!user) return;
     const input = document.getElementById('general-chat-input');
-    const text = input.value.trim();
+    const text  = input.value.trim();
     if (!text) return;
-    saveMsg('general', { username: user, text, time: new Date().toLocaleTimeString() });
+    await saveMsg('general', { username: user, text, time: new Date().toLocaleTimeString() });
     input.value = '';
-    renderChatMsgs('general', 'general-chat-msgs');
+    await renderChatMsgs('general', 'general-chat-msgs');
   }
 
-  function toggleListingChat(cid) {
+  async function toggleListingChat(cid) {
     const chatDiv = document.getElementById('listing-chat-' + cid);
     if (!chatDiv) return;
     const opening = chatDiv.style.display === 'none';
     chatDiv.style.display = opening ? 'block' : 'none';
     if (!opening) return;
-    renderChatMsgs('listing_' + cid, 'listing-chat-msgs-' + cid);
-    const user = getCurrentUser();
+    await renderChatMsgs('listing_' + cid, 'listing-chat-msgs-' + cid);
+    const user      = getCurrentUser();
     const loginNote = document.getElementById('listing-chat-login-' + cid);
     const inputRow  = document.getElementById('listing-chat-row-'   + cid);
-    if (loginNote) loginNote.innerHTML  = user ? '' : '<a onclick="showPage(\'account\')" style="color:#ff6535;cursor:pointer;font-weight:700;">Log in</a> to send a message.';
+    if (loginNote) loginNote.innerHTML  = user ? '' : '<a onclick="showPage(\'account\')" style="color:#c8102e;cursor:pointer;font-weight:700;">Log in</a> to send a message.';
     if (inputRow)  inputRow.style.display = user ? 'flex' : 'none';
   }
 
-  function sendListingMsg(cid) {
+  async function sendListingMsg(cid) {
     const user = getCurrentUser();
     if (!user) return;
     const input = document.getElementById('listing-chat-input-' + cid);
-    const text = input.value.trim();
+    const text  = input.value.trim();
     if (!text) return;
-    saveMsg('listing_' + cid, { username: user, text, time: new Date().toLocaleTimeString() });
+    await saveMsg('listing_' + cid, { username: user, text, time: new Date().toLocaleTimeString() });
     input.value = '';
-    renderChatMsgs('listing_' + cid, 'listing-chat-msgs-' + cid);
+    await renderChatMsgs('listing_' + cid, 'listing-chat-msgs-' + cid);
   }
 
   // ── Facts ────────────────────────────────────────────────
@@ -925,7 +1308,7 @@ Thank you so much for sharing this message! 🙏`;
     '🏷️ Pets with ID tags are 3× more likely to be returned home safely.',
     '📸 Posting a photo online increases the chance of finding a lost pet by over 50%.',
     '🐱 Cats are more likely to hide close to home — check under porches and in bushes nearby.',
-    '🐕 Dogs often follow familiar smells — leaving worn clothing near where they were lost can help them find their way back.',
+    '🐕 Dogs often follow familiar smells — leaving worn clothing near where they were lost can help.',
     '📞 Calling local shelters within the first 24 hours gives the best chance of a reunion.',
     '🌍 Millions of pets go missing every year — but most are found within a few miles of home.',
     '🤝 Neighbours are the #1 way lost pets are found — sharing on community groups works!',
@@ -933,26 +1316,23 @@ Thank you so much for sharing this message! 🙏`;
     '⏱️ The first 12 hours after a pet goes missing are the most important — act fast!',
   ];
 
-  let factIndex = 0;
-  let factTimer;
+  let factIndex = 0, factTimer;
 
   function showFact(i) {
     factIndex = (i + FACTS.length) % FACTS.length;
     const el = document.getElementById('factText');
-    if (el) { el.style.animation = 'none'; el.offsetHeight; el.style.animation = ''; el.textContent = FACTS[factIndex]; }
+    if (el) { el.style.animation='none'; el.offsetHeight; el.style.animation=''; el.textContent=FACTS[factIndex]; }
     const dots = document.getElementById('factDots');
-    if (dots) dots.querySelectorAll('.fact-dot').forEach((d, j) => d.classList.toggle('active', j === factIndex));
+    if (dots) dots.querySelectorAll('.fact-dot').forEach((d,j) => d.classList.toggle('active', j===factIndex));
     clearInterval(factTimer);
-    factTimer = setInterval(() => showFact(factIndex + 1), 5000);
+    factTimer = setInterval(() => showFact(factIndex+1), 5000);
   }
-
-  function nextFact() { showFact(factIndex + 1); }
-  function prevFact() { showFact(factIndex - 1); }
-
+  function nextFact() { showFact(factIndex+1); }
+  function prevFact() { showFact(factIndex-1); }
   function initFacts() {
     const dots = document.getElementById('factDots');
     if (!dots) return;
-    dots.innerHTML = FACTS.map((_, i) => `<div class="fact-dot${i===0?' active':''}" onclick="showFact(${i})"></div>`).join('');
+    dots.innerHTML = FACTS.map((_,i) => `<div class="fact-dot${i===0?' active':''}" onclick="showFact(${i})"></div>`).join('');
     showFact(0);
   }
 
