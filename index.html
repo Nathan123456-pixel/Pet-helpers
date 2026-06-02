@@ -1451,7 +1451,7 @@
         id: Date.now().toString(), contact_name: owner, phone: contact, pet_name: pet,
         species, reward, location_text: loc, lat: null, lng: null, description: desc,
         photo: lostPhotoData, posted_by: getCurrentUser() || owner,
-        date: new Date().toLocaleDateString(), report_type: 'lost'
+        date: new Date().toLocaleDateString()
       });
     } catch(ex) {}
     loadLostMatches(species);
@@ -1693,7 +1693,6 @@
     grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
     try {
       let query = db.from('listings').select('*').order('created_at', { ascending: false });
-      if (typeFilter)    query = query.eq('report_type', typeFilter);
       if (speciesFilter) query = query.eq('species', speciesFilter);
       const { data, error } = await query;
       if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
@@ -1704,10 +1703,11 @@
       document.getElementById('lf-count-found').textContent = strayCount;
       document.getElementById('lf-count-all').textContent   = all.length;
       const ql = q.toLowerCase();
-      const filtered = q ? all.filter(p =>
+      let filtered = q ? all.filter(p =>
         [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
           .some(f => f && f.toLowerCase().includes(ql))
       ) : all;
+      if (typeFilter) filtered = filtered.filter(p => (p.report_type || 'stray') === typeFilter);
       if (q || typeFilter || speciesFilter) {
         meta.style.display = 'block';
         meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
