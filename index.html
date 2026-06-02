@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pet Helpers — Official Animal Recovery &amp; Reunification Service</title>
+  <title>Pet Helpers</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -798,14 +798,6 @@
 </head>
 <body>
 
-<div class="gov-bar">
-  Official Animal Recovery &amp; Reunification Service
-  <span class="gov-bar-dot"></span>
-  Operated by City Animal Services
-  <span class="gov-bar-dot"></span>
-  <span style="margin-left:auto;opacity:0.35;">pethelpers.gov</span>
-</div>
-
 <header>
   <div class="header-seal">
     <div class="seal-circle">
@@ -814,14 +806,7 @@
     </div>
   </div>
   <div class="header-title-wrap" onclick="showPage('home')">
-    <h1>
-      <small>City Animal Services</small>
-      Pet Helpers
-    </h1>
-  </div>
-  <div class="header-agency" style="display:none;" id="header-agency-block">
-    <div class="header-agency-name">Animal Registry Division</div>
-    <div class="header-agency-sub">Stray Recovery · Lost &amp; Found · Shelter Network</div>
+    <h1>Pet Helpers</h1>
   </div>
   <span id="headerRight"></span>
 </header>
@@ -841,7 +826,6 @@
   <div id="page-home">
 
     <div class="hero">
-      <div class="hero-eyebrow">Animal Recovery &amp; Reunification Service</div>
       <h2>Report a stray.<br>Find its owner.</h2>
       <p>Pet Helpers connects people who've found a stray animal with the owners searching for them. Submit a report, browse the registry, or find a local shelter.</p>
       <div class="hero-btns">
@@ -852,13 +836,7 @@
       </div>
     </div>
 
-    <div class="official-notice">
-      <div class="official-notice-icon">🤝</div>
-      <div>
-        <strong>Community Notice</strong>
-        <p>Every stray report you submit is visible to the public. Most lost pets are reunited within 24–48 hours when reported promptly. Please include a photo and precise location for best results.</p>
-      </div>
-    </div>
+    
 
     <div class="facts-card">
       <h2>Did You Know?</h2>
@@ -902,7 +880,6 @@
   <!-- ===== LOST PET ===== -->
   <div id="page-lost" style="display:none;">
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Lost Pet Report</div>
       <h2>I Lost My Pet</h2>
       <p>Fill in the details to generate a shareable missing notice.</p>
     </div>
@@ -1002,7 +979,6 @@
   <div id="page-stray" style="display:none;">
 
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Public Registry</div>
       <h2>Stray Animal Registry</h2>
       <p>Browse reported strays or submit a new report.</p>
     </div>
@@ -1090,7 +1066,6 @@
   <!-- ===== LOST & FOUND ===== -->
   <div id="page-lf" style="display:none;">
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Combined Register</div>
       <h2>Lost &amp; Found Pets</h2>
       <p>All active lost pet reports and found strays in one place.</p>
     </div>
@@ -1134,33 +1109,26 @@
   </div>
 
   <!-- ===== SHELTERS ===== -->
-  <div id="page-shelters" style="display:none;">
+  <div id="page-shelters" style="display:none;position:relative;">
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Shelter Network Directory</div>
       <h2>Animal Shelters</h2>
       <p>Find nearby shelters that can take in a stray or check on available animals.</p>
     </div>
 
     <!-- Region selector trigger -->
-    <div style="margin-bottom:20px;">
-      <button id="region-trigger-btn" onclick="openRegionModal()" style="margin:0;background:var(--navy);padding:11px 22px;display:flex;align-items:center;gap:10px;font-size:0.82rem;">
+    <div style="margin-bottom:20px;position:relative;display:inline-block;" id="region-selector-wrap">
+      <button id="region-trigger-btn" onclick="toggleRegionDropdown()" style="margin:0;background:var(--navy);padding:11px 22px;display:flex;align-items:center;gap:10px;font-size:0.82rem;">
         <span style="font-size:1.1rem;" id="region-flag">🌍</span>
         <span id="region-trigger-label">Select your region</span>
-        <span style="opacity:0.6;font-size:0.75rem;margin-left:4px;">▼</span>
+        <span style="opacity:0.6;font-size:0.75rem;margin-left:4px;" id="region-arrow">▼</span>
       </button>
-    </div>
-
-    <!-- Region picker modal -->
-    <div id="region-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-start;justify-content:center;padding-top:80px;">
-      <div id="region-modal-inner" style="background:white;width:92%;max-width:680px;border-top:4px solid var(--teal);box-shadow:0 12px 40px rgba(0,0,0,0.25);max-height:80vh;overflow-y:auto;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:white;z-index:1;">
-          <div>
-            <div style="font-family:'IBM Plex Serif',serif;font-size:1.2rem;font-weight:700;color:var(--navy);">Select a region</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;">30 regions across 6 continents</div>
-          </div>
-          <button onclick="closeRegionModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:6px 14px;font-size:0.78rem;">✕ Close</button>
+      <!-- Dropdown panel -->
+      <div id="region-dropdown" style="display:none;position:absolute;top:100%;left:0;width:680px;max-width:94vw;background:white;border:1px solid var(--border);border-top:2px solid var(--teal);box-shadow:0 8px 32px rgba(0,0,0,0.18);z-index:500;max-height:60vh;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px 12px;border-bottom:1px solid var(--border);background:white;position:sticky;top:0;">
+          <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);">30 regions · 6 continents</div>
+          <button onclick="closeRegionModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:4px 12px;font-size:0.68rem;letter-spacing:0.5px;">✕</button>
         </div>
-        <div style="padding:20px 24px;" id="region-modal-content"></div>
+        <div style="padding:16px 18px;" id="region-modal-content"></div>
       </div>
     </div>
 
@@ -1222,7 +1190,6 @@
   <!-- ===== ACCOUNT ===== -->
   <div id="page-account" style="display:none;">
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Resident Portal</div>
       <h2>Your Account</h2>
       <p>Sign in or create an account to submit stray reports and manage your listings.</p>
     </div>
@@ -1260,16 +1227,35 @@
 
 </main>
 
-<footer>
-  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;flex-wrap:wrap;">
-    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Official Government Service</span>
-    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
-    <strong>Pet Helpers</strong>
-    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
-    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Animal Recovery &amp; Reunification</span>
+
+
+<!-- ===== CONTACT POPUP ===== -->
+<div id="contact-popup" style="display:none;position:fixed;inset:0;background:rgba(6,14,30,0.65);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:white;max-width:400px;width:92%;border-top:3px solid var(--navy);box-shadow:0 16px 48px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px 14px;border-bottom:1px solid var(--border);">
+      <div id="contact-popup-title" style="font-family:'IBM Plex Serif',serif;font-size:1.05rem;font-weight:600;color:var(--navy);"></div>
+      <button onclick="closeContactPopup()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:4px 12px;font-size:0.68rem;">✕</button>
+    </div>
+    <div style="padding:20px;">
+      <div style="margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:4px;">Pet</div>
+        <div id="contact-popup-pet" style="font-weight:600;font-size:0.95rem;"></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:4px;">Contact name</div>
+        <div id="contact-popup-name" style="font-weight:600;font-size:0.95rem;"></div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:6px;">Phone number</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div id="contact-popup-phone" style="font-family:'IBM Plex Serif',serif;font-size:1.4rem;font-weight:700;color:var(--navy);letter-spacing:0.02em;"></div>
+          <button id="contact-popup-copy" onclick="copyContactPhone()" style="margin:0;background:var(--bg);color:var(--navy);border:1px solid var(--border);padding:6px 14px;font-size:0.68rem;">Copy</button>
+        </div>
+      </div>
+      <a id="contact-popup-call" href="" style="display:block;background:var(--navy);color:white;text-align:center;padding:12px;text-decoration:none;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.9px;">📞 Call Now</a>
+    </div>
   </div>
-  <div style="font-size:0.6rem;opacity:0.3;letter-spacing:0.8px;">City Animal Services Division &nbsp;·&nbsp; pethelpers.gov &nbsp;·&nbsp; All rights reserved</div>
-</footer>
+</div>
 
 <!-- ===== TRANSFER TO SHELTER MODAL ===== -->
 <div id="transfer-modal">
@@ -1451,7 +1437,7 @@
         id: Date.now().toString(), contact_name: owner, phone: contact, pet_name: pet,
         species, reward, location_text: loc, lat: null, lng: null, description: desc,
         photo: lostPhotoData, posted_by: getCurrentUser() || owner,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(), report_type: 'lost'
       });
     } catch(ex) {}
     loadLostMatches(species);
@@ -1555,7 +1541,7 @@
         lat: coords?.lat ?? null, lng: coords?.lng ?? null,
         description: document.getElementById('r-desc').value.trim(),
         photo: reportPhoto, posted_by: getCurrentUser(),
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(), report_type: 'stray'
       });
       if (error) { alert('Could not save: ' + errMsg(error)); }
       else {
@@ -1563,20 +1549,35 @@
         document.getElementById('r-photo-preview').style.display = 'none';
         document.getElementById('r-success').style.display = 'block';
         setTimeout(() => { document.getElementById('r-success').style.display = 'none'; toggleReportForm(); }, 3000);
+        bustCache();
         loadRecent(); applyFilter();
       }
     } catch(ex) { alert('Error: ' + errMsg(ex)); }
     btn.textContent = 'Submit Report'; btn.disabled = false;
   });
 
+  // ── Simple fetch cache (60 second TTL) ───────────────────
+  const _cache = {};
+  async function cachedFetch(key, fetchFn) {
+    const now = Date.now();
+    if (_cache[key] && now - _cache[key].ts < 60000) return _cache[key].data;
+    const data = await fetchFn();
+    _cache[key] = { data, ts: now };
+    return data;
+  }
+  function bustCache() { Object.keys(_cache).forEach(k => delete _cache[k]); }
+
   async function fetchListings(species) {
-    try {
-      let q = db.from('listings').select('*').order('created_at', { ascending: false });
-      if (species) q = q.eq('species', species);
-      const { data, error } = await q;
-      if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
-      return data || [];
-    } catch(ex) { console.error('Fetch exception:', errMsg(ex)); return []; }
+    const key = 'listings:' + (species || 'all');
+    return cachedFetch(key, async () => {
+      try {
+        let q = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,lat,lng').order('created_at', { ascending: false }).limit(100);
+        if (species) q = q.eq('species', species);
+        const { data, error } = await q;
+        if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
+        return data || [];
+      } catch(ex) { console.error('Fetch exception:', errMsg(ex)); return []; }
+    });
   }
 
   async function applyFilter() {
@@ -1631,9 +1632,9 @@
           ${p.description ? `<p style="font-size:0.82rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--border);padding-left:10px;margin-bottom:12px;">${hi(p.description)}</p>` : ''}
         </div>
         <div style="display:flex;border-top:1px solid var(--border);">
-          <a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--navy);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;border-right:1px solid var(--border);" onmouseover="this.style.background='#eef0f4'" onmouseout="this.style.background=''">📞 Call</a>
-          <button onclick="openTransferModal('${esc(p.pet_name)}', '${esc(p.species)}')" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--teal);border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4f5'" onmouseout="this.style.background=''">🏠 Shelter</button>
-          <button onclick="claimStray(this)" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--green);border:none;cursor:pointer;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">✅ My Pet</button>
+          <button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name)} (${esc(p.species)})" data-action="Contact reporter" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#eef0f4'" onmouseout="this.style.background='transparent'">📞 Call</button>
+          <button onclick="openTransferModal('${esc(p.pet_name)}', '${esc(p.species)}')" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--teal);border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4f5'" onmouseout="this.style.background='transparent'">🏠 Shelter</button>
+          <button onclick="claimStray(this)" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--green);border:none;cursor:pointer;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ My Pet</button>
         </div>
       </div>`
     ).join('');
@@ -1692,13 +1693,15 @@
     const speciesFilter = document.getElementById('lf-species')?.value || '';
     grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
     try {
-      let query = db.from('listings').select('*').order('created_at', { ascending: false });
+      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward').order('created_at', { ascending: false }).limit(100);
+      if (typeFilter)    query = query.eq('report_type', typeFilter);
       if (speciesFilter) query = query.eq('species', speciesFilter);
       const { data, error } = await query;
       if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
       const all = data || [];
-      const lostCount  = all.filter(p => p.report_type === 'lost').length;
-      const strayCount = all.filter(p => p.report_type !== 'lost').length;
+      const lostCount     = all.filter(p => p.report_type === 'lost').length;
+      const strayCount    = all.filter(p => p.report_type === 'stray' || !p.report_type).length;
+      const reunitedCount = all.filter(p => p.report_type === 'reunited').length;
       document.getElementById('lf-count-lost').textContent  = lostCount;
       document.getElementById('lf-count-found').textContent = strayCount;
       document.getElementById('lf-count-all').textContent   = all.length;
@@ -1724,13 +1727,18 @@
       };
       grid.innerHTML = filtered.map(p => {
         const isLost     = p.report_type === 'lost';
-        const borderColor = isLost ? 'var(--red)' : 'var(--green)';
-        const badge      = isLost
+        const isReunited = p.report_type === 'reunited';
+        const borderColor = isReunited ? 'var(--green)' : isLost ? 'var(--red)' : 'var(--green)';
+        const badge = isReunited
+          ? `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#dff0e8;color:var(--green);padding:3px 9px;">✅ REUNITED</span>`
+          : isLost
           ? `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#fde8e8;color:var(--red);padding:3px 9px;">🔴 LOST</span>`
           : `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#dff0e8;color:var(--green);padding:3px 9px;">🟢 FOUND</span>`;
-        const actionLabel = isLost
-          ? `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">📞 I Found This Pet</a>`
-          : `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">📞 This Is My Pet</a>`;
+        const actionLabel = isReunited
+          ? `<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>`
+          : isLost
+          ? `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="I found this pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='transparent'">📞 I Found This Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`
+          : `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="This is my pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">📞 This Is My Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`;
         return `
           <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
             ${p.photo ? `<img src="${p.photo}" style="width:100%;height:150px;object-fit:cover;display:block;" />`
@@ -1765,7 +1773,10 @@
     const el = document.getElementById('home-recent');
     if (!el) return;
     try {
-      const { data } = await db.from('listings').select('*').order('created_at', { ascending: false }).limit(3);
+      const data = await cachedFetch('recent', async () => {
+        const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').order('created_at', { ascending: false }).limit(3);
+        return data || [];
+      });
       if (!data || data.length === 0) {
         el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">No reports yet.</p>';
         return;
@@ -2072,7 +2083,6 @@
   };
 
   function initRegionButtons() {
-    buildRegionModalContent();
     setRegion(REGION_KEYS[0], false);
   }
 
@@ -2083,40 +2093,53 @@
     for (const [continent, info] of Object.entries(REGION_CONTINENTS)) {
       const available = info.regions.filter(r => SHELTER_REGIONS[r]);
       if (!available.length) continue;
-      html += `<div style="margin-bottom:22px;">
-        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <span>${info.flag}</span> ${esc(continent)}
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;">`;
+      html += '<div style="margin-bottom:22px;">';
+      html += '<div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">' + info.flag + ' ' + esc(continent) + '</div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">';
       for (const region of available) {
-        const flag = REGION_FLAGS[region] || '🌍';
+        const flag = REGION_FLAGS[region] || '\u{1F30D}';
         const shelterCount = (SHELTER_REGIONS[region] || []).length;
-        html += `<button onclick="selectRegion(${JSON.stringify(region)})"
-          id="rmodal-${region.replace(/[^a-z0-9]/gi,'_')}"
-          style="margin:0;padding:10px 14px;text-align:left;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all 0.12s;border-radius:0;display:flex;flex-direction:column;gap:3px;"
-          onmouseover="this.style.background='#eef0f4'" onmouseout="if(this.id!='rmodal-active')this.style.background='var(--surface)'">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:1rem;">${flag}</span>
-            <span style="font-weight:700;font-size:0.82rem;">${esc(region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,''))}</span>
-          </div>
-          <div style="font-size:0.7rem;color:var(--muted);">${shelterCount} shelter${shelterCount!==1?'s':''}</div>
-        </button>`;
+        const safeId = 'rmodal-' + region.replace(/[^a-z0-9]/gi,'_');
+        const cityLabel = esc(region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,''));
+        html += '<button class="rmodal-btn" data-region="' + region.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" id="' + safeId + '" style="margin:0;padding:10px 14px;text-align:left;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:inherit;cursor:pointer;border-radius:0;display:flex;flex-direction:column;gap:3px;width:100%;">';
+        html += '<div style="display:flex;align-items:center;gap:6px;"><span>' + flag + '</span><span style="font-weight:700;font-size:0.82rem;">' + cityLabel + '</span></div>';
+        html += '<div style="font-size:0.7rem;color:var(--muted);">' + shelterCount + ' shelter' + (shelterCount!==1?'s':'') + '</div>';
+        html += '</button>';
       }
-      html += `</div></div>`;
+      html += '</div></div>';
     }
     container.innerHTML = html;
+    container.querySelectorAll('.rmodal-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectRegion(this.getAttribute('data-region'));
+      });
+      btn.addEventListener('mouseover', function() { this.style.background='#eef0f4'; });
+      btn.addEventListener('mouseout', function() { if (!this.classList.contains('rmodal-active')) this.style.background='var(--surface)'; });
+    });
+  }
+
+  function toggleRegionDropdown() {
+    const dd = document.getElementById('region-dropdown');
+    const arrow = document.getElementById('region-arrow');
+    if (dd.style.display === 'none') {
+      buildRegionModalContent();
+      dd.style.display = 'block';
+      if (arrow) arrow.textContent = '▲';
+      highlightActiveRegionInModal();
+    } else {
+      closeRegionModal();
+    }
   }
 
   function openRegionModal() {
-    const modal = document.getElementById('region-modal');
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    highlightActiveRegionInModal();
+    toggleRegionDropdown();
   }
 
   function closeRegionModal() {
-    document.getElementById('region-modal').style.display = 'none';
-    document.body.style.overflow = '';
+    const dd = document.getElementById('region-dropdown');
+    const arrow = document.getElementById('region-arrow');
+    if (dd) dd.style.display = 'none';
+    if (arrow) arrow.textContent = '▼';
   }
 
   function highlightActiveRegionInModal() {
@@ -2298,9 +2321,10 @@
     list.style.opacity = '0.4';
     list.style.pointerEvents = 'none';
   }
-  // Close region modal on backdrop click
-  document.getElementById('region-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeRegionModal();
+  // Close region dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('region-selector-wrap');
+    if (wrap && !wrap.contains(e.target)) closeRegionModal();
   });
 
   // Close transfer modal on backdrop click
@@ -2345,12 +2369,70 @@
     setTimeout(() => { closeAddShelterModal(); renderShelters(); }, 2200);
   });
 
+  async function markReunited(btn) {
+    const id = btn.getAttribute('data-id');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    try {
+      const { error } = await db.from('listings').update({ report_type: 'reunited' }).eq('id', id);
+      if (error) { btn.textContent = '✅ Mark Reunited'; btn.disabled = false; return; }
+      bustCache();
+      // Update card in place without full reload
+      const card = btn.closest('div[style*="border-top"]');
+      if (card) {
+        card.style.borderTopColor = 'var(--green)';
+        card.style.opacity = '0.7';
+        const badgeEl = card.querySelector('span');
+        if (badgeEl) { badgeEl.textContent = '✅ REUNITED'; badgeEl.style.background = '#dff0e8'; badgeEl.style.color = 'var(--green)'; }
+        const footer = btn.parentElement;
+        footer.innerHTML = '<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>';
+      }
+    } catch(ex) { btn.textContent = '✅ Mark Reunited'; btn.disabled = false; }
+  }
+
+  // ── Contact popup ─────────────────────────────────────────
+  document.addEventListener('click', function(e) {
+    const contactBtn = e.target.closest('.contact-btn');
+    if (contactBtn) {
+      showContactPopup(
+        contactBtn.getAttribute('data-name'),
+        contactBtn.getAttribute('data-phone'),
+        contactBtn.getAttribute('data-pet'),
+        contactBtn.getAttribute('data-action')
+      );
+    }
+    const reuniteBtn = e.target.closest('.reunite-btn');
+    if (reuniteBtn) markReunited(reuniteBtn);
+  });
+  function showContactPopup(name, phone, pet, action) {
+    document.getElementById('contact-popup-title').textContent = action;
+    document.getElementById('contact-popup-name').textContent = name;
+    document.getElementById('contact-popup-phone').textContent = phone;
+    document.getElementById('contact-popup-pet').textContent = pet;
+    document.getElementById('contact-popup-call').href = 'tel:' + phone;
+    document.getElementById('contact-popup-copy').textContent = 'Copy';
+    document.getElementById('contact-popup').style.display = 'flex';
+  }
+  function closeContactPopup() {
+    document.getElementById('contact-popup').style.display = 'none';
+  }
+  function copyContactPhone() {
+    const phone = document.getElementById('contact-popup-phone').textContent;
+    navigator.clipboard.writeText(phone).then(() => {
+      const btn = document.getElementById('contact-popup-copy');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+  document.getElementById('contact-popup').addEventListener('click', function(e) {
+    if (e.target === this) closeContactPopup();
+  });
+
   // ── Init ──────────────────────────────────────────────────
   updateHeader();
   initFacts();
   initRegionButtons();
   loadRecent();
-  applyFilter();
 </script>
 </body>
 </html>
