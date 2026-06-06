@@ -814,8 +814,8 @@
 <nav>
   <a onclick="showPage('home')"     id="nav-home"     class="active">Home</a>
   <a onclick="showPage('lost')"     id="nav-lost">Lost a Pet</a>
+  <a onclick="showPage('lf')"       id="nav-lf">Pet Recovery Registry</a>
   <a onclick="showPage('stray')"    id="nav-stray">Stray Registry</a>
-  <a onclick="showPage('lf')"       id="nav-lf">Lost &amp; Found</a>
   <a onclick="showPage('shelters')" id="nav-shelters">Shelters</a>
   <a onclick="showPage('account')"  id="nav-account">My Account</a>
 </nav>
@@ -829,8 +829,9 @@
       <h2>Report a stray.<br>Find its owner.</h2>
       <p>Pet Helpers connects people who've found a stray animal with the owners searching for them. Submit a report, browse the registry, or find a local shelter.</p>
       <div class="hero-btns">
-        <button class="hero-btn" onclick="showPage('stray')">Browse the Registry</button>
+        <button class="hero-btn" onclick="showPage('lf')">Pet Recovery Registry</button>
         <button class="hero-btn outline" onclick="showPage('lost')">I Lost My Pet</button>
+        <button class="hero-btn outline" onclick="showPage('stray')">Browse Stray Registry</button>
         <button class="hero-btn outline" onclick="showPage('stray');openReportForm()">Report a Stray</button>
         <button class="hero-btn outline" onclick="showPage('shelters')">Find a Shelter</button>
       </div>
@@ -1104,7 +1105,7 @@
   <!-- ===== LOST & FOUND ===== -->
   <div id="page-lf" style="display:none;">
     <div class="page-banner">
-      <h2>Lost &amp; Found Pets</h2>
+      <h2>Pet Recovery Registry</h2>
       <p>All active lost pet reports and found strays in one place.</p>
     </div>
 
