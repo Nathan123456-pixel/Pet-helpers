@@ -857,6 +857,44 @@
       </div>
     </div>
 
+    <!-- Success Stories -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:24px 28px 18px;border-bottom:1px solid var(--border);">
+        <h2 style="margin-bottom:4px;">They Found Their Way Home</h2>
+        <p style="color:var(--muted);font-size:0.88rem;margin:0;">Real reunions made possible by people like you.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0;border-top:none;">
+
+        <div style="border-right:1px solid var(--border);padding:0;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=480&h=300&q=80" alt="Boy reunited with his dog" style="width:100%;height:190px;object-fit:cover;display:block;" />
+          <div style="padding:18px 20px;">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">3 days missing</div>
+            <p style="font-size:0.9rem;font-style:italic;color:#333;margin-bottom:10px;line-height:1.5;">"We thought we'd never see Biscuit again. Someone spotted him two streets over and posted here. We were crying the whole drive over."</p>
+            <div style="font-size:0.78rem;font-weight:700;color:var(--navy);">— Lena, age 9</div>
+          </div>
+        </div>
+
+        <div style="border-right:1px solid var(--border);padding:0;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=480&h=300&q=80" alt="Woman hugging her cat" style="width:100%;height:190px;object-fit:cover;display:block;" />
+          <div style="padding:18px 20px;">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">1 week missing</div>
+            <p style="font-size:0.9rem;font-style:italic;color:#333;margin-bottom:10px;line-height:1.5;">"Mochi slipped out during a thunderstorm. A neighbour found her hiding under their porch and listed her here. I can't thank them enough."</p>
+            <div style="font-size:0.78rem;font-weight:700;color:var(--navy);">— Maya, pet owner</div>
+          </div>
+        </div>
+
+        <div style="padding:0;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=480&h=300&q=80" alt="Family with their golden retriever" style="width:100%;height:190px;object-fit:cover;display:block;" />
+          <div style="padding:18px 20px;">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">5 days missing</div>
+            <p style="font-size:0.9rem;font-style:italic;color:#333;margin-bottom:10px;line-height:1.5;">"Our whole family was heartbroken. A kind stranger drove Charlie to the shelter and posted his photo. We were reunited by morning."</p>
+            <div style="font-size:0.78rem;font-weight:700;color:var(--navy);">— The Martins</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Shelter highlight on home -->
     <div class="official-notice" style="border-left-color:var(--teal);margin-bottom:20px;">
       <div class="official-notice-icon">🏠</div>
@@ -1589,10 +1627,11 @@
     grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
     const all      = await fetchListings(species);
     const ql       = q.toLowerCase();
-    const filtered = q ? all.filter(p =>
+    const straysOnly = all.filter(p => p.report_type === 'stray' || !p.report_type);
+    const filtered = q ? straysOnly.filter(p =>
       [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
         .some(f => f && f.toLowerCase().includes(ql))
-    ) : all;
+    ) : straysOnly;
     if (q || species) {
       meta.style.display = 'block';
       meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
@@ -1652,6 +1691,24 @@
     const bar  = btn.parentElement;
     bar.innerHTML = `<div style="flex:1;padding:12px 16px;background:#e6f4ea;color:#1a4d2e;font-size:0.82rem;font-weight:700;text-align:center;">🎉 Contact the finder above to arrange pickup!</div>`;
     if (card) card.style.borderTopColor = 'var(--green)';
+  }
+
+  async function foundThisPet(btn, name, phone) {
+    const id = btn.getAttribute('data-id');
+    const bar = btn.parentElement;
+    bar.innerHTML = `<div style="flex:1;padding:12px 16px;background:#e6f4ea;color:#1a4d2e;font-size:0.82rem;font-weight:700;text-align:center;">✅ Reunited! — ${esc(name)}: <a href="tel:${esc(phone)}" style="color:#1a4d2e;text-decoration:underline;">${esc(phone)}</a></div>`;
+    if (id) {
+      try {
+        await db.from('listings').update({ report_type: 'reunited' }).eq('id', id);
+        bustCache();
+        const card = bar.closest('div[style*="border-top"]');
+        if (card) {
+          card.style.borderTopColor = 'var(--green)';
+          const badgeEl = card.querySelector('span');
+          if (badgeEl) { badgeEl.textContent = '✅ REUNITED'; badgeEl.style.background = '#dff0e8'; badgeEl.style.color = 'var(--green)'; }
+        }
+      } catch(ex) {}
+    }
   }
 
   let leafletMap = null;
@@ -1737,7 +1794,7 @@
         const actionLabel = isReunited
           ? `<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>`
           : isLost
-          ? `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="I found this pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='transparent'">📞 I Found This Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`
+          ? `<button onclick="foundThisPet(this,'${esc(p.contact_name)}','${esc(p.phone)}')" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='transparent'">📞 I Found This Pet</button>`
           : `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="This is my pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">📞 This Is My Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`;
         return `
           <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">

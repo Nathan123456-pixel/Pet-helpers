@@ -1,11 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Start-Process \"c:\\\\Users\\\\DELL\\\\Documents\\\\GitHub\\\\Pet helpers\\\\index.html\")",
-      "PowerShell(Start-Process \"c:\\\\Users\\\\DELL\\\\Documents\\\\GitHub\\\\Pet helpers\\\\prd.html\")",
-      "Bash(code \"c:\\\\Users\\\\DELL\\\\Documents\\\\GitHub\\\\Pet helpers\\\\index.html\")",
-      "PowerShell(code \"c:\\\\Users\\\\DELL\\\\Documents\\\\GitHub\\\\Pet helpers\\\\index.html\")",
-      "PowerShell(& \"C:\\\\Users\\\\DELL\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin\\\\code.cmd\" \"c:\\\\Users\\\\DELL\\\\Documents\\\\GitHub\\\\Pet helpers\\\\index.html\")"
+      "WebFetch(domain:images.unsplash.com)"
     ]
   }
 }
