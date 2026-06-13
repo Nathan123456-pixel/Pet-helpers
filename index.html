@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Helpers</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   
   <style>
     /* ===================================================
@@ -412,9 +412,9 @@
       background: white;
       border: 1px solid var(--border);
       overflow: hidden;
-      transition: box-shadow 0.15s;
+      transition: box-shadow 0.15s, transform 0.15s;
     }
-    .pet-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+    .pet-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.14); transform: translateY(-2px); }
     .pet-card img { width: 100%; height: 195px; object-fit: cover; display: block; border-bottom: 1px solid var(--border); }
 
     /* ── Shelter cards ── */
@@ -689,7 +689,7 @@
   </div>
   <div class="header-title-wrap" onclick="showPage('home')">
     <h1>
-      <small>Lost &amp; Found Pets</small>
+      <small>Lost Pet Registry</small>
       Pet Helpers
     </h1>
   </div>
@@ -711,7 +711,7 @@
   <a onclick="showPage('home')"     id="nav-home"     class="active">Home</a>
   <a onclick="showPage('lost')"     id="nav-lost">Lost a Pet</a>
   <a onclick="showPage('stray')"    id="nav-stray">Stray Registry</a>
-  <a onclick="showPage('lf')"       id="nav-lf">Lost &amp; Found</a>
+  <a onclick="showPage('lf')"       id="nav-lf">Lost Pet Registry</a>
   <a onclick="showPage('shelters')" id="nav-shelters">Shelters</a>
   <a onclick="showPage('account')"  id="nav-account">My Account</a>
 </nav>
@@ -776,9 +776,17 @@
     <div class="card" style="padding-bottom:8px;">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;">
         <h2 style="margin-bottom:0;">Recent Reports</h2>
-        <a onclick="showPage('stray')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a>
+        <a onclick="showPage('lf')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a>
       </div>
       <div id="home-recent"><p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Loading…</p></div>
+    </div>
+
+    <div class="card" id="home-reunited-card" style="display:none;padding-bottom:8px;border-top:3px solid var(--green);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;">
+        <h2 style="margin-bottom:0;">🎉 Recently Reunited</h2>
+        <a onclick="showPage('lf')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a>
+      </div>
+      <div id="home-reunited"></div>
     </div>
 
   </div>
@@ -981,6 +989,12 @@
         <option value="">All types</option>
         <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
       </select>
+      <select id="s-sort" onchange="applyFilter()"
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="name">Pet name (A–Z)</option>
+      </select>
       <button onclick="clearSearch()" id="s-clear" style="display:none;margin:0;padding:6px 12px;background:#f0ece6;color:var(--muted);border:1px solid var(--border);font-size:12px;font-family:Arial,sans-serif;">✕ Clear</button>
     </div>
     <div id="s-meta" style="margin-bottom:12px;font-size:0.82rem;color:var(--muted);display:none;"></div>
@@ -1031,25 +1045,25 @@
 
   <!-- ===== LOST & FOUND ===== -->
   <div id="page-lf" style="display:none;">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Lost &amp; Found</div>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Lost Pet Registry</div>
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Combined Register</div>
-      <h2>Lost &amp; Found Pets</h2>
-      <p>All active lost pet reports and found strays in one place.</p>
+      <div class="page-banner-eyebrow">Lost Pet Registry</div>
+      <h2>Lost Pet Registry</h2>
+      <p>Browse active reports of lost pets in the community.</p>
     </div>
 
     <div class="stat-bar" style="margin-bottom:20px;">
       <div class="stat-box">
         <div id="lf-count-lost" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--red);">—</div>
-        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Lost</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Still Lost</div>
       </div>
       <div class="stat-box">
         <div id="lf-count-found" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
-        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Found Strays</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Reunited</div>
       </div>
       <div class="stat-box">
         <div id="lf-count-all" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
-        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Total Reports</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Total Lost Reports</div>
       </div>
     </div>
 
@@ -1058,8 +1072,8 @@
     <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--navy);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
       <span style="font-size:1.2rem;flex-shrink:0;">🔍</span>
       <div>
-        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Search carefully — your pet may already be here</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Use the filters below to narrow down by type or species. If you spot your pet, click the contact button to reach the finder directly. Every listing here represents someone willing to help.</div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Have you seen one of these pets?</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">If you recognise a pet below, click the contact button to reach the owner directly. Found a stray that isn't listed here? <a onclick="showPage('stray');openReportForm()" style="color:var(--orange);cursor:pointer;text-decoration:underline;">Report it in the Stray Registry</a>.</div>
       </div>
     </div>
 
@@ -1069,12 +1083,6 @@
         <input type="text" id="lf-search" placeholder="Search name, location, description…" oninput="loadLF()"
           style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'Inter',sans-serif;background:#fafbfc;" />
       </div>
-      <select id="lf-type" onchange="loadLF()"
-        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
-        <option value="">All reports</option>
-        <option value="lost">🔴 Lost pets</option>
-        <option value="stray">🟢 Found strays</option>
-      </select>
       <select id="lf-species" onchange="loadLF()"
         style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
         <option value="">All types</option>
@@ -1245,7 +1253,7 @@
       <div style="display:flex;flex-direction:column;gap:7px;">
         <a onclick="showPage('stray')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Stray Registry</a>
         <a onclick="showPage('lost')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Report a Lost Pet</a>
-        <a onclick="showPage('lf')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Lost and Found</a>
+        <a onclick="showPage('lf')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Lost Pet Registry</a>
         <a onclick="showPage('shelters')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Find a Shelter</a>
       </div>
     </div>
@@ -1361,7 +1369,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ── Supabase config ───────────────────────────────────────
@@ -1429,7 +1437,7 @@
     document.getElementById('nav-'   + name).classList.add('active');
     if (name === 'stray')    { applyFilter(); checkReportAuth(); }
     if (name === 'account')  checkAccountPage();
-    if (name === 'home')     loadRecent();
+    if (name === 'home')     { loadRecent(); loadReunited(); }
     if (name === 'lf')       loadLF();
     if (name === 'shelters') renderShelters();
     if (name === 'lost')     { document.getElementById('lost-outputBox').style.display='none'; }
@@ -1522,7 +1530,7 @@
       box.style.display = 'block';
       list.innerHTML = data.map(p => `
         <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);">
-          ${p.photo ? `<img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;flex-shrink:0;border-radius:8px;" />`
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:48px;height:48px;object-fit:cover;flex-shrink:0;border-radius:8px;" />`
                     : `<div style="width:48px;height:48px;background:#f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border-radius:6px;">🐾</div>`}
           <div style="flex:1;min-width:0;">
             <div style="font-weight:700;font-size:0.9rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);">— ${esc(p.species)}</span></div>
@@ -1634,24 +1642,22 @@
   async function applyFilter() {
     const q       = (document.getElementById('s-search')?.value || '').trim();
     const species = document.getElementById('s-species')?.value || '';
+    const sortBy  = document.getElementById('s-sort')?.value || 'newest';
     const grid    = document.getElementById('stray-grid');
     const meta    = document.getElementById('s-meta');
     const clearBtn = document.getElementById('s-clear');
     grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading reports…</h3><p>Please wait while we fetch the latest listings.</p></div>';
     const all      = await fetchListings(species);
     const ql       = q.toLowerCase();
-    const filtered = q ? all.filter(p =>
+    let filtered = q ? all.filter(p =>
       [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
         .some(f => f && f.toLowerCase().includes(ql))
-    ) : all;
-    if (q || species) {
-      meta.style.display = 'block';
-      meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
-      clearBtn.style.display = 'block';
-    } else {
-      meta.style.display = 'none';
-      clearBtn.style.display = 'none';
-    }
+    ) : all.slice();
+    if (sortBy === 'oldest') filtered.reverse();
+    else if (sortBy === 'name') filtered.sort((a,b) => (a.pet_name||'').localeCompare(b.pet_name||''));
+    meta.style.display = 'block';
+    meta.textContent = `Showing ${filtered.length} report${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
+    clearBtn.style.display = (q || species) ? 'block' : 'none';
     if (filtered.length === 0) {
       grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><h3>No reports found${q ? ' for &ldquo;'+q+'&rdquo;' : ''}</h3><p>Try adjusting your search terms, or be the first to report a stray in this area.</p><button onclick="openReportForm()" style="margin:0;font-size:12px;padding:8px 18px;">+ Submit a Report</button></div>`;
       return;
@@ -1665,7 +1671,7 @@
     grid.innerHTML = filtered.map(p => `
       <div class="pet-card">
         ${p.photo
-          ? `<img src="${p.photo}" style="width:100%;height:190px;object-fit:cover;display:block;" />`
+          ? `<img src="${p.photo}" loading="lazy" style="width:100%;height:190px;object-fit:cover;display:block;" />`
           : `<div style="height:150px;background:#ede8e0;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border);">🐾</div>`}
         <div style="padding:14px 16px;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
@@ -1716,15 +1722,23 @@
     document.getElementById('stray-map-view').style.display  = 'block';
     document.getElementById('btn-map').classList.add('active');
     document.getElementById('btn-list').classList.remove('active');
-    applyFilter();
-    if (leafletMap) leafletMap.invalidateSize();
+    setTimeout(() => {
+      applyFilter();
+      if (leafletMap) leafletMap.invalidateSize();
+    }, 50);
   }
   function renderMap(listings) {
+    if (typeof L === 'undefined') {
+      document.getElementById('stray-map').innerHTML =
+        '<div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:#f3f4f6;font-family:Arial,sans-serif;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:2rem;">🗺️</div><div>Map could not load — the map library failed to load from the CDN.<br>Try refreshing the page, or use the List view.</div></div>';
+      return;
+    }
     const pts = listings.filter(p => p.lat && p.lng);
     if (!leafletMap) {
       const c = pts.length > 0 ? [pts[0].lat, pts[0].lng] : [20,0];
       leafletMap = L.map('stray-map').setView(c, pts.length > 0 ? 13 : 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(leafletMap);
+      setTimeout(() => leafletMap.invalidateSize(), 100);
     }
     leafletMap.eachLayer(l => { if (l instanceof L.Marker) leafletMap.removeLayer(l); });
     const bounds = [];
@@ -1739,29 +1753,25 @@
     const grid    = document.getElementById('lf-grid');
     const meta    = document.getElementById('lf-meta');
     const q       = (document.getElementById('lf-search')?.value || '').trim().toLowerCase();
-    const typeFilter    = document.getElementById('lf-type')?.value || '';
     const speciesFilter = document.getElementById('lf-species')?.value || '';
     grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading reports…</h3><p>Please wait while we fetch the latest listings.</p></div>';
     try {
-      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by').order('created_at', { ascending: false }).limit(100);
-      if (typeFilter)    query = query.eq('report_type', typeFilter);
+      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by').in('report_type', ['lost','reunited']).order('created_at', { ascending: false }).limit(100);
       if (speciesFilter) query = query.eq('species', speciesFilter);
       const { data, error } = await query;
       if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
       const all = data || [];
       const lostCount     = all.filter(p => p.report_type === 'lost').length;
-      const strayCount    = all.filter(p => p.report_type === 'stray' || !p.report_type).length;
       const reunitedCount = all.filter(p => p.report_type === 'reunited').length;
       document.getElementById('lf-count-lost').textContent  = lostCount;
-      document.getElementById('lf-count-found').textContent = strayCount;
+      document.getElementById('lf-count-found').textContent = reunitedCount;
       document.getElementById('lf-count-all').textContent   = all.length;
       const ql = q.toLowerCase();
       let filtered = q ? all.filter(p =>
         [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
           .some(f => f && f.toLowerCase().includes(ql))
       ) : all;
-      if (typeFilter) filtered = filtered.filter(p => (p.report_type || 'stray') === typeFilter);
-      if (q || typeFilter || speciesFilter) {
+      if (q || speciesFilter) {
         meta.style.display = 'block';
         meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
       } else { meta.style.display = 'none'; }
@@ -1791,7 +1801,7 @@
           : `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="This is my pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">📞 This Is My Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`;
         return `
           <div class="pet-card" style="border-top:3px solid ${borderColor};">
-            ${p.photo ? `<img src="${p.photo}" style="width:100%;height:190px;object-fit:cover;display:block;" />`
+            ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:100%;height:190px;object-fit:cover;display:block;" />`
                       : `<div style="height:150px;background:#ede8e0;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border);">🐾</div>`}
             <div style="padding:14px 16px;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
@@ -1833,7 +1843,7 @@
       }
       el.innerHTML = data.map(p => `
         <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);">
-          ${p.photo ? `<img src="${p.photo}" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border-radius:6px;" />`
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border-radius:6px;" />`
                     : `<div style="width:52px;height:52px;background:#f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border-radius:6px;">🐾</div>`}
           <div style="flex:1;min-width:0;">
             <div style="font-family:Georgia,serif;font-weight:bold;font-size:0.95rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
@@ -1841,10 +1851,32 @@
             <div style="font-size:0.74rem;color:#adb5bd;margin-top:2px;">Posted ${esc(p.date)}</div>
           </div>
           <span class="tag" style="flex-shrink:0;">${esc(p.species)}</span>
-        </div>`).join('') +
-        `<div style="padding-top:12px;text-align:right;"><a onclick="showPage('stray')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a></div>`;
+        </div>`).join('');
     } catch(ex) {
       el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Could not load reports.</p>';
+    }
+  }
+
+  async function loadReunited() {
+    const card = document.getElementById('home-reunited-card');
+    const el = document.getElementById('home-reunited');
+    if (!el) return;
+    try {
+      const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').eq('report_type', 'reunited').order('created_at', { ascending: false }).limit(3);
+      if (!data || data.length === 0) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      el.innerHTML = data.map(p => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);opacity:0.85;">
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border-radius:6px;" />`
+                    : `<div style="width:52px;height:52px;background:var(--green-lt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border-radius:6px;">✅</div>`}
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:Georgia,serif;font-weight:bold;font-size:0.95rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
+            ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
+          </div>
+          <span class="tag claimed" style="flex-shrink:0;">Reunited</span>
+        </div>`).join('');
+    } catch(ex) {
+      card.style.display = 'none';
     }
   }
 
@@ -2465,19 +2497,28 @@
     btn.disabled = true;
     try {
       const { error } = await db.from('listings').update({ report_type: 'reunited' }).eq('id', id);
-      if (error) { btn.textContent = '✅ Mark Reunited'; btn.disabled = false; return; }
+      if (error) { alert('Could not update: ' + errMsg(error)); btn.textContent = '✅ Mark Reunited'; btn.disabled = false; return; }
       bustCache();
       // Update card in place without full reload
-      const card = btn.closest('div[style*="border-top"]');
+      const card = btn.closest('.pet-card');
       if (card) {
         card.style.borderTopColor = 'var(--green)';
+        card.style.borderTopWidth = '3px';
+        card.style.borderTopStyle = 'solid';
         card.style.opacity = '0.7';
         const badgeEl = card.querySelector('span');
-        if (badgeEl) { badgeEl.textContent = '✅ REUNITED'; badgeEl.style.background = '#dff0e8'; badgeEl.style.color = 'var(--green)'; }
+        if (badgeEl) {
+          badgeEl.textContent = '✅ REUNITED';
+          badgeEl.style.background = '#dff0e8';
+          badgeEl.style.color = 'var(--green)';
+        }
         const footer = btn.parentElement;
         footer.innerHTML = '<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>';
+      } else {
+        // fallback: reload the list if card not found
+        loadLF();
       }
-    } catch(ex) { btn.textContent = '✅ Mark Reunited'; btn.disabled = false; }
+    } catch(ex) { alert('Error: ' + errMsg(ex)); btn.textContent = '✅ Mark Reunited'; btn.disabled = false; }
   }
 
 
@@ -2546,6 +2587,7 @@
   initFacts();
   initRegionButtons();
   loadRecent();
+  loadReunited();
 </script>
 </body>
 </html>
