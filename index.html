@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Helpers</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   
   <style>
     /* ===================================================
@@ -1418,7 +1418,7 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ── Supabase config ───────────────────────────────────────
@@ -1859,6 +1859,30 @@
   }
 
   let leafletMap = null;
+  function retryLoadLeaflet() {
+    const cdns = [
+      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js'
+    ];
+    document.getElementById('stray-map').innerHTML =
+      '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:Arial,sans-serif;font-size:13px;">Retrying…</div>';
+    let i = 0;
+    function tryNext() {
+      if (typeof L !== 'undefined') { applyFilter(); return; }
+      if (i >= cdns.length) {
+        document.getElementById('stray-map').innerHTML =
+          '<div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#f3f4f6;font-family:Arial,sans-serif;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:2rem;">🗺️</div><div>Still unable to load the map. Please use the List view instead.</div></div>';
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = cdns[i];
+      i++;
+      script.onload = () => { if (typeof L !== 'undefined') applyFilter(); else tryNext(); };
+      script.onerror = tryNext;
+      document.head.appendChild(script);
+    }
+    tryNext();
+  }
   function showListView() {
     document.getElementById('stray-list-view').style.display = 'block';
     document.getElementById('stray-map-view').style.display  = 'none';
@@ -1878,7 +1902,7 @@
   function renderMap(listings) {
     if (typeof L === 'undefined') {
       document.getElementById('stray-map').innerHTML =
-        '<div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:#f3f4f6;font-family:Arial,sans-serif;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:2rem;">🗺️</div><div>Map could not load — the map library failed to load from the CDN.<br>Try refreshing the page, or use the List view.</div></div>';
+        '<div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#f3f4f6;font-family:Arial,sans-serif;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:2rem;">🗺️</div><div>Map could not load — the map library failed to load.</div><button onclick="retryLoadLeaflet()" style="margin:0;background:var(--navy);padding:7px 16px;font-size:12px;">↻ Retry</button></div>';
       return;
     }
     const pts = listings.filter(p => p.lat && p.lng);
