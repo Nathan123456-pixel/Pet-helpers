@@ -1802,6 +1802,7 @@
     clearBtn.style.display = (q || species) ? 'block' : 'none';
     if (filtered.length === 0) {
       grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><h3>No reports found${q ? ' for &ldquo;'+q+'&rdquo;' : ''}</h3><p>Try adjusting your search terms, or be the first to report a stray in this area.</p><button onclick="openReportForm()" style="margin:0;font-size:12px;padding:8px 18px;">+ Submit a Report</button></div>`;
+      if (document.getElementById('stray-map-view').style.display !== 'none') renderMap(filtered);
       return;
     }
     const hi = (str) => {
