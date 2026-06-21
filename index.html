@@ -3,834 +3,715 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pet Helpers — Official Animal Recovery &amp; Reunification Service</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Pet Helpers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  
   <style>
+    /* ===================================================
+       Pet Helpers — stylesheet
+       Started 2014. Redesigned header 2017. New cards 2019.
+       Mobile fixes 2021. Dark banner added 2022.
+       "just tweaking a few things" — 2024
+    =================================================== */
+
     :root {
-      --navy:      #0a1f44;
-      --navy-mid:  #122a5e;
-      --navy-lt:   #162f6b;
-      --navy-dk:   #060e1e;
-      --red:       #b01c2e;
-      --red-lt:    #d42035;
-      --gold:      #c89320;
-      --gold-lt:   #e5b030;
-      --green:     #1a5e3a;
-      --teal:      #0a5568;
-      --teal-lt:   #0d6b84;
-      --bg:        #f0f2f5;
-      --bg-ruled:  #e8eaee;
+      --orange:    #e8651a;
+      --orange-d:  #c4530f;
+      --orange-lt: #fef3ec;
+      --teal:      #1a7a6e;
+      --teal-lt:   #e8f5f3;
+      --red:       #c0392b;
+      --red-lt:    #fdf2f1;
+      --green:     #27643a;
+      --green-lt:  #edf7f0;
+      --blue:      #2563a8;
+      --blue-lt:   #edf3fc;
+      --gold:      #c07a14;
+      --gold-lt:   #fdf6e8;
+      --purple:    #5b3f8a;
+      --bg:        #f5f4f0;
       --surface:   #ffffff;
-      --border:    #c2cad4;
-      --border-lt: #dce2e8;
-      --text:      #0d1117;
-      --muted:     #4a535e;
-      --muted-lt:  #6b7683;
-      --accent:    #8b0000;
+      --border:    #ddd8d0;
+      --border-d:  #c8c0b8;
+      --text:      #1c1a17;
+      --muted:     #68635a;
+      --muted-lt:  #9b9589;
+      --warm-gray: #f0ece6;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+      font-family: Georgia, 'Times New Roman', serif;
       color: var(--text);
-      min-height: 100vh;
       background: var(--bg);
       font-size: 15px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
     }
 
-    /* ── Official gov strip ── */
+    /* ── Top utility bar — added 2016 ── */
     .gov-bar {
-      background: var(--navy-dk);
-      color: rgba(255,255,255,0.42);
-      font-size: 0.62rem;
-      padding: 6px 28px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+      background: #2c2825;
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+      padding: 5px 16px;
+      font-family: Arial, sans-serif;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
     }
-    .gov-bar::before {
-      content: '';
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .gov-bar-dot { width: 3px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 50%; flex-shrink:0; }
+    .gov-bar-dot { width: 3px; height: 3px; background: rgba(255,255,255,0.25); border-radius: 50%; flex-shrink: 0; }
 
-    /* ── Header ── */
+    /* ── Header — redesigned 2017 ── */
     header {
-      background: var(--navy);
-      border-bottom: 3px solid var(--gold);
-      color: white;
-      padding: 0 0 0 0;
+      background: #fff;
+      border-bottom: 4px solid #b8941a;
+      padding: 0;
       display: flex;
       align-items: stretch;
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 100;
       min-height: 72px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
     .header-seal {
+      background: #0f1e35;
+      width: 68px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 72px;
-      min-height: 72px;
-      background: var(--gold);
       flex-shrink: 0;
-      position: relative;
-    }
-    .seal-circle {
-      width: 46px; height: 46px;
-      border: 2px solid var(--navy);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 1.5rem;
+      border-right: 3px solid #b8941a;
       flex-direction: column;
-      background: var(--gold-lt);
+      gap: 2px;
     }
-    .seal-circle .seal-icon { font-size: 1.3rem; line-height: 1; }
-    .seal-circle .seal-star { font-size: 0.45rem; letter-spacing: 2px; color: var(--navy); font-weight: 700; margin-top: 1px; }
+    .seal-stars { font-size: 7px; letter-spacing: 3px; color: #b8941a; opacity: 0.8; }
+    .seal-circle { display: contents; }
+    .seal-circle .seal-icon { font-size: 1.5rem; }
+    .seal-circle .seal-star { display: none; }
     .header-title-wrap {
+      padding: 10px 18px;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 20px;
-      border-right: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
+      border-right: 1px solid #eee;
     }
     header h1 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      line-height: 1.25;
-      letter-spacing: 0.01em;
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--text);
+      line-height: 1.2;
     }
     header h1 small {
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 0.58rem;
-      font-weight: 400;
-      opacity: 0.5;
+      font-family: Arial, sans-serif;
+      font-size: 9.5px;
+      color: #8a6914;
+      font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.5px;
       display: block;
       margin-bottom: 3px;
     }
-    .header-divider {
-      width: 1px;
-      background: rgba(255,255,255,0.1);
-      align-self: stretch;
-      margin: 0;
-    }
-    .header-agency {
+    .header-meta {
+      padding: 0 16px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 20px;
+      border-right: 1px solid #eee;
     }
-    .header-agency-name {
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--gold-lt);
-      margin-bottom: 1px;
-    }
-    .header-agency-sub {
-      font-size: 0.58rem;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.6px;
-    }
-    #headerRight { margin-left: auto; display: flex; align-items: center; gap: 0; border-left: 1px solid rgba(255,255,255,0.1); }
-    #headerRight span { color: rgba(255,255,255,0.55); font-size: 0.78rem; padding: 0 16px; border-right: 1px solid rgba(255,255,255,0.1); }
+    .header-meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted-lt); font-family: Arial, sans-serif; }
+    .header-meta-value { font-size: 12px; color: var(--green); font-family: Arial, sans-serif; font-weight: bold; }
+    .header-divider, .header-agency, .header-agency-name, .header-agency-sub { display: none; }
+    #headerRight { margin-left: auto; display: flex; align-items: center; gap: 10px; padding: 0 16px; }
+    #headerRight span { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); }
     #headerRight a {
+      font-family: Arial, sans-serif;
+      background: #1e2d4a; border: 1px solid #8a6914;
       color: white;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: bold;
       text-decoration: none;
-      background: rgba(255,255,255,0.06);
-      padding: 0 22px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.15s;
       cursor: pointer;
-      border-right: 1px solid rgba(255,255,255,0.08);
+      border: none;
+      transition: background 0.15s;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
-    #headerRight a:hover { background: rgba(255,255,255,0.14); }
+    #headerRight a:hover { background: #2a3f62; }
 
-    /* ── Nav ── */
+    /* ── Navigation — tweaked many times ── */
     nav {
-      background: var(--navy-lt);
+      background: #162440;
       display: flex;
-      padding: 0 0 0 72px;
+      padding-left: 64px;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 999;
-      border-bottom: 1px solid rgba(0,0,0,0.25);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-bottom: 2px solid #b8941a;
     }
     nav a {
-      text-decoration: none;
-      color: rgba(255,255,255,0.52);
-      font-weight: 500;
-      padding: 13px 20px;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-size: 0.72rem;
+      font-family: Arial, sans-serif;
+      font-size: 11.5px;
+      font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      transition: color 0.15s, border-color 0.15s;
+      color: rgba(255,255,255,0.65);
+      padding: 11px 16px;
+      text-decoration: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color 0.1s, background 0.1s;
       margin-bottom: -1px;
     }
-    nav a:hover { color: rgba(255,255,255,0.85); }
-    nav a.active { color: white; border-bottom-color: var(--gold-lt); font-weight: 600; }
+    nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    nav a.active { color: #fff; border-bottom-color: #c8a84a; background: rgba(255,255,255,0.06); font-weight: bold; }
 
-    /* ── Layout ── */
-    main { max-width: 880px; margin: 0 auto; padding: 30px 24px 80px; }
+    /* ── Main layout ── */
+    main { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
+
     h2 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1.45rem;
-      font-weight: 600;
-      margin-bottom: 18px;
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 14px;
       color: var(--text);
-      line-height: 1.2;
-      letter-spacing: -0.01em;
+      line-height: 1.3;
     }
     h3 {
-      font-size: 0.72rem;
-      font-weight: 600;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
       color: var(--muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.9px;
-    }
-
-    /* ── Cards ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--navy);
-      padding: 28px 30px;
-      margin-bottom: 20px;
-    }
-
-    /* ── Forms ── */
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 5px;
-      margin-top: 16px;
-      font-size: 0.68rem;
-      color: var(--navy);
       text-transform: uppercase;
       letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    /* ── Default card — used everywhere ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: 3px solid #1e2d4a;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    /* ── Forms — barely changed since 2015 ── */
+    label {
+      display: block;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+      margin-top: 14px;
     }
     label:first-of-type { margin-top: 0; }
     input, select, textarea {
       width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--navy);
-      border-radius: 0;
-      font-size: 0.9rem;
-      font-family: 'IBM Plex Sans', sans-serif;
-      background: #fafbfc;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
       color: var(--text);
-      transition: border-color 0.12s, background 0.12s;
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--navy);
-      border-left-color: var(--red);
+      border-color: var(--orange);
       background: #fff;
-      box-shadow: inset 0 0 0 1px rgba(10,31,68,0.08);
     }
     textarea { resize: vertical; min-height: 80px; }
     button {
-      margin-top: 20px;
-      background: var(--navy);
+      font-family: Arial, sans-serif;
+      margin-top: 14px;
+      background: var(--orange);
       color: white;
       border: none;
-      padding: 11px 26px;
-      border-radius: 0;
-      font-size: 0.72rem;
-      font-weight: 600;
-      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 9px 22px;
+      font-size: 13px;
+      font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
-      letter-spacing: 0.9px;
+      letter-spacing: 0.5px;
       transition: background 0.15s;
     }
-    button:hover { background: var(--navy-mid); }
+    button:hover { background: var(--orange-d); }
 
-    /* ── Hero ── */
+    /* ── Hero banner — the big one, redone 2019 ── */
     .hero {
-      background: var(--navy);
-      padding: 52px 48px 48px;
+      background: #0f1e35;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      padding: 40px 32px;
       color: white;
-      margin-bottom: 24px;
-      border-bottom: 3px solid var(--gold);
+      margin-bottom: 20px;
+      border-left: 5px solid #c8a84a;
       position: relative;
-      overflow: hidden;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      right: -40px;
-      top: -40px;
-      width: 300px;
-      height: 300px;
-      border: 40px solid rgba(255,255,255,0.025);
-      border-radius: 50%;
-      pointer-events: none;
-    }
+    .hero::before, .hero::after { display: none; }
     .hero-eyebrow {
-      font-size: 0.6rem;
-      font-weight: 600;
-      letter-spacing: 2px;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
       text-transform: uppercase;
-      color: var(--gold-lt);
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
+      letter-spacing: 1.5px;
+      color: #c8a84a;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 2px;
-      background: var(--gold);
-    }
+    .hero-eyebrow::before { content: ''; display: block; width: 20px; height: 2px; background: #c8a84a; }
     .hero h2 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 2.6rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: white;
-      line-height: 1.05;
-      position: relative;
-      z-index: 1;
-      letter-spacing: -0.02em;
+      font-family: Georgia, serif;
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.15;
     }
     .hero p {
       font-size: 0.95rem;
-      margin-bottom: 32px;
-      opacity: 0.7;
-      max-width: 440px;
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-      font-weight: 300;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 24px;
+      max-width: 500px;
+      font-family: Arial, sans-serif;
+      line-height: 1.65;
     }
-    .hero-btns { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .hero-btns { display: flex; gap: 8px; flex-wrap: wrap; }
     .hero-btn {
-      text-decoration: none;
-      background: var(--red);
-      color: white;
-      padding: 10px 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      font-family: 'IBM Plex Sans', sans-serif;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 0.9px;
-      transition: background 0.15s;
+      letter-spacing: 0.5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
       margin-top: 0;
+      background: var(--orange);
+      color: white;
+      transition: background 0.15s;
     }
-    .hero-btn:hover { background: #8a0f1f; }
+    .hero-btn:hover { background: var(--orange-d); }
     .hero-btn.outline {
       background: transparent;
-      border: 1px solid rgba(255,255,255,0.28);
-      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.85);
     }
     .hero-btn.outline:hover { background: rgba(255,255,255,0.1); }
 
-    /* ── Steps ── */
-    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); }
-    .step { background: var(--surface); padding: 22px 20px; }
-    .step-num {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--navy);
-      opacity: 0.06;
-      line-height: 1;
-      margin-bottom: 10px;
-    }
-    .step h3 { font-size: 0.7rem; color: var(--navy); margin-bottom: 6px; }
-    .step p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
-    @media (max-width: 500px) {
+    /* ── How it works steps ── */
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border: 1px solid var(--border); border-top: none; }
+    .step { background: #fff; padding: 20px; border-right: 1px solid var(--border); }
+    .step:last-child { border-right: none; }
+    .step-num { font-family: Georgia, serif; font-size: 2.5rem; font-weight: bold; color: var(--orange); opacity: 0.18; line-height: 1; margin-bottom: 8px; }
+    .step h3 { font-size: 11px; color: #333; margin-bottom: 5px; }
+    .step p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    @media (max-width: 560px) {
       .steps { grid-template-columns: 1fr; }
-      .hero h2 { font-size: 1.8rem; }
-      .hero { padding: 36px 24px 32px; }
+      .step { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero h2 { font-size: 1.6rem; }
+      .hero { padding: 28px 20px; }
     }
 
-    /* ── Page banner ── */
+    /* ── Page banners — vary by section ── */
     .page-banner {
-      background: var(--navy);
-      color: white;
-      padding: 30px 32px 26px;
-      margin-bottom: 24px;
-      border-bottom: 3px solid var(--gold);
-      position: relative;
-      overflow: hidden;
-    }
-    .page-banner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-    .page-banner-eyebrow {
-      font-size: 0.58rem;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--gold-lt);
-      margin-bottom: 8px;
-      opacity: 0.85;
-      position: relative;
-    }
-    .page-banner h2 {
-      font-family: 'IBM Plex Serif', serif;
-      color: white;
-      font-size: 1.85rem;
-      margin-bottom: 5px;
-      position: relative;
-      letter-spacing: -0.01em;
-    }
-    .page-banner p { color: rgba(255,255,255,0.55); font-size: 0.85rem; position: relative; font-weight: 300; }
-
-    /* ── Facts ── */
-    .facts-card {
-      background: var(--navy);
-      color: white;
-      padding: 28px 30px;
+      background: #0f1e35;
+      border: none;
+      border-top: 4px solid #b8941a;
+      padding: 22px 24px 20px;
       margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-      border-left: 3px solid var(--gold);
+      color: white;
     }
-    .facts-card::before {
+    .page-banner::before { display: none; }
+    .page-banner-eyebrow {
+      font-family: Arial, sans-serif;
+      font-size: 9.5px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #b8941a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .page-banner-eyebrow::after {
       content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
+      flex: 1;
+      height: 1px;
+      background: rgba(184,148,26,0.25);
     }
-    .facts-card h2 { color: white; margin-bottom: 14px; position: relative; z-index: 1; }
-    .fact-display { min-height: 58px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
-    .fact-text { font-size: 0.92rem; line-height: 1.75; text-align: center; color: rgba(255,255,255,0.82); font-weight: 300; }
+    .page-banner h2 { font-family: Georgia, serif; color: white; font-size: 1.6rem; margin-bottom: 4px; }
+    .page-banner p { font-family: Arial, sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); }
+
+    /* ── Did you know box — kept from 2015 ── */
+    .facts-card {
+      background: #1a2a40;
+      color: white;
+      padding: 22px;
+      margin-bottom: 18px;
+      border-left: 5px solid var(--gold);
+    }
+    .facts-card::before { display: none; }
+    .facts-card h2 { font-family: Georgia, serif; color: white; margin-bottom: 12px; font-size: 1rem; }
+    .fact-display { min-height: 52px; display: flex; align-items: center; justify-content: center; }
+    .fact-text { font-family: Arial, sans-serif; font-size: 13.5px; line-height: 1.7; text-align: center; color: rgba(255,255,255,0.82); }
     @keyframes factFade { from { opacity:0; } to { opacity:1; } }
-    .fact-dots { display: flex; justify-content: center; gap: 6px; margin-top: 14px; position: relative; z-index: 1; }
-    .fact-dot { width: 16px; height: 2px; background: rgba(255,255,255,0.18); cursor: pointer; transition: background 0.2s; }
-    .fact-dot.active { background: var(--gold-lt); }
-    .fact-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; position: relative; z-index: 1; }
+    .fact-dots { display: flex; justify-content: center; gap: 5px; margin-top: 12px; }
+    .fact-dot { width: 14px; height: 3px; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.2s; }
+    .fact-dot.active { background: var(--gold); }
+    .fact-nav { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
     .fact-nav button {
-      margin-top: 0;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.18);
-      color: rgba(255,255,255,0.7);
-      padding: 6px 16px;
-      font-size: 0.7rem;
-      letter-spacing: 0.8px;
+      margin-top: 0; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7); padding: 5px 14px; font-size: 12px; text-transform: none;
+      letter-spacing: 0; box-shadow: none;
     }
     .fact-nav button:hover { background: rgba(255,255,255,0.15); }
 
-    /* ── Tags ── */
-    .tag {
-      display: inline-block;
-      background: var(--navy);
-      color: white;
-      padding: 2px 8px;
-      font-size: 0.62rem;
-      font-weight: 600;
-      margin-right: 5px;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-    }
-    .tag.claimed { background: var(--green); }
-    .tag.shelter { background: var(--teal); }
+    /* ── Tags / status badges ── */
+    .tag { display: inline-block; background: var(--orange-lt); color: var(--orange-d); padding: 2px 7px; font-size: 11px; font-weight: bold; font-family: Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.3px; border: 1px solid #f0d0b8; }
+    .tag.claimed { background: var(--green-lt); color: var(--green); border-color: #b8dfc4; }
+    .tag.shelter { background: var(--blue-lt); color: var(--blue); border-color: #b8d0ef; }
 
-    /* ── Alerts ── */
-    .success-msg {
-      display: none;
-      background: #eaf4ec;
-      border: 1px solid #9ecfaa;
-      border-left: 3px solid var(--green);
-      padding: 13px 18px;
-      margin-top: 16px;
-      color: #0f3d20;
-      font-weight: 500;
-      font-size: 0.88rem;
-    }
-    .error-msg {
-      display: none;
-      background: #fdf0ef;
-      border: 1px solid #e8a09a;
-      border-left: 3px solid var(--red);
-      padding: 10px 14px;
-      color: #5c1010;
-      margin-top: 12px;
-      font-weight: 500;
-      font-size: 0.88rem;
-    }
+    /* ── Success / error messages ── */
+    .success-msg { display: none; background: var(--green-lt); border: 1px solid #a8d8b8; border-left: 4px solid var(--green); padding: 10px 14px; margin-top: 12px; color: var(--green); font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
+    .error-msg { display: none; background: var(--red-lt); border: 1px solid #e8b8b4; border-left: 4px solid var(--red); padding: 9px 12px; color: var(--red); margin-top: 10px; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
 
-    /* ── Photo ── */
-    .photo-preview { width: 100%; max-height: 180px; object-fit: cover; margin-top: 10px; display: none; }
+    /* ── Photo preview ── */
+    .photo-preview { width: 100%; max-height: 200px; object-fit: cover; margin-top: 8px; display: none; border: 1px solid var(--border); }
 
-    /* ── Toggle ── */
-    .view-toggle { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); width: fit-content; }
-    .view-toggle button {
-      background: var(--surface);
-      color: var(--muted);
-      border: none;
-      border-right: 1px solid var(--border);
-      padding: 8px 20px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.68rem;
-      margin-top: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      transition: all 0.15s;
-    }
+    /* ── List/Map toggle ── */
+    .view-toggle { display: flex; gap: 0; margin-bottom: 14px; border: 1px solid var(--border); width: fit-content; }
+    .view-toggle button { background: var(--warm-gray); color: var(--muted); border: none; border-right: 1px solid var(--border); padding: 6px 16px; cursor: pointer; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; margin-top: 0; text-transform: uppercase; letter-spacing: 0.4px; box-shadow: none; }
     .view-toggle button:last-child { border-right: none; }
-    .view-toggle button:hover { background: var(--bg); color: var(--text); }
-    .view-toggle button.active { background: var(--navy); color: white; }
-
-    /* ── Map ── */
-    .map-container { height: 400px; overflow: hidden; border: 1px solid var(--border); }
-
-    /* ── Stray grid ── */
-    #stray-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .view-toggle button:hover { background: #e8e0d8; color: var(--text); }
+    .view-toggle button.active { background: var(--orange); color: white; }
 
     /* ── Auth toggle ── */
-    .auth-toggle { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); }
-    .auth-toggle button {
-      flex: 1;
-      background: var(--surface);
-      color: var(--muted);
-      border: none;
-      border-right: 1px solid var(--border);
-      padding: 9px 20px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.72rem;
-      margin-top: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
+    .auth-toggle { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+    .auth-toggle button { flex: 1; background: transparent; color: var(--muted); border: none; border-bottom: 3px solid transparent; padding: 9px; cursor: pointer; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; margin-top: 0; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: -2px; box-shadow: none; }
+    .auth-toggle button.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+    /* ── Map ── */
+    .map-container { height: 420px; overflow: hidden; border: 1px solid var(--border); }
+
+    /* ── Pet listing grid ── */
+    #stray-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+
+    /* ── Pet cards — updated 2019 ── */
+    .pet-card {
+      background: white;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: box-shadow 0.15s, transform 0.15s;
     }
-    .auth-toggle button:last-child { border-right: none; }
-    .auth-toggle button.active { background: var(--navy); color: white; }
+    .pet-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.14); transform: translateY(-2px); }
+    .pet-card img { width: 100%; height: 195px; object-fit: cover; display: block; border-bottom: 1px solid var(--border); }
 
-    /* ── Fade in ── */
-    @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-    #page-home, #page-stray, #page-account, #page-shelters { animation: fadeUp 0.18s ease; }
+    /* ── Shelter cards ── */
+    .shelter-card { background: white; border: 1px solid var(--border); overflow: hidden; transition: box-shadow 0.15s; }
+    .shelter-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .shelter-header { background: #0f1e35; color: white; padding: 14px 16px 11px; border-bottom: 3px solid #b8941a; }
+    .shelter-header h3 { font-family: Georgia, serif; font-size: 1rem; font-weight: bold; color: white; margin-bottom: 2px; text-transform: none; letter-spacing: 0; }
+    .shelter-header .shelter-type { font-family: Arial, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.65; font-weight: bold; }
+    .shelter-body { padding: 13px 15px; }
+    .shelter-row { display: flex; gap: 7px; align-items: flex-start; margin-bottom: 7px; font-size: 13px; font-family: Arial, sans-serif; }
+    .shelter-row-icon { flex-shrink: 0; width: 16px; text-align: center; }
+    .shelter-row-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted-lt); font-weight: bold; margin-bottom: 1px; font-family: Arial, sans-serif; }
+    .capacity-bar-wrap { background: #e8e0d8; height: 5px; margin-top: 3px; overflow: hidden; }
+    .capacity-bar { height: 100%; transition: width 0.3s; }
+    .shelter-animals { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .shelter-animals span { background: #e8f0f8; color: #2a5298; font-family: Arial, sans-serif; font-size: 10px; font-weight: bold; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.3px; border: 1px solid #c8d8ec; }
+    .shelter-footer { display: flex; border-top: 1px solid var(--border); }
+    .shelter-footer a, .shelter-footer button {
+      flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: bold;
+      text-decoration: none; cursor: pointer; border: none; background: #fafaf8;
+      font-family: Arial, sans-serif; border-right: 1px solid var(--border); margin: 0;
+      transition: background 0.1s; box-shadow: none; text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .shelter-footer a:last-child, .shelter-footer button:last-child { border-right: none; }
+    .shelter-footer .sf-call { color: #1a56a8; } .shelter-footer .sf-call:hover { background: #edf3fc; }
+    .shelter-footer .sf-map { color: var(--muted); } .shelter-footer .sf-map:hover { background: var(--warm-gray); }
+    .shelter-footer .sf-transfer { color: var(--green); } .shelter-footer .sf-transfer:hover { background: var(--green-lt); }
 
-    /* ── Footer ── */
+    /* ── Modals — functional, not pretty ── */
+    #transfer-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+    #transfer-modal.open { display: flex; }
+    #transfer-modal-inner { background: white; max-width: 460px; width: 94%; border-top: 4px solid var(--teal); box-shadow: 0 6px 30px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+    #transfer-modal-inner h2 { font-size: 1rem; padding: 18px 20px 0; margin-bottom: 4px; }
+    #transfer-modal-inner p { padding: 0 20px; font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    #transfer-modal-inner .modal-body { padding: 0 20px 20px; }
+    .modal-close { float: right; margin: 14px 16px 0 0; background: #f0ece6; color: var(--muted); border: 1px solid var(--border); padding: 4px 12px; font-size: 12px; font-family: Arial, sans-serif; cursor: pointer; box-shadow: none; margin-top: 0; letter-spacing: 0; text-transform: none; }
+    .modal-close:hover { background: #e0dcd6; }
+
+    /* ── Shelter search bar ── */
+    .shelter-search-bar { background: white; border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-top: 3px solid var(--teal); }
+    .shelter-search-bar input, .shelter-search-bar select { padding: 7px 9px; border: 1px solid #ccc; font-size: 13px; font-family: Arial, sans-serif; background: #fafafa; flex: 1; min-width: 140px; }
+
+    /* ── Search bar ── */
+    .search-bar-wrap { background: white; border: 1px solid var(--border); border-top: 3px solid #1e2d4a; padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    /* ── Stat strip ── */
+    .stat-bar { display: flex; gap: 0; margin-bottom: 18px; border: 1px solid var(--border); border-top: 3px solid #1e2d4a; }
+    .stat-box { flex: 1; background: white; border-right: 1px solid var(--border); padding: 14px 16px; text-align: center; }
+    .stat-box:last-child { border-right: none; }
+
+    /* ── Notice boxes — different styles added over the years ── */
+    .official-notice {
+      background: #fffdf8;
+      border: 1px solid #e8d8b8;
+      border-left: 4px solid #b8941a;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border-top: 1px solid #e8d8b8;
+      border-right: 1px solid #e8d8b8;
+      border-bottom: 1px solid #e8d8b8;
+    }
+    .official-notice-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .official-notice strong { display: block; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; color: var(--text); margin-bottom: 2px; text-transform: none; letter-spacing: 0; }
+    .official-notice p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ── Region selector ── */
+    #region-dropdown { border: 1px solid var(--border) !important; border-top: 3px solid var(--teal) !important; box-shadow: 0 4px 18px rgba(0,0,0,0.15) !important; border-radius: 0 !important; }
+    .rmodal-btn { border-radius: 0 !important; }
+
+    /* ── Contact popup ── */
+    #contact-popup { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+    #contact-popup > div { border-radius: 0 !important; border-top: 4px solid var(--orange) !important; box-shadow: 0 6px 30px rgba(0,0,0,0.25) !important; }
+
+    /* ── Footer — touched up 2022 ── */
     footer {
-      background: var(--navy-dk);
-      color: rgba(255,255,255,0.35);
+      background: #2c2825;
+      color: rgba(255,255,255,0.45);
       text-align: center;
-      padding: 28px 20px;
-      font-size: 0.7rem;
-      letter-spacing: 0.5px;
-      border-top: 2px solid var(--gold);
+      padding: 28px 16px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin-top: 32px;
+      border-top: 3px solid var(--orange);
     }
-    footer strong { color: rgba(255,255,255,0.7); font-weight: 600; }
+    footer strong { color: rgba(255,255,255,0.8); }
 
-    /* ── Report form ── */
+    /* ── Report form wrap ── */
     #report-form-wrap { display: none; }
     #report-form-wrap.open { display: block; }
 
-    /* ── Section label (replaces h3 in page banners) ── */
-    .section-label {
-      font-size: 0.6rem;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
+    /* ── Fade in ── */
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    #page-home, #page-stray, #page-account, #page-shelters { animation: fadeIn 0.12s; }
 
-    /* ── Shelter cards ── */
-    .shelter-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--teal);
-      overflow: hidden;
-      transition: border-color 0.15s;
-    }
-    .shelter-card:hover { border-color: var(--teal-lt); }
-    .shelter-header {
-      background: var(--teal);
-      color: white;
-      padding: 18px 20px 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .shelter-header::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-    }
-    .shelter-header h3 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1rem;
-      font-weight: 600;
-      text-transform: none;
-      letter-spacing: 0;
-      color: white;
-      margin-bottom: 3px;
-      position: relative;
-      z-index: 1;
-      line-height: 1.3;
-    }
-    .shelter-header .shelter-type {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      opacity: 0.6;
-      position: relative;
-      z-index: 1;
-      font-weight: 600;
-    }
-    .shelter-body { padding: 16px 20px; }
-    .shelter-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.82rem; }
-    .shelter-row-icon { flex-shrink: 0; width: 18px; text-align: center; margin-top: 1px; }
-    .shelter-row-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted-lt); font-weight: 600; margin-bottom: 1px; }
-    .capacity-bar-wrap { background: var(--bg-ruled); height: 4px; margin-top: 4px; overflow: hidden; }
-    .capacity-bar { height: 100%; transition: width 0.4s; }
-    .shelter-animals {
+    /* ── Breadcrumb bar — real sites have these ── */
+    .breadcrumb {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      padding: 8px 24px;
+      background: #0a1828;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border-lt);
-    }
-    .shelter-animals span {
-      background: var(--bg-ruled);
-      color: var(--navy);
-      font-size: 0.62rem;
-      font-weight: 600;
-      padding: 2px 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      border: 1px solid var(--border);
-    }
-    .shelter-footer { display: flex; border-top: 1px solid var(--border-lt); }
-    .shelter-footer a, .shelter-footer button {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.66rem;
-      font-weight: 600;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      font-family: 'IBM Plex Sans', sans-serif;
-      border-right: 1px solid var(--border-lt);
-      margin: 0;
-      transition: background 0.1s;
-    }
-    .shelter-footer a:last-child, .shelter-footer button:last-child { border-right: none; }
-    .shelter-footer .sf-call { color: var(--teal); }
-    .shelter-footer .sf-call:hover { background: #e6f4f5; }
-    .shelter-footer .sf-map { color: var(--navy); }
-    .shelter-footer .sf-map:hover { background: var(--bg); }
-    .shelter-footer .sf-transfer { color: var(--green); }
-    .shelter-footer .sf-transfer:hover { background: #eaf4ec; }
-
-    /* ── Modals ── */
-    #transfer-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(6,14,30,0.65);
-      z-index: 9999;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
     }
-    #transfer-modal.open { display: flex; }
-    #transfer-modal-inner {
-      background: white;
-      max-width: 480px;
-      width: 94%;
-      border-top: 3px solid var(--teal);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    #transfer-modal-inner h2 { font-size: 1.1rem; padding: 22px 24px 0; margin-bottom: 6px; }
-    #transfer-modal-inner p { padding: 0 24px; font-size: 0.84rem; color: var(--muted); margin-bottom: 16px; }
-    #transfer-modal-inner .modal-body { padding: 0 24px 24px; }
-    .modal-close {
-      float: right;
-      margin: 16px 18px 0 0;
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 5px 12px;
-      font-size: 0.7rem;
-      margin-top: 0;
-      cursor: pointer;
-      letter-spacing: 0.5px;
-    }
-    .modal-close:hover { background: var(--bg); }
+    .breadcrumb a { color: rgba(255,255,255,0.45); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: rgba(255,255,255,0.75); text-decoration: underline; }
+    .breadcrumb span { color: rgba(255,255,255,0.25); }
 
-    /* ── Shelter search bar ── */
-    .shelter-search-bar {
-      background: var(--surface);
+    /* ── Sidebar layout for stray/LF pages ── */
+    .two-col { display: flex; gap: 20px; align-items: flex-start; }
+    .two-col-main { flex: 1; min-width: 0; }
+    .two-col-side { width: 240px; flex-shrink: 0; }
+    @media (max-width: 700px) { .two-col { flex-direction: column; } .two-col-side { width: 100%; } }
+
+    /* ── Sidebar widget ── */
+    .side-widget {
+      background: #fff;
       border: 1px solid var(--border);
-      border-top: 2px solid var(--teal);
-      padding: 13px 16px;
-      margin-bottom: 20px;
+      border-top: 3px solid var(--orange);
+      padding: 16px;
+      margin-bottom: 16px;
+      font-family: Arial, sans-serif;
+    }
+    .side-widget h4 {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .side-widget p { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+    .side-widget ul { font-size: 12px; color: var(--muted); padding-left: 16px; line-height: 1.8; }
+    .side-widget-stat { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px dotted var(--border); font-size: 12px; }
+    .side-widget-stat:last-child { border-bottom: none; }
+    .side-widget-stat-num { font-family: Georgia, serif; font-weight: bold; color: var(--orange); font-size: 1rem; }
+
+    /* ── Print poster button ── */
+    .btn-secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      transition: background 0.1s;
+      margin-top: 0;
+      box-shadow: none;
+    }
+    .btn-secondary:hover { background: var(--warm-gray); }
+
+    /* ── Tag filter pills ── */
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .filter-pill {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      transition: all 0.1s;
+    }
+    .filter-pill:hover { border-color: var(--orange); color: var(--orange); }
+    .filter-pill.active { background: var(--orange); color: white; border-color: var(--orange); }
+
+    /* ── Loading skeleton ── */
+    @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+    .skeleton {
+      background: linear-gradient(90deg, #f0ece6 25%, #e8e0d8 50%, #f0ece6 75%);
+      background-size: 600px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 2px;
+    }
+
+    /* ── Poster output enhancements ── */
+    .poster-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
+    .poster-actions small { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); }
+
+    /* ── Alert banner ── */
+    .alert-banner {
+      background: #fff8e8;
+      border: 1px solid #e8c860;
+      border-left: 4px solid var(--gold);
+      padding: 10px 14px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #5c4a10;
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .shelter-search-bar input,
-    .shelter-search-bar select {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--teal);
-      font-size: 0.85rem;
-      font-family: 'IBM Plex Sans', sans-serif;
-      background: #fafbfc;
-      flex: 1;
-      min-width: 160px;
+      align-items: flex-start;
+      margin-bottom: 16px;
     }
 
-    /* ── Document watermark line ── */
-    .doc-rule {
-      height: 1px;
-      background: var(--border);
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      grid-column: 1 / -1;
+    }
+    .empty-state-icon { font-size: 3.5rem; margin-bottom: 14px; opacity: 0.4; }
+    .empty-state h3 { font-family: Georgia, serif; font-size: 1.1rem; color: var(--text); margin-bottom: 6px; text-transform: none; letter-spacing: 0; }
+    .empty-state p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); max-width: 320px; margin: 0 auto 18px; }
+
+    /* ── Card meta row ── */
+    .card-meta { display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--border); margin-top: 10px; }
+    .card-meta-item { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+    .card-meta-item strong { font-size: 12px; color: var(--text); }
+
+    /* ── "Last updated" timestamp ── */
+    .timestamp { font-family: Arial, sans-serif; font-size: 10.5px; color: var(--muted-lt); display: flex; align-items: center; gap: 4px; }
+
+    /* ── Inline help text ── */
+    .help-text { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); margin-top: 3px; margin-bottom: 0; font-style: italic; }
+
+    /* ── Required marker ── */
+    .req { color: var(--red); font-weight: bold; }
+
+    /* ── Section divider ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
       margin: 20px 0;
       position: relative;
     }
-    .doc-rule::before {
+    .section-divider::before {
       content: attr(data-label);
       position: absolute;
+      top: -9px;
       left: 0;
-      top: -8px;
-      font-size: 0.55rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted-lt);
       background: var(--bg);
       padding-right: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted-lt);
+      font-weight: bold;
     }
 
-    /* ── Official notice box ── */
-    .official-notice {
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--navy);
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      background: var(--surface);
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
-    .official-notice-icon {
-      font-size: 1.1rem;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .official-notice strong {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--navy);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 4px;
-    }
-    .official-notice p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
+    /* ── Responsive tweaks ── */
+    @media (max-width: 640px) {
+      main { padding: 14px 12px 50px; }
+      .card { padding: 16px; }
+      header { min-height: 60px; }
+      nav a { padding: 9px 10px; font-size: 11px; }
+      h2 { font-size: 1.2rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="gov-bar">
-  Official Animal Recovery &amp; Reunification Service
-  <span class="gov-bar-dot"></span>
-  Operated by City Animal Services
-  <span class="gov-bar-dot"></span>
-  <span style="margin-left:auto;opacity:0.35;">pethelpers.gov</span>
-</div>
-
 <header>
   <div class="header-seal">
     <div class="seal-circle">
       <span class="seal-icon">🐾</span>
-      <span class="seal-star">★ ★ ★</span>
     </div>
+    <div class="seal-stars">★ ★ ★</div>
   </div>
   <div class="header-title-wrap" onclick="showPage('home')">
     <h1>
-      <small>City Animal Services</small>
+      <small>Lost Pet Registry</small>
       Pet Helpers
     </h1>
   </div>
-  <div class="header-agency" style="display:none;" id="header-agency-block">
-    <div class="header-agency-name">Animal Registry Division</div>
-    <div class="header-agency-sub">Stray Recovery · Lost &amp; Found · Shelter Network</div>
+  <div class="header-meta" style="display:flex;">
+    <div class="header-meta-label">Registry Status</div>
+    <div class="header-meta-value">● Active</div>
   </div>
   <span id="headerRight"></span>
 </header>
+
+<!-- announcement bar — added when we hit 1000 reunions! -->
+<div style="background:#1a3a5c;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;font-size:11px;padding:5px 16px 5px 80px;display:flex;align-items:center;gap:10px;letter-spacing:0.2px;border-bottom:1px solid rgba(255,255,255,0.08);">
+  <span style="font-size:14px;">🎉</span>
+  <span><strong>Over 1,000 pets reunited</strong> through Pet Helpers — thank you to our amazing community!</span>
+  <span style="margin-left:auto;opacity:0.6;font-size:11px;">Updated June 2026</span>
+</div>
 
 <nav>
   <a onclick="showPage('home')"     id="nav-home"     class="active">Home</a>
   <a onclick="showPage('lost')"     id="nav-lost">Lost a Pet</a>
   <a onclick="showPage('stray')"    id="nav-stray">Stray Registry</a>
-  <a onclick="showPage('lf')"       id="nav-lf">Lost &amp; Found</a>
+  <a onclick="showPage('lf')"       id="nav-lf">Lost Pet Registry</a>
   <a onclick="showPage('shelters')" id="nav-shelters">Shelters</a>
   <a onclick="showPage('account')"  id="nav-account">My Account</a>
 </nav>
@@ -841,7 +722,6 @@
   <div id="page-home">
 
     <div class="hero">
-      <div class="hero-eyebrow">Animal Recovery &amp; Reunification Service</div>
       <h2>Report a stray.<br>Find its owner.</h2>
       <p>Pet Helpers connects people who've found a stray animal with the owners searching for them. Submit a report, browse the registry, or find a local shelter.</p>
       <div class="hero-btns">
@@ -852,11 +732,15 @@
       </div>
     </div>
 
-    <div class="official-notice">
-      <div class="official-notice-icon">🤝</div>
+    
+
+
+    <!-- Home reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">🐾</span>
       <div>
-        <strong>Community Notice</strong>
-        <p>Every stray report you submit is visible to the public. Most lost pets are reunited within 24–48 hours when reported promptly. Please include a photo and precise location for best results.</p>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">You're in the right place</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Most lost pets are reunited with their families. Reporting quickly and including a photo gives the best chance of a safe reunion — the community is here to help.</div>
       </div>
     </div>
 
@@ -880,7 +764,7 @@
     </div>
 
     <!-- Shelter highlight on home -->
-    <div class="official-notice" style="border-left-color:var(--teal);margin-bottom:20px;">
+    <div class="official-notice" style="margin-bottom:16px;">
       <div class="official-notice-icon">🏠</div>
       <div style="flex:1;">
         <strong style="color:var(--teal);">Shelter Referral Service</strong>
@@ -892,20 +776,40 @@
     <div class="card" style="padding-bottom:8px;">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;">
         <h2 style="margin-bottom:0;">Recent Reports</h2>
-        <a onclick="showPage('stray')" style="font-size:0.82rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;">View all →</a>
+        <a onclick="showPage('lf')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a>
       </div>
       <div id="home-recent"><p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Loading…</p></div>
+    </div>
+
+    <div class="card" id="home-reunited-card" style="display:none;padding-bottom:8px;border-top:3px solid var(--green);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;">
+        <h2 style="margin-bottom:0;">🎉 Recently Reunited</h2>
+        <a onclick="showPage('lf')" style="font-size:12px;font-weight:bold;color:var(--orange);cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;">View all →</a>
+      </div>
+      <div id="home-reunited"></div>
     </div>
 
   </div>
 
   <!-- ===== LOST PET ===== -->
   <div id="page-lost" style="display:none;">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Lost a Pet</div>
     <div class="page-banner">
       <div class="page-banner-eyebrow">Lost Pet Report</div>
       <h2>I Lost My Pet</h2>
+      <div style="font-family:Arial,sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-top:-10px;margin-bottom:14px;"></div>
       <p>Fill in the details to generate a shareable missing notice.</p>
     </div>
+
+    <!-- Lost pet reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">💛</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Don't panic — most pets come home</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Fill in as much detail as possible below. Once submitted, your notice will be visible to everyone in the community. Share it on social media for even faster results.</div>
+      </div>
+    </div>
+
     <div class="card">
       <form id="lostForm">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
@@ -932,7 +836,8 @@
           </div>
         </div>
         <label for="lost-description">Colour and markings</label>
-        <input type="text" id="lost-description" placeholder="e.g. golden fur, white patch on chest" required />
+        <input type="text" id="lost-description" placeholder="e.g. golden fur, white patch on chest, no collar" required />
+        <p class="help-text">Include colour, size, distinguishing marks, collar colour, and any ID tags.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
           <div>
             <label for="lost-location">Last seen location</label>
@@ -947,6 +852,7 @@
         <input type="text" id="lost-reward" placeholder="e.g. $50" />
         <label for="lost-photo">Photo of your pet</label>
         <input type="file" id="lost-photo" accept="image/*" />
+        <p class="help-text">Include a recent, clear photo. This is the most important field.</p>
         <img id="lost-photoPreview" class="photo-preview" alt="Preview" />
         <button type="submit" style="margin-top:20px;">Generate Missing Notice</button>
       </form>
@@ -955,7 +861,7 @@
         <div id="lost-poster" style="border:3px solid var(--navy);background:#fff;overflow:hidden;">
           <div style="background:var(--navy);color:white;text-align:center;padding:14px 20px;">
             <div style="font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;opacity:0.65;margin-bottom:4px;">Please help find</div>
-            <div id="poster-petName" style="font-family:'IBM Plex Serif',serif;font-size:2rem;font-weight:700;"></div>
+            <div id="poster-petName" style="font-family:Arial,sans-serif;font-size:2rem;font-weight:700;"></div>
             <div id="poster-species" style="font-size:0.78rem;opacity:0.6;margin-top:3px;text-transform:uppercase;letter-spacing:1px;"></div>
           </div>
           <div id="poster-photoWrap" style="display:none;">
@@ -983,14 +889,15 @@
           </div>
         </div>
         <p id="lost-outputText" style="display:none;"></p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:var(--muted);margin-bottom:10px;">📤 Share this notice on Facebook, Nextdoor, and local community groups for best results.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:0;">
           <button id="lost-copyBtn" type="button" style="margin:0;background:var(--navy);">Copy Message</button>
           <button id="lost-foundBtn" type="button" onclick="markAsFound()" style="margin:0;background:var(--green);">✅ My Pet Was Found!</button>
         </div>
       </div>
 
       <div id="lost-matches" style="display:none;margin-top:24px;border-top:2px solid var(--border);padding-top:20px;">
-        <h3 style="font-family:'IBM Plex Serif',serif;font-size:1.1rem;font-weight:600;margin-bottom:4px;text-transform:none;letter-spacing:0;color:var(--navy);">Matching strays in the registry</h3>
+        <h3 style="font-family:Arial,sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:4px;text-transform:none;letter-spacing:0;color:var(--navy);">Matching strays in the registry</h3>
         <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px;">These found animals match your pet's type — contact the reporter if you recognise yours.</p>
         <div id="lost-matches-list"></div>
         <a onclick="showPage('stray')" style="display:inline-block;margin-top:10px;font-size:0.8rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;">Browse full registry →</a>
@@ -1001,18 +908,30 @@
   <!-- ===== STRAY REGISTRY ===== -->
   <div id="page-stray" style="display:none;">
 
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Stray Registry</div>
     <div class="page-banner">
       <div class="page-banner-eyebrow">Public Registry</div>
       <h2>Stray Animal Registry</h2>
       <p>Browse reported strays or submit a new report.</p>
     </div>
 
+
+    <!-- Stray registry reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--teal);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">🙏</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Thank you for caring</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Every report you submit could reunite a family with their pet. Browse below to see if an animal has already been reported, or submit a new one — it only takes a minute.</div>
+      </div>
+    </div>
+
     <div style="margin-bottom:20px;">
-      <button id="report-toggle-btn" onclick="toggleReportForm()" style="margin:0;background:var(--red);padding:11px 24px;">+ Report a Stray</button>
+      <button id="report-toggle-btn" onclick="toggleReportForm()" style="margin:0;padding:8px 18px;background:var(--orange);text-transform:uppercase;letter-spacing:0.5px;font-size:12px;">+ Submit a Report</button>
     </div>
 
     <div id="report-form-wrap" class="card" style="margin-bottom:24px;">
       <h2>Report a Stray Animal</h2>
+      <div style="font-family:Arial,sans-serif;font-size:10px;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-top:-10px;margin-bottom:14px;">Form PH-02 · All fields marked required must be completed</div>
       <p style="margin-bottom:18px;color:var(--muted);font-size:0.93rem;">Fill in as much detail as you can. Your listing will appear in the registry immediately.</p>
       <div id="report-login-prompt" style="display:none;text-align:center;padding:20px 0;">
         <p style="color:var(--muted);margin-bottom:14px;">You need to be logged in to submit a report.</p>
@@ -1044,10 +963,12 @@
         </div>
         <label for="r-location">Where was it found?</label>
         <input type="text" id="r-location" placeholder="e.g. Central Park, New York" required />
+        <p class="help-text">Be as specific as possible — include street names, landmarks, or neighbourhood.</p>
         <label for="r-desc">Description (colour, markings, condition)</label>
         <textarea id="r-desc" placeholder="e.g. Small brown dog, white patch on chest, friendly"></textarea>
         <label for="r-photo">Photo</label>
         <input type="file" id="r-photo" accept="image/*" />
+        <p class="help-text">A clear photo significantly increases the chance of reunion. Max 5MB.</p>
         <img id="r-photo-preview" class="photo-preview" alt="Preview" />
         <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
           <button type="submit" id="r-submit-btn" style="margin:0;">Submit Report</button>
@@ -1057,18 +978,24 @@
       <div class="success-msg" id="r-success">✅ Report submitted! <a onclick="applyFilter()" style="cursor:pointer;color:var(--green);text-decoration:underline;">View all reports →</a></div>
     </div>
 
-    <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+    <div class="search-bar-wrap" style="">
       <div style="flex:1;min-width:180px;position:relative;">
         <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#adb5bd;pointer-events:none;">🔍</span>
         <input type="text" id="s-search" placeholder="Search name, location, description…" oninput="applyFilter()"
-          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'IBM Plex Sans',sans-serif;background:#fafbfc;" />
+          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'Inter',sans-serif;background:#fafbfc;" />
       </div>
       <select id="s-species" onchange="applyFilter()"
-        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
         <option value="">All types</option>
         <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
       </select>
-      <button onclick="clearSearch()" id="s-clear" style="display:none;margin:0;padding:9px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);font-size:0.78rem;">✕ Clear</button>
+      <select id="s-sort" onchange="applyFilter()"
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="name">Pet name (A–Z)</option>
+      </select>
+      <button onclick="clearSearch()" id="s-clear" style="display:none;margin:0;padding:6px 12px;background:#f0ece6;color:var(--muted);border:1px solid var(--border);font-size:12px;font-family:Arial,sans-serif;">✕ Clear</button>
     </div>
     <div id="s-meta" style="margin-bottom:12px;font-size:0.82rem;color:var(--muted);display:none;"></div>
 
@@ -1077,9 +1004,38 @@
       <button id="btn-map" onclick="showMapView()">Map</button>
     </div>
 
-    <div id="stray-list-view">
-      <div id="stray-grid"></div>
+    <div class="two-col">
+      <div class="two-col-main">
+        <div id="stray-list-view">
+          <div id="stray-grid"></div>
+        </div>
+      </div>
+      <div class="two-col-side">
+        <div class="side-widget">
+          <h4>About This Registry</h4>
+          <p>All reports submitted here are publicly visible. Listings remain active until the animal is marked as reunited.</p>
+          <p>If you found a stray, please also contact your local shelter to file a report there.</p>
+        </div>
+        <div class="side-widget">
+          <h4>Registry Stats</h4>
+          <div class="side-widget-stat"><span>Active reports</span><span class="side-widget-stat-num" id="side-stat-active">—</span></div>
+          <div class="side-widget-stat"><span>Reunited this month</span><span class="side-widget-stat-num">—</span></div>
+          <div class="side-widget-stat"><span>Shelters listed</span><span class="side-widget-stat-num">64</span></div>
+          <div class="side-widget-stat"><span>Regions covered</span><span class="side-widget-stat-num">30</span></div>
+        </div>
+        <div class="side-widget">
+          <h4>Tips for Finders</h4>
+          <ul>
+            <li>Check for a microchip at any vet</li>
+            <li>Post on local Facebook groups</li>
+            <li>Put up flyers near where found</li>
+            <li>Keep the animal safe &amp; warm</li>
+            <li>Check back daily for matches</li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <div style="font-family:Arial,sans-serif;font-size:11px;color:var(--muted-lt);margin-bottom:8px;display:flex;justify-content:space-between;" id="registry-meta"><span id="s-meta"></span><span class="timestamp">🕐 Results refresh every 60 seconds</span></div>
     <div id="stray-map-view" style="display:none;">
       <div id="stray-map" class="map-container"></div>
       <p style="color:#adb5bd;font-size:0.82rem;margin-top:6px;">Only reports with a known location appear on the map.</p>
@@ -1089,41 +1045,46 @@
 
   <!-- ===== LOST & FOUND ===== -->
   <div id="page-lf" style="display:none;">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Lost Pet Registry</div>
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Combined Register</div>
-      <h2>Lost &amp; Found Pets</h2>
-      <p>All active lost pet reports and found strays in one place.</p>
+      <div class="page-banner-eyebrow">Lost Pet Registry</div>
+      <h2>Lost Pet Registry</h2>
+      <p>Browse active reports of lost pets in the community.</p>
     </div>
 
-    <div style="display:flex;gap:1px;background:var(--border);margin-bottom:20px;">
-      <div style="flex:1;background:#fff8f8;padding:14px 18px;text-align:center;">
-        <div id="lf-count-lost" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--red);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Lost</div>
+    <div class="stat-bar" style="margin-bottom:20px;">
+      <div class="stat-box">
+        <div id="lf-count-lost" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--red);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Still Lost</div>
       </div>
-      <div style="flex:1;background:#f0f7f2;padding:14px 18px;text-align:center;">
-        <div id="lf-count-found" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Found Strays</div>
+      <div class="stat-box">
+        <div id="lf-count-found" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Reunited</div>
       </div>
-      <div style="flex:1;background:#f4f6fa;padding:14px 18px;text-align:center;">
-        <div id="lf-count-all" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Total Reports</div>
+      <div class="stat-box">
+        <div id="lf-count-all" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Total Lost Reports</div>
       </div>
     </div>
 
-    <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+
+    <!-- L&F reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--navy);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">🔍</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Have you seen one of these pets?</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">If you recognise a pet below, click the contact button to reach the owner directly. Found a stray that isn't listed here? <a onclick="showPage('stray');openReportForm()" style="color:var(--orange);cursor:pointer;text-decoration:underline;">Report it in the Stray Registry</a>.</div>
+      </div>
+    </div>
+
+    <div class="search-bar-wrap" style="">
       <div style="flex:1;min-width:180px;position:relative;">
         <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#adb5bd;pointer-events:none;">🔍</span>
         <input type="text" id="lf-search" placeholder="Search name, location, description…" oninput="loadLF()"
-          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'IBM Plex Sans',sans-serif;background:#fafbfc;" />
+          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'Inter',sans-serif;background:#fafbfc;" />
       </div>
-      <select id="lf-type" onchange="loadLF()"
-        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
-        <option value="">All reports</option>
-        <option value="lost">🔴 Lost pets</option>
-        <option value="stray">🟢 Found strays</option>
-      </select>
       <select id="lf-species" onchange="loadLF()"
-        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'Inter',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
         <option value="">All types</option>
         <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
       </select>
@@ -1134,55 +1095,58 @@
   </div>
 
   <!-- ===== SHELTERS ===== -->
-  <div id="page-shelters" style="display:none;">
+  <div id="page-shelters" style="display:none;position:relative;">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Animal Shelters</div>
     <div class="page-banner">
-      <div class="page-banner-eyebrow">Shelter Network Directory</div>
       <h2>Animal Shelters</h2>
       <p>Find nearby shelters that can take in a stray or check on available animals.</p>
     </div>
 
     <!-- Region selector trigger -->
-    <div style="margin-bottom:20px;">
-      <button id="region-trigger-btn" onclick="openRegionModal()" style="margin:0;background:var(--navy);padding:11px 22px;display:flex;align-items:center;gap:10px;font-size:0.82rem;">
+    <div style="margin-bottom:20px;position:relative;display:inline-block;" id="region-selector-wrap">
+      <button id="region-trigger-btn" onclick="toggleRegionDropdown()" style="margin:0;background:var(--navy);padding:11px 22px;display:flex;align-items:center;gap:10px;font-size:0.82rem;">
         <span style="font-size:1.1rem;" id="region-flag">🌍</span>
         <span id="region-trigger-label">Select your region</span>
-        <span style="opacity:0.6;font-size:0.75rem;margin-left:4px;">▼</span>
+        <span style="opacity:0.6;font-size:0.75rem;margin-left:4px;" id="region-arrow">▼</span>
       </button>
-    </div>
-
-    <!-- Region picker modal -->
-    <div id="region-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-start;justify-content:center;padding-top:80px;">
-      <div id="region-modal-inner" style="background:white;width:92%;max-width:680px;border-top:4px solid var(--teal);box-shadow:0 12px 40px rgba(0,0,0,0.25);max-height:80vh;overflow-y:auto;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:white;z-index:1;">
-          <div>
-            <div style="font-family:'IBM Plex Serif',serif;font-size:1.2rem;font-weight:700;color:var(--navy);">Select a region</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;">30 regions across 6 continents</div>
-          </div>
-          <button onclick="closeRegionModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:6px 14px;font-size:0.78rem;">✕ Close</button>
+      <!-- Dropdown panel -->
+      <div id="region-dropdown" style="display:none;position:absolute;top:100%;left:0;width:680px;max-width:94vw;background:white;border:1px solid var(--border);border-top:2px solid var(--teal);box-shadow:0 8px 32px rgba(0,0,0,0.18);z-index:500;max-height:60vh;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px 12px;border-bottom:1px solid var(--border);background:white;position:sticky;top:0;">
+          <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);">30 regions · 6 continents</div>
+          <button onclick="closeRegionModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:4px 12px;font-size:0.68rem;letter-spacing:0.5px;">✕</button>
         </div>
-        <div style="padding:20px 24px;" id="region-modal-content"></div>
+        <div style="padding:16px 18px;" id="region-modal-content"></div>
       </div>
     </div>
 
     <!-- Stats bar -->
-    <div style="display:flex;gap:1px;background:var(--border);margin-bottom:20px;">
-      <div style="flex:1;background:#f0f7f8;padding:14px 18px;text-align:center;">
-        <div id="sh-count-shelters" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--teal);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Shelters in Region</div>
+    <div class="stat-bar" style="margin-bottom:20px;">
+      <div class="stat-box">
+        <div id="sh-count-shelters" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--teal);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Shelters in Region</div>
       </div>
-      <div style="flex:1;background:#f0f7f2;padding:14px 18px;text-align:center;">
-        <div id="sh-count-open" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Open Today</div>
+      <div class="stat-box">
+        <div id="sh-count-open" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Open Today</div>
       </div>
-      <div style="flex:1;background:#f4f6fa;padding:14px 18px;text-align:center;">
-        <div id="sh-count-types" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Shelter Types</div>
+      <div class="stat-box">
+        <div id="sh-count-types" style="font-family:Arial,sans-serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
+        <div style="font-family:Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:bold;margin-top:3px;">Shelter Types</div>
       </div>
     </div>
 
     <!-- Info banner -->
     <div style="background:#e8f4f6;border-left:5px solid var(--teal);padding:14px 20px;margin-bottom:20px;font-size:0.88rem;color:#0a4a55;line-height:1.6;">
       <strong>Bringing in a stray?</strong> Call ahead when possible — shelters may have intake hours. Animals surrendered at a shelter are held for a minimum period so owners can claim them.
+    </div>
+
+    <!-- Shelters reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--teal);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">🏠</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Shelters are always ready to help</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">All shelters listed here accept stray animals and hold them safely while owners are located. Call ahead when possible — many require appointments for intake.</div>
+      </div>
     </div>
 
     <!-- Search/filter -->
@@ -1213,7 +1177,7 @@
     <!-- Add shelter CTA -->
     <div style="margin-top:30px;border:2px dashed var(--border);padding:28px;text-align:center;">
       <div style="font-size:1.8rem;margin-bottom:10px;">🏠</div>
-      <h3 style="text-transform:none;letter-spacing:0;font-size:1rem;margin-bottom:6px;font-family:'IBM Plex Serif',serif;font-weight:600;color:var(--navy);">Are you a shelter or rescue?</h3>
+      <h3 style="text-transform:none;letter-spacing:0;font-size:1rem;margin-bottom:6px;font-family:Arial,sans-serif;font-weight:600;color:var(--navy);">Are you a shelter or rescue?</h3>
       <p style="font-size:0.86rem;color:var(--muted);margin-bottom:16px;max-width:360px;margin-left:auto;margin-right:auto;">Register your organisation to appear in this directory and receive stray transfer requests from the community.</p>
       <button onclick="openAddShelterModal()" style="margin:0;background:var(--teal);padding:10px 24px;">Register Your Shelter</button>
     </div>
@@ -1221,16 +1185,33 @@
 
   <!-- ===== ACCOUNT ===== -->
   <div id="page-account" style="display:none;">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> My Account</div>
     <div class="page-banner">
       <div class="page-banner-eyebrow">Resident Portal</div>
       <h2>Your Account</h2>
       <p>Sign in or create an account to submit stray reports and manage your listings.</p>
     </div>
+
+    <!-- Account reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--navy);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">🔒</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Your information is safe</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">An account lets you submit stray reports and manage your listings. Your contact details are only shown to other users when you choose to submit a report.</div>
+      </div>
+    </div>
+
     <div class="card" id="account-loggedInCard" style="display:none;text-align:center;padding:40px 28px;">
       <div style="font-size:3.5rem;margin-bottom:12px;">👤</div>
       <h2 style="margin-bottom:8px;">You are logged in</h2>
       <p id="account-loggedInName" style="margin:0 0 24px;font-size:1rem;color:var(--muted);font-weight:600;"></p>
       <button onclick="logoutUser()" style="background:#666;">Sign Out</button>
+    </div>
+
+    <div class="card" id="account-notifications" style="display:none;">
+      <h2 style="margin-bottom:4px;">🔔 Notifications</h2>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--muted);margin-bottom:14px;">Updates about pets you've reported as lost.</p>
+      <div id="notif-list"></div>
     </div>
     <div class="card" id="account-authCard">
       <div class="auth-toggle">
@@ -1260,16 +1241,67 @@
 
 </main>
 
-<footer>
-  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;flex-wrap:wrap;">
-    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Official Government Service</span>
-    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
-    <strong>Pet Helpers</strong>
-    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
-    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Animal Recovery &amp; Reunification</span>
+<footer style="background:#0f1e35;color:rgba(255,255,255,0.4);font-family:Arial,sans-serif;font-size:12px;border-top:3px solid #8a6914;">
+  <div style="max-width:980px;margin:0 auto;padding:28px 16px 20px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;">
+    <div>
+      <div style="font-family:Georgia,serif;font-size:1.1rem;font-weight:bold;color:rgba(255,255,255,0.85);margin-bottom:8px;">Pet Helpers</div>
+      <p style="line-height:1.7;margin-bottom:10px;">A community-run lost and found registry for stray animals. Helping reunite pets with their families since 2014. Every report matters.</p>
+      <p style="color:rgba(255,255,255,0.25);font-size:11px;">Built with love by pet owners, for pet owners.</p>
+    </div>
+    <div>
+      <div style="color:rgba(255,255,255,0.7);font-weight:bold;text-transform:uppercase;letter-spacing:0.8px;font-size:11px;margin-bottom:10px;">Quick Links</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <a onclick="showPage('stray')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Stray Registry</a>
+        <a onclick="showPage('lost')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Report a Lost Pet</a>
+        <a onclick="showPage('lf')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Lost Pet Registry</a>
+        <a onclick="showPage('shelters')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Find a Shelter</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:rgba(255,255,255,0.7);font-weight:bold;text-transform:uppercase;letter-spacing:0.8px;font-size:11px;margin-bottom:10px;">If you find a stray</div>
+      <ol style="padding-left:16px;display:flex;flex-direction:column;gap:5px;color:rgba(255,255,255,0.45);line-height:1.5;">
+        <li>Check for a collar and tags</li>
+        <li>Post to our registry</li>
+        <li>Contact nearby shelters</li>
+        <li>Share on social media</li>
+        <li>Do not give up!</li>
+      </ol>
+    </div>
   </div>
-  <div style="font-size:0.6rem;opacity:0.3;letter-spacing:0.8px;">City Animal Services Division &nbsp;·&nbsp; pethelpers.gov &nbsp;·&nbsp; All rights reserved</div>
+  <div style="border-top:1px solid rgba(255,255,255,0.08);padding:14px 16px;text-align:center;">
+    <span style="color:rgba(255,255,255,0.7);font-weight:bold;">Pet Helpers</span> -- Reuniting families since 2014
+    <span style="color:rgba(255,255,255,0.2);margin:0 8px;">|</span>
+    <span style="color:rgba(255,255,255,0.25);">Not affiliated with any government agency</span>
+  </div>
 </footer>
+
+<!-- ===== CONTACT POPUP ===== -->
+<div id="contact-popup" style="display:none;position:fixed;inset:0;background:rgba(6,14,30,0.65);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:white;max-width:400px;width:92%;border-top:3px solid var(--navy);box-shadow:0 16px 48px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px 14px;border-bottom:1px solid var(--border);">
+      <div id="contact-popup-title" style="font-family:Arial,sans-serif;font-size:1.05rem;font-weight:600;color:var(--navy);"></div>
+      <button onclick="closeContactPopup()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:4px 12px;font-size:0.68rem;">✕</button>
+    </div>
+    <div style="padding:20px;">
+      <div style="margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:4px;">Pet</div>
+        <div id="contact-popup-pet" style="font-weight:600;font-size:0.95rem;"></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:4px;">Contact name</div>
+        <div id="contact-popup-name" style="font-weight:600;font-size:0.95rem;"></div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:6px;">Phone number</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div id="contact-popup-phone" style="font-family:Arial,sans-serif;font-size:1.4rem;font-weight:700;color:var(--navy);letter-spacing:0.02em;"></div>
+          <button id="contact-popup-copy" onclick="copyContactPhone()" style="margin:0;background:var(--bg);color:var(--navy);border:1px solid var(--border);padding:6px 14px;font-size:0.68rem;">Copy</button>
+        </div>
+      </div>
+      <a id="contact-popup-call" href="" style="display:block;background:var(--navy);color:white;text-align:center;padding:12px;text-decoration:none;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.9px;">📞 Call Now</a>
+    </div>
+  </div>
+</div>
 
 <!-- ===== TRANSFER TO SHELTER MODAL ===== -->
 <div id="transfer-modal">
@@ -1337,7 +1369,7 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ── Supabase config ───────────────────────────────────────
@@ -1376,11 +1408,22 @@
   }
 
   // ── Header ────────────────────────────────────────────────
-  function updateHeader() {
+  async function updateHeader() {
     const user = getCurrentUser();
-    document.getElementById('headerRight').innerHTML = user
-      ? `<span>Hi, ${esc(user)}</span><a onclick="logoutUser()">Sign Out</a>`
-      : `<a onclick="showPage('account')">Log in</a>`;
+    if (user) {
+      let unread = 0;
+      try {
+        const { count } = await db.from('notifications').select('id', { count: 'exact', head: true }).eq('recipient_username', user).eq('read', false);
+        unread = count || 0;
+      } catch(ex) {}
+      const bell = unread > 0
+        ? `<a onclick="showPage('account')" style="position:relative;">🔔<span style="position:absolute;top:2px;right:2px;background:var(--red);color:white;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;">${unread > 9 ? '9+' : unread}</span></a>`
+        : `<a onclick="showPage('account')">🔔</a>`;
+      document.getElementById('headerRight').innerHTML =
+        `${bell}<span>Hi, ${esc(user)}</span><a onclick="logoutUser()">Sign Out</a>`;
+    } else {
+      document.getElementById('headerRight').innerHTML = `<a onclick="showPage('account')">Log in</a>`;
+    }
   }
 
   // ── Navigation ────────────────────────────────────────────
@@ -1394,7 +1437,7 @@
     document.getElementById('nav-'   + name).classList.add('active');
     if (name === 'stray')    { applyFilter(); checkReportAuth(); }
     if (name === 'account')  checkAccountPage();
-    if (name === 'home')     loadRecent();
+    if (name === 'home')     { loadRecent(); loadReunited(); }
     if (name === 'lf')       loadLF();
     if (name === 'shelters') renderShelters();
     if (name === 'lost')     { document.getElementById('lost-outputBox').style.display='none'; }
@@ -1487,8 +1530,8 @@
       box.style.display = 'block';
       list.innerHTML = data.map(p => `
         <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);">
-          ${p.photo ? `<img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);" />`
-                    : `<div style="width:48px;height:48px;background:#eef0f4;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid var(--border);">🐾</div>`}
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:48px;height:48px;object-fit:cover;flex-shrink:0;border-radius:8px;" />`
+                    : `<div style="width:48px;height:48px;background:#f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border-radius:6px;">🐾</div>`}
           <div style="flex:1;min-width:0;">
             <div style="font-weight:700;font-size:0.9rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);">— ${esc(p.species)}</span></div>
             ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
@@ -1555,7 +1598,7 @@
         lat: coords?.lat ?? null, lng: coords?.lng ?? null,
         description: document.getElementById('r-desc').value.trim(),
         photo: reportPhoto, posted_by: getCurrentUser(),
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(), report_type: 'stray'
       });
       if (error) { alert('Could not save: ' + errMsg(error)); }
       else {
@@ -1563,45 +1606,60 @@
         document.getElementById('r-photo-preview').style.display = 'none';
         document.getElementById('r-success').style.display = 'block';
         setTimeout(() => { document.getElementById('r-success').style.display = 'none'; toggleReportForm(); }, 3000);
+        bustCache();
         loadRecent(); applyFilter();
       }
     } catch(ex) { alert('Error: ' + errMsg(ex)); }
     btn.textContent = 'Submit Report'; btn.disabled = false;
   });
 
+  // ── Simple fetch cache (60 second TTL) ───────────────────
+  const _cache = {};
+  async function cachedFetch(key, fetchFn) {
+    const now = Date.now();
+    if (_cache[key] && now - _cache[key].ts < 60000) return _cache[key].data;
+    const data = await fetchFn();
+    _cache[key] = { data, ts: now };
+    return data;
+  }
+  function bustCache() { Object.keys(_cache).forEach(k => delete _cache[k]); }
+
   async function fetchListings(species) {
-    try {
-      let q = db.from('listings').select('*').order('created_at', { ascending: false });
-      if (species) q = q.eq('species', species);
-      const { data, error } = await q;
-      if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
-      return data || [];
-    } catch(ex) { console.error('Fetch exception:', errMsg(ex)); return []; }
+    const key = 'listings:' + (species || 'all');
+    return cachedFetch(key, async () => {
+      try {
+        let q = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,lat,lng,posted_by').order('created_at', { ascending: false }).limit(100);
+        if (species) q = q.eq('species', species);
+        const { data, error } = await q;
+        if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
+        const live = data || [];
+        
+        return live;
+      } catch(ex) { console.error('Fetch exception:', errMsg(ex)); return []; }
+    });
   }
 
   async function applyFilter() {
     const q       = (document.getElementById('s-search')?.value || '').trim();
     const species = document.getElementById('s-species')?.value || '';
+    const sortBy  = document.getElementById('s-sort')?.value || 'newest';
     const grid    = document.getElementById('stray-grid');
     const meta    = document.getElementById('s-meta');
     const clearBtn = document.getElementById('s-clear');
-    grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading reports…</h3><p>Please wait while we fetch the latest listings.</p></div>';
     const all      = await fetchListings(species);
     const ql       = q.toLowerCase();
-    const filtered = q ? all.filter(p =>
+    let filtered = q ? all.filter(p =>
       [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
         .some(f => f && f.toLowerCase().includes(ql))
-    ) : all;
-    if (q || species) {
-      meta.style.display = 'block';
-      meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
-      clearBtn.style.display = 'block';
-    } else {
-      meta.style.display = 'none';
-      clearBtn.style.display = 'none';
-    }
+    ) : all.slice();
+    if (sortBy === 'oldest') filtered.reverse();
+    else if (sortBy === 'name') filtered.sort((a,b) => (a.pet_name||'').localeCompare(b.pet_name||''));
+    meta.style.display = 'block';
+    meta.textContent = `Showing ${filtered.length} report${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
+    clearBtn.style.display = (q || species) ? 'block' : 'none';
     if (filtered.length === 0) {
-      grid.innerHTML = `<p style="color:#adb5bd;text-align:center;padding:40px 0;grid-column:1/-1;">No reports found${q ? ` for "${q}"` : ''}.</p>`;
+      grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><h3>No reports found${q ? ' for &ldquo;'+q+'&rdquo;' : ''}</h3><p>Try adjusting your search terms, or be the first to report a stray in this area.</p><button onclick="openReportForm()" style="margin:0;font-size:12px;padding:8px 18px;">+ Submit a Report</button></div>`;
       return;
     }
     const hi = (str) => {
@@ -1611,33 +1669,35 @@
       return esc(str.slice(0,idx)) + '<mark style="background:#fff3cd;padding:0 1px;">' + esc(str.slice(idx, idx+q.length)) + '</mark>' + esc(str.slice(idx+q.length));
     };
     grid.innerHTML = filtered.map(p => `
-      <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)'">
+      <div class="pet-card" style="position:relative;">
+        ${getCurrentUser() && p.posted_by && getCurrentUser() === p.posted_by
+          ? `<button onclick="deleteListing('${esc(p.id)}', this)" title="Delete this report" style="position:absolute;top:8px;right:8px;z-index:2;margin:0;background:rgba(0,0,0,0.55);color:white;border:none;width:26px;height:26px;border-radius:50%;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onmouseover="this.style.background='var(--red)'" onmouseout="this.style.background='rgba(0,0,0,0.55)'">🗑️</button>`
+          : ''}
         ${p.photo
-          ? `<img src="${p.photo}" style="width:100%;height:160px;object-fit:cover;display:block;" />`
-          : `<div style="height:80px;background:linear-gradient(135deg,#eef0f4,#dde2ea);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🐾</div>`}
-        <div style="padding:16px 18px;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+          ? `<img src="${p.photo}" loading="lazy" style="width:100%;height:190px;object-fit:cover;display:block;" />`
+          : `<div style="height:150px;background:#ede8e0;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border);">🐾</div>`}
+        <div style="padding:14px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
             <div>
-              <div style="font-family:'IBM Plex Serif',serif;font-size:1.05rem;font-weight:700;color:var(--navy);">${hi(p.pet_name)}</div>
+              <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:bold;color:var(--text);">${hi(p.pet_name)}</div>
               <div style="font-size:0.8rem;color:var(--muted);margin-top:1px;">${hi(p.species)}</div>
             </div>
             <span class="tag" style="margin:0;flex-shrink:0;">${esc(p.species)}</span>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:12px;">
-            ${p.location_text ? `<div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Found near</div><div style="font-size:0.83rem;">${hi(p.location_text)}</div></div>` : ''}
-            <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Reported by</div><div style="font-size:0.83rem;">${hi(p.contact_name)}</div></div>
-            <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Date</div><div style="font-size:0.83rem;">${esc(p.date)}</div></div>
-          </div>
-          ${p.description ? `<p style="font-size:0.82rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--border);padding-left:10px;margin-bottom:12px;">${hi(p.description)}</p>` : ''}
+          ${p.location_text ? `<div style="font-size:0.83rem;color:var(--muted);margin-bottom:6px;">📍 ${hi(p.location_text)}</div>` : ''}
+          ${p.description ? `<p style="font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${hi(p.description)}</p>` : ''}
+          <div style="font-size:0.74rem;color:var(--muted-lt);">By ${hi(p.contact_name)} · ${esc(p.date)}</div>
         </div>
         <div style="display:flex;border-top:1px solid var(--border);">
-          <a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--navy);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;border-right:1px solid var(--border);" onmouseover="this.style.background='#eef0f4'" onmouseout="this.style.background=''">📞 Call</a>
-          <button onclick="openTransferModal('${esc(p.pet_name)}', '${esc(p.species)}')" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--teal);border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4f5'" onmouseout="this.style.background=''">🏠 Shelter</button>
-          <button onclick="claimStray(this)" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--green);border:none;cursor:pointer;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">✅ My Pet</button>
+          <button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name)} (${esc(p.species)})" data-action="Contact reporter" style="flex:1;padding:11px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--primary);background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:Arial,sans-serif;" onmouseover="this.style.background='#edf3fc'" onmouseout="this.style.background='transparent'">📞 Call</button>
+          <button onclick="openTransferModal('${esc(p.pet_name)}', '${esc(p.species)}')" style="flex:1;padding:11px;font-size:0.76rem;font-weight:700;margin:0;background:transparent;color:var(--teal-d);border:none;border-right:1px solid var(--border);cursor:pointer;font-family:Arial,sans-serif;" onmouseover="this.style.background='var(--green-lt)'" onmouseout="this.style.background='transparent'">🏠 Shelter</button>
+          <button onclick="claimStray(this)" style="flex:1;padding:11px;font-size:0.76rem;font-weight:700;margin:0;background:transparent;color:var(--green);border:none;cursor:pointer;font-family:Arial,sans-serif;" onmouseover="this.style.background='var(--green-lt)'" onmouseout="this.style.background='transparent'">✅ Mine!</button>
         </div>
       </div>`
     ).join('');
     if (document.getElementById('stray-map-view').style.display !== 'none') renderMap(filtered);
+    const sideActive = document.getElementById('side-stat-active');
+    if (sideActive) sideActive.textContent = filtered.length;
   }
 
   function clearSearch() {
@@ -1647,9 +1707,9 @@
   }
 
   function claimStray(btn) {
-    const card = btn.closest('div[style*="border-top:3px"]');
+    const card = btn.closest('.pet-card');
     const bar  = btn.parentElement;
-    bar.innerHTML = `<div style="flex:1;padding:12px 16px;background:#e6f4ea;color:#1a4d2e;font-size:0.82rem;font-weight:700;text-align:center;">🎉 Contact the finder above to arrange pickup!</div>`;
+    bar.innerHTML = `<div style="flex:1;padding:10px 14px;background:var(--green-lt);color:var(--green);font-size:12px;font-weight:bold;text-align:center;font-family:Arial,sans-serif;border-top:2px solid var(--green);">🎉 Great news! Contact the finder above to arrange pickup.</div>`;
     if (card) card.style.borderTopColor = 'var(--green)';
   }
 
@@ -1665,15 +1725,23 @@
     document.getElementById('stray-map-view').style.display  = 'block';
     document.getElementById('btn-map').classList.add('active');
     document.getElementById('btn-list').classList.remove('active');
-    applyFilter();
-    if (leafletMap) leafletMap.invalidateSize();
+    setTimeout(() => {
+      applyFilter();
+      if (leafletMap) leafletMap.invalidateSize();
+    }, 50);
   }
   function renderMap(listings) {
+    if (typeof L === 'undefined') {
+      document.getElementById('stray-map').innerHTML =
+        '<div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:#f3f4f6;font-family:Arial,sans-serif;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:2rem;">🗺️</div><div>Map could not load — the map library failed to load from the CDN.<br>Try refreshing the page, or use the List view.</div></div>';
+      return;
+    }
     const pts = listings.filter(p => p.lat && p.lng);
     if (!leafletMap) {
       const c = pts.length > 0 ? [pts[0].lat, pts[0].lng] : [20,0];
       leafletMap = L.map('stray-map').setView(c, pts.length > 0 ? 13 : 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(leafletMap);
+      setTimeout(() => leafletMap.invalidateSize(), 100);
     }
     leafletMap.eachLayer(l => { if (l instanceof L.Marker) leafletMap.removeLayer(l); });
     const bounds = [];
@@ -1688,32 +1756,30 @@
     const grid    = document.getElementById('lf-grid');
     const meta    = document.getElementById('lf-meta');
     const q       = (document.getElementById('lf-search')?.value || '').trim().toLowerCase();
-    const typeFilter    = document.getElementById('lf-type')?.value || '';
     const speciesFilter = document.getElementById('lf-species')?.value || '';
-    grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading reports…</h3><p>Please wait while we fetch the latest listings.</p></div>';
     try {
-      let query = db.from('listings').select('*').order('created_at', { ascending: false });
-      if (typeFilter)    query = query.eq('report_type', typeFilter);
+      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by').in('report_type', ['lost','reunited']).order('created_at', { ascending: false }).limit(100);
       if (speciesFilter) query = query.eq('species', speciesFilter);
       const { data, error } = await query;
       if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
       const all = data || [];
-      const lostCount  = all.filter(p => p.report_type === 'lost').length;
-      const strayCount = all.filter(p => p.report_type !== 'lost').length;
+      const lostCount     = all.filter(p => p.report_type === 'lost').length;
+      const reunitedCount = all.filter(p => p.report_type === 'reunited').length;
       document.getElementById('lf-count-lost').textContent  = lostCount;
-      document.getElementById('lf-count-found').textContent = strayCount;
+      document.getElementById('lf-count-found').textContent = reunitedCount;
       document.getElementById('lf-count-all').textContent   = all.length;
       const ql = q.toLowerCase();
-      const filtered = q ? all.filter(p =>
+      let filtered = q ? all.filter(p =>
         [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
           .some(f => f && f.toLowerCase().includes(ql))
       ) : all;
-      if (q || typeFilter || speciesFilter) {
+      if (q || speciesFilter) {
         meta.style.display = 'block';
         meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
       } else { meta.style.display = 'none'; }
       if (filtered.length === 0) {
-        grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:40px 0;grid-column:1/-1;">No reports found.</p>';
+        grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><h3>No reports yet</h3><p>No lost or found pets have been reported matching these filters. Check back soon.</p></div>';
         return;
       }
       const hi = str => {
@@ -1724,21 +1790,29 @@
       };
       grid.innerHTML = filtered.map(p => {
         const isLost     = p.report_type === 'lost';
-        const borderColor = isLost ? 'var(--red)' : 'var(--green)';
-        const badge      = isLost
+        const isReunited = p.report_type === 'reunited';
+        const borderColor = isReunited ? 'var(--green)' : isLost ? 'var(--red)' : 'var(--green)';
+        const badge = isReunited
+          ? `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#dff0e8;color:var(--green);padding:3px 9px;">✅ REUNITED</span>`
+          : isLost
           ? `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#fde8e8;color:var(--red);padding:3px 9px;">🔴 LOST</span>`
           : `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#dff0e8;color:var(--green);padding:3px 9px;">🟢 FOUND</span>`;
-        const actionLabel = isLost
-          ? `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">📞 I Found This Pet</a>`
-          : `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">📞 This Is My Pet</a>`;
+        const actionLabel = isReunited
+          ? `<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>`
+          : isLost
+          ? `<button class="contact-btn notify-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="I found this pet" data-posted-by="${esc(p.posted_by || '')}" data-pet-name="${esc(p.pet_name)}" data-species="${esc(p.species)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='transparent'">📞 I Found This Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`
+          : `<button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name + ' (' + p.species + ')')}" data-action="This is my pet" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">📞 This Is My Pet</button><button class="reunite-btn" data-id="${esc(p.id)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background='transparent'">✅ Mark Reunited</button>`;
         return `
-          <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-            ${p.photo ? `<img src="${p.photo}" style="width:100%;height:150px;object-fit:cover;display:block;" />`
-                      : `<div style="height:70px;background:linear-gradient(135deg,#eef0f4,#dde2ea);display:flex;align-items:center;justify-content:center;font-size:2.2rem;">🐾</div>`}
+          <div class="pet-card" style="border-top:3px solid ${borderColor};position:relative;">
+            ${getCurrentUser() && p.posted_by && getCurrentUser() === p.posted_by
+              ? `<button onclick="deleteListing('${esc(p.id)}', this)" title="Delete this report" style="position:absolute;top:8px;right:8px;z-index:2;margin:0;background:rgba(0,0,0,0.55);color:white;border:none;width:26px;height:26px;border-radius:50%;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onmouseover="this.style.background='var(--red)'" onmouseout="this.style.background='rgba(0,0,0,0.55)'">🗑️</button>`
+              : ''}
+            ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:100%;height:190px;object-fit:cover;display:block;" />`
+                      : `<div style="height:150px;background:#ede8e0;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border);">🐾</div>`}
             <div style="padding:14px 16px;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
                 <div>
-                  <div style="font-family:'IBM Plex Serif',serif;font-size:1rem;font-weight:700;color:var(--navy);">${hi(p.pet_name)}</div>
+                  <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:bold;color:var(--text);">${hi(p.pet_name)}</div>
                   <div style="font-size:0.78rem;color:var(--muted);">${hi(p.species)}</div>
                 </div>
                 ${badge}
@@ -1765,25 +1839,50 @@
     const el = document.getElementById('home-recent');
     if (!el) return;
     try {
-      const { data } = await db.from('listings').select('*').order('created_at', { ascending: false }).limit(3);
+      const data = await cachedFetch('recent', async () => {
+        const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').order('created_at', { ascending: false }).limit(3);
+        return data || [];
+      });
       if (!data || data.length === 0) {
-        el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">No reports yet.</p>';
+        el.innerHTML = '<div style="text-align:center;padding:24px 0;font-family:Arial,sans-serif;font-size:13px;color:var(--muted);"><div style="font-size:2rem;margin-bottom:8px;">🐾</div>No reports yet. Be the first — <a onclick="showPage(\'stray\');openReportForm()" style="color:var(--orange);cursor:pointer;">submit a report</a>.</div>';
         return;
       }
       el.innerHTML = data.map(p => `
         <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);">
-          ${p.photo ? `<img src="${p.photo}" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);" />`
-                    : `<div style="width:52px;height:52px;background:#eef0f4;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1px solid var(--border);">🐾</div>`}
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border-radius:6px;" />`
+                    : `<div style="width:52px;height:52px;background:#f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border-radius:6px;">🐾</div>`}
           <div style="flex:1;min-width:0;">
-            <div style="font-weight:700;font-size:0.92rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
+            <div style="font-family:Georgia,serif;font-weight:bold;font-size:0.95rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
             ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
             <div style="font-size:0.74rem;color:#adb5bd;margin-top:2px;">Posted ${esc(p.date)}</div>
           </div>
           <span class="tag" style="flex-shrink:0;">${esc(p.species)}</span>
-        </div>`).join('') +
-        `<div style="padding-top:12px;text-align:right;"><a onclick="showPage('stray')" style="font-size:0.8rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;">View all →</a></div>`;
+        </div>`).join('');
     } catch(ex) {
       el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Could not load reports.</p>';
+    }
+  }
+
+  async function loadReunited() {
+    const card = document.getElementById('home-reunited-card');
+    const el = document.getElementById('home-reunited');
+    if (!el) return;
+    try {
+      const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').eq('report_type', 'reunited').order('created_at', { ascending: false }).limit(3);
+      if (!data || data.length === 0) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      el.innerHTML = data.map(p => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);opacity:0.85;">
+          ${p.photo ? `<img src="${p.photo}" loading="lazy" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border-radius:6px;" />`
+                    : `<div style="width:52px;height:52px;background:var(--green-lt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border-radius:6px;">✅</div>`}
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:Georgia,serif;font-weight:bold;font-size:0.95rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
+            ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
+          </div>
+          <span class="tag claimed" style="flex-shrink:0;">Reunited</span>
+        </div>`).join('');
+    } catch(ex) {
+      card.style.display = 'none';
     }
   }
 
@@ -1792,8 +1891,48 @@
     const user = getCurrentUser();
     document.getElementById('account-loggedInCard').style.display = user ? 'block' : 'none';
     document.getElementById('account-authCard').style.display     = user ? 'none'  : 'block';
-    if (user) document.getElementById('account-loggedInName').textContent = 'Hello, ' + user + '!';
+    document.getElementById('account-notifications').style.display = user ? 'block' : 'none';
+    if (user) {
+      document.getElementById('account-loggedInName').textContent = 'Hello, ' + user + '!';
+      loadNotifications();
+    }
   }
+
+  async function loadNotifications() {
+    const user = getCurrentUser();
+    const list = document.getElementById('notif-list');
+    if (!user) return;
+    list.innerHTML = '<p style="font-family:Arial,sans-serif;font-size:13px;color:var(--muted);">Loading…</p>';
+    try {
+      const { data, error } = await db.from('notifications').select('*').eq('recipient_username', user).order('created_at', { ascending: false }).limit(20);
+      if (error) { list.innerHTML = `<p style="font-family:Arial,sans-serif;font-size:13px;color:var(--red);">Error: ${errMsg(error)}</p>`; return; }
+      if (!data || data.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔔</div><h3>No notifications yet</h3><p>When someone reports finding a pet you listed as lost, you will see it here.</p></div>';
+        return;
+      }
+      list.innerHTML = data.map(n => `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);${n.read ? 'opacity:0.55;' : ''}">
+          <div style="font-size:1.4rem;flex-shrink:0;">${n.read ? '📬' : '📩'}</div>
+          <div style="flex:1;">
+            <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--text);line-height:1.5;margin-bottom:4px;">${esc(n.message)}</p>
+            <div style="font-family:Arial,sans-serif;font-size:11px;color:var(--muted-lt);">${esc(n.created_at ? new Date(n.created_at).toLocaleString() : '')}</div>
+          </div>
+          ${!n.read ? `<button onclick="markNotificationRead(${n.id}, this)" style="margin:0;flex-shrink:0;align-self:center;background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;font-size:11px;">Mark read</button>` : ''}
+        </div>`).join('');
+      // bust the bell count once viewed
+      updateHeader();
+    } catch(ex) {
+      list.innerHTML = `<p style="font-family:Arial,sans-serif;font-size:13px;color:var(--red);">Error: ${errMsg(ex)}</p>`;
+    }
+  }
+
+  async function markNotificationRead(id, btn) {
+    try {
+      await db.from('notifications').update({ read: true }).eq('id', id);
+      loadNotifications();
+    } catch(ex) {}
+  }
+
   function logoutUser() {
     sessionStorage.removeItem(SESSION_KEY);
     checkAccountPage(); updateHeader(); showPage('home');
@@ -2072,7 +2211,6 @@
   };
 
   function initRegionButtons() {
-    buildRegionModalContent();
     setRegion(REGION_KEYS[0], false);
   }
 
@@ -2083,40 +2221,53 @@
     for (const [continent, info] of Object.entries(REGION_CONTINENTS)) {
       const available = info.regions.filter(r => SHELTER_REGIONS[r]);
       if (!available.length) continue;
-      html += `<div style="margin-bottom:22px;">
-        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <span>${info.flag}</span> ${esc(continent)}
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;">`;
+      html += '<div style="margin-bottom:22px;">';
+      html += '<div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">' + info.flag + ' ' + esc(continent) + '</div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">';
       for (const region of available) {
-        const flag = REGION_FLAGS[region] || '🌍';
+        const flag = REGION_FLAGS[region] || '\u{1F30D}';
         const shelterCount = (SHELTER_REGIONS[region] || []).length;
-        html += `<button onclick="selectRegion(${JSON.stringify(region)})"
-          id="rmodal-${region.replace(/[^a-z0-9]/gi,'_')}"
-          style="margin:0;padding:10px 14px;text-align:left;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all 0.12s;border-radius:0;display:flex;flex-direction:column;gap:3px;"
-          onmouseover="this.style.background='#eef0f4'" onmouseout="if(this.id!='rmodal-active')this.style.background='var(--surface)'">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:1rem;">${flag}</span>
-            <span style="font-weight:700;font-size:0.82rem;">${esc(region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,''))}</span>
-          </div>
-          <div style="font-size:0.7rem;color:var(--muted);">${shelterCount} shelter${shelterCount!==1?'s':''}</div>
-        </button>`;
+        const safeId = 'rmodal-' + region.replace(/[^a-z0-9]/gi,'_');
+        const cityLabel = esc(region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,''));
+        html += '<button class="rmodal-btn" data-region="' + region.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" id="' + safeId + '" style="margin:0;padding:10px 14px;text-align:left;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:Arial,sans-serif;cursor:pointer;border-radius:0;display:flex;flex-direction:column;gap:3px;width:100%;">';
+        html += '<div style="display:flex;align-items:center;gap:6px;"><span>' + flag + '</span><span style="font-weight:700;font-size:0.82rem;">' + cityLabel + '</span></div>';
+        html += '<div style="font-size:0.7rem;color:var(--muted);">' + shelterCount + ' shelter' + (shelterCount!==1?'s':'') + '</div>';
+        html += '</button>';
       }
-      html += `</div></div>`;
+      html += '</div></div>';
     }
     container.innerHTML = html;
+    container.querySelectorAll('.rmodal-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectRegion(this.getAttribute('data-region'));
+      });
+      btn.addEventListener('mouseover', function() { this.style.background='#eef0f4'; });
+      btn.addEventListener('mouseout', function() { if (!this.classList.contains('rmodal-active')) this.style.background='var(--surface)'; });
+    });
+  }
+
+  function toggleRegionDropdown() {
+    const dd = document.getElementById('region-dropdown');
+    const arrow = document.getElementById('region-arrow');
+    if (dd.style.display === 'none') {
+      buildRegionModalContent();
+      dd.style.display = 'block';
+      if (arrow) arrow.textContent = '▲';
+      highlightActiveRegionInModal();
+    } else {
+      closeRegionModal();
+    }
   }
 
   function openRegionModal() {
-    const modal = document.getElementById('region-modal');
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    highlightActiveRegionInModal();
+    toggleRegionDropdown();
   }
 
   function closeRegionModal() {
-    document.getElementById('region-modal').style.display = 'none';
-    document.body.style.overflow = '';
+    const dd = document.getElementById('region-dropdown');
+    const arrow = document.getElementById('region-arrow');
+    if (dd) dd.style.display = 'none';
+    if (arrow) arrow.textContent = '▼';
   }
 
   function highlightActiveRegionInModal() {
@@ -2298,9 +2449,10 @@
     list.style.opacity = '0.4';
     list.style.pointerEvents = 'none';
   }
-  // Close region modal on backdrop click
-  document.getElementById('region-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeRegionModal();
+  // Close region dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('region-selector-wrap');
+    if (wrap && !wrap.contains(e.target)) closeRegionModal();
   });
 
   // Close transfer modal on backdrop click
@@ -2345,12 +2497,130 @@
     setTimeout(() => { closeAddShelterModal(); renderShelters(); }, 2200);
   });
 
+  async function deleteListing(id, btn) {
+    const user = getCurrentUser();
+    if (!user) { alert('You must be logged in to delete a report.'); return; }
+    if (!confirm('Delete this report? This cannot be undone.')) return;
+    const card = btn.closest('.pet-card');
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      // Ownership is enforced both client-side (button only renders for the poster)
+      // and here via the eq('posted_by', user) clause, so the delete only succeeds
+      // if this row's posted_by still matches the logged-in user.
+      const { error, count } = await db.from('listings').delete({ count: 'exact' }).eq('id', id).eq('posted_by', user);
+      if (error) { alert('Could not delete: ' + errMsg(error)); btn.disabled = false; btn.textContent = '🗑️'; return; }
+      if (!count) { alert("This report couldn't be deleted — you may not be the original poster."); btn.disabled = false; btn.textContent = '🗑️'; return; }
+      bustCache();
+      if (card) {
+        card.style.transition = 'opacity 0.2s, transform 0.2s';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.96)';
+        setTimeout(() => card.remove(), 200);
+      }
+    } catch(ex) {
+      alert('Error: ' + errMsg(ex));
+      btn.disabled = false; btn.textContent = '🗑️';
+    }
+  }
+
+  async function markReunited(btn) {
+    const id = btn.getAttribute('data-id');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    try {
+      const { error } = await db.from('listings').update({ report_type: 'reunited' }).eq('id', id);
+      if (error) { alert('Could not update: ' + errMsg(error)); btn.textContent = '✅ Mark Reunited'; btn.disabled = false; return; }
+      bustCache();
+      // Update card in place without full reload
+      const card = btn.closest('.pet-card');
+      if (card) {
+        card.style.borderTopColor = 'var(--green)';
+        card.style.borderTopWidth = '3px';
+        card.style.borderTopStyle = 'solid';
+        card.style.opacity = '0.7';
+        const badgeEl = card.querySelector('span');
+        if (badgeEl) {
+          badgeEl.textContent = '✅ REUNITED';
+          badgeEl.style.background = '#dff0e8';
+          badgeEl.style.color = 'var(--green)';
+        }
+        const footer = btn.parentElement;
+        footer.innerHTML = '<div style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;">✅ Reunited</div>';
+      } else {
+        // fallback: reload the list if card not found
+        loadLF();
+      }
+    } catch(ex) { alert('Error: ' + errMsg(ex)); btn.textContent = '✅ Mark Reunited'; btn.disabled = false; }
+  }
+
+
+  document.addEventListener('click', function(e) {
+    const contactBtn = e.target.closest('.contact-btn');
+    if (contactBtn) {
+      showContactPopup(
+        contactBtn.getAttribute('data-name'),
+        contactBtn.getAttribute('data-phone'),
+        contactBtn.getAttribute('data-pet'),
+        contactBtn.getAttribute('data-action')
+      );
+      if (contactBtn.classList.contains('notify-btn')) {
+        sendFoundNotification(contactBtn);
+      }
+    }
+    const reuniteBtn = e.target.closest('.reunite-btn');
+    if (reuniteBtn) markReunited(reuniteBtn);
+  });
+
+  async function sendFoundNotification(btn) {
+    const recipient = btn.getAttribute('data-posted-by');
+    if (!recipient) return; // listing wasn't posted by a logged-in user
+    const finder = getCurrentUser() || 'Someone';
+    const petName = btn.getAttribute('data-pet-name');
+    const species = btn.getAttribute('data-species');
+    try {
+      await db.from('notifications').insert({
+        recipient_username: recipient,
+        pet_name: petName,
+        species: species,
+        finder_name: finder,
+        finder_phone: '',
+        message: `${finder} reported finding your ${species.toLowerCase()} "${petName}"! Check your contact details for them to reach out, or use the contact info on the listing.`,
+        read: false
+      });
+    } catch(ex) { /* fail silently — popup still shows contact info */ }
+  }
+
+  function showContactPopup(name, phone, pet, action) {
+    document.getElementById('contact-popup-title').textContent = action;
+    document.getElementById('contact-popup-name').textContent = name;
+    document.getElementById('contact-popup-phone').textContent = phone;
+    document.getElementById('contact-popup-pet').textContent = pet;
+    document.getElementById('contact-popup-call').href = 'tel:' + phone;
+    document.getElementById('contact-popup-copy').textContent = 'Copy';
+    document.getElementById('contact-popup').style.display = 'flex';
+  }
+  function closeContactPopup() {
+    document.getElementById('contact-popup').style.display = 'none';
+  }
+  function copyContactPhone() {
+    const phone = document.getElementById('contact-popup-phone').textContent;
+    navigator.clipboard.writeText(phone).then(() => {
+      const btn = document.getElementById('contact-popup-copy');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+  document.getElementById('contact-popup').addEventListener('click', function(e) {
+    if (e.target === this) closeContactPopup();
+  });
+
   // ── Init ──────────────────────────────────────────────────
   updateHeader();
   initFacts();
   initRegionButtons();
   loadRecent();
-  applyFilter();
+  loadReunited();
 </script>
 </body>
 </html>
