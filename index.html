@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pet Helpers — Official Animal Recovery</title>
+  <title>Pet Helpers — Official Animal Recovery &amp; Reunification Service</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ===== STYLES (identical to original, only security logic changed) ===== */
     :root {
       --navy:      #0a1f44;
       --navy-mid:  #122a5e;
@@ -38,200 +37,2320 @@
       background: var(--bg);
       font-size: 15px;
       line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
     }
-    /* ... rest of styles exactly as original (kept concise for length) ... */
-    .gov-bar, header, nav, .card, .hero, .facts-card, .shelter-card, .view-toggle, .map-container, .official-notice { /* keep original styling */ }
+
+    /* ── Official gov strip ── */
+    .gov-bar {
+      background: var(--navy-dk);
+      color: rgba(255,255,255,0.42);
+      font-size: 0.62rem;
+      padding: 6px 28px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .gov-bar::before {
+      content: '';
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .gov-bar-dot { width: 3px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 50%; flex-shrink:0; }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      color: white;
+      padding: 0 0 0 0;
+      display: flex;
+      align-items: stretch;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      min-height: 72px;
+    }
+    .header-seal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      min-height: 72px;
+      background: var(--gold);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .seal-circle {
+      width: 46px; height: 46px;
+      border: 2px solid var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: var(--gold-lt);
+    }
+    .seal-circle .seal-icon { font-size: 1.3rem; line-height: 1; }
+    .seal-circle .seal-star { font-size: 0.45rem; letter-spacing: 2px; color: var(--navy); font-weight: 700; margin-top: 1px; }
+    .header-title-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 20px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+    }
+    header h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+    }
+    header h1 small {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 400;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .header-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+      align-self: stretch;
+      margin: 0;
+    }
+    .header-agency {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 20px;
+    }
+    .header-agency-name {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gold-lt);
+      margin-bottom: 1px;
+    }
+    .header-agency-sub {
+      font-size: 0.58rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.6px;
+    }
+    #headerRight { margin-left: auto; display: flex; align-items: center; gap: 0; border-left: 1px solid rgba(255,255,255,0.1); }
+    #headerRight span { color: rgba(255,255,255,0.55); font-size: 0.78rem; padding: 0 16px; border-right: 1px solid rgba(255,255,255,0.1); }
+    #headerRight a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.06);
+      padding: 0 22px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.15s;
+      cursor: pointer;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    #headerRight a:hover { background: rgba(255,255,255,0.14); }
+
+    /* ── Nav ── */
+    nav {
+      background: var(--navy-lt);
+      display: flex;
+      padding: 0 0 0 72px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 999;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    nav a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.52);
+      font-weight: 500;
+      padding: 13px 20px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    nav a:hover { color: rgba(255,255,255,0.85); }
+    nav a.active { color: white; border-bottom-color: var(--gold-lt); font-weight: 600; }
+
+    /* ── Layout ── */
+    main { max-width: 880px; margin: 0 auto; padding: 30px 24px 80px; }
+    h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--navy);
+      padding: 28px 30px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Forms ── */
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+      margin-top: 16px;
+      font-size: 0.68rem;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    label:first-of-type { margin-top: 0; }
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--navy);
+      border-radius: 0;
+      font-size: 0.9rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #fafbfc;
+      color: var(--text);
+      transition: border-color 0.12s, background 0.12s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+      border-left-color: var(--red);
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(10,31,68,0.08);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    button {
+      margin-top: 20px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 11px 26px;
+      border-radius: 0;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: 'IBM Plex Sans', sans-serif;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      transition: background 0.15s;
+    }
+    button:hover { background: var(--navy-mid); }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--navy);
+      padding: 52px 48px 48px;
+      color: white;
+      margin-bottom: 24px;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 300px;
+      height: 300px;
+      border: 40px solid rgba(255,255,255,0.025);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-lt);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 2px;
+      background: var(--gold);
+    }
+    .hero h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: white;
+      line-height: 1.05;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.02em;
+    }
+    .hero p {
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+      opacity: 0.7;
+      max-width: 440px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+      font-weight: 300;
+    }
+    .hero-btns { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .hero-btn {
+      text-decoration: none;
+      background: var(--red);
+      color: white;
+      padding: 10px 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      transition: background 0.15s;
+      margin-top: 0;
+    }
+    .hero-btn:hover { background: #8a0f1f; }
+    .hero-btn.outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.28);
+      color: rgba(255,255,255,0.8);
+    }
+    .hero-btn.outline:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Steps ── */
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); }
+    .step { background: var(--surface); padding: 22px 20px; }
+    .step-num {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--navy);
+      opacity: 0.06;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .step h3 { font-size: 0.7rem; color: var(--navy); margin-bottom: 6px; }
+    .step p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    @media (max-width: 500px) {
+      .steps { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 1.8rem; }
+      .hero { padding: 36px 24px 32px; }
+    }
+
+    /* ── Page banner ── */
+    .page-banner {
+      background: var(--navy);
+      color: white;
+      padding: 30px 32px 26px;
+      margin-bottom: 24px;
+      border-bottom: 3px solid var(--gold);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .page-banner-eyebrow {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gold-lt);
+      margin-bottom: 8px;
+      opacity: 0.85;
+      position: relative;
+    }
+    .page-banner h2 {
+      font-family: 'IBM Plex Serif', serif;
+      color: white;
+      font-size: 1.85rem;
+      margin-bottom: 5px;
+      position: relative;
+      letter-spacing: -0.01em;
+    }
+    .page-banner p { color: rgba(255,255,255,0.55); font-size: 0.85rem; position: relative; font-weight: 300; }
+
+    /* ── Facts ── */
+    .facts-card {
+      background: var(--navy);
+      color: white;
+      padding: 28px 30px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      border-left: 3px solid var(--gold);
+    }
+    .facts-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .facts-card h2 { color: white; margin-bottom: 14px; position: relative; z-index: 1; }
+    .fact-display { min-height: 58px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+    .fact-text { font-size: 0.92rem; line-height: 1.75; text-align: center; color: rgba(255,255,255,0.82); font-weight: 300; }
+    @keyframes factFade { from { opacity:0; } to { opacity:1; } }
+    .fact-dots { display: flex; justify-content: center; gap: 6px; margin-top: 14px; position: relative; z-index: 1; }
+    .fact-dot { width: 16px; height: 2px; background: rgba(255,255,255,0.18); cursor: pointer; transition: background 0.2s; }
+    .fact-dot.active { background: var(--gold-lt); }
+    .fact-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; position: relative; z-index: 1; }
+    .fact-nav button {
+      margin-top: 0;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 16px;
+      font-size: 0.7rem;
+      letter-spacing: 0.8px;
+    }
+    .fact-nav button:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── Tags ── */
+    .tag {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      padding: 2px 8px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
     .tag.claimed { background: var(--green); }
-    .success-msg, .error-msg, .photo-preview { display: none; }
-    button { margin-top: 20px; background: var(--navy); color: white; border: none; padding: 11px 26px; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 0.9px; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .contact-btn, .reunite-btn, .sf-transfer { transition: background 0.1s; }
-    #transfer-modal, #contact-popup, #add-shelter-modal { display: none; position: fixed; inset: 0; background: rgba(6,14,30,0.65); z-index: 9999; align-items: center; justify-content: center; }
-    #transfer-modal.open, #contact-popup[style*="flex"], #add-shelter-modal[style*="flex"] { display: flex; }
-    .map-container { height: 400px; border: 1px solid var(--border); }
-    @media (max-width:500px) { .steps { grid-template-columns:1fr; } .hero h2 { font-size:1.8rem; } }
+    .tag.shelter { background: var(--teal); }
+
+    /* ── Alerts ── */
+    .success-msg {
+      display: none;
+      background: #eaf4ec;
+      border: 1px solid #9ecfaa;
+      border-left: 3px solid var(--green);
+      padding: 13px 18px;
+      margin-top: 16px;
+      color: #0f3d20;
+      font-weight: 500;
+      font-size: 0.88rem;
+    }
+    .error-msg {
+      display: none;
+      background: #fdf0ef;
+      border: 1px solid #e8a09a;
+      border-left: 3px solid var(--red);
+      padding: 10px 14px;
+      color: #5c1010;
+      margin-top: 12px;
+      font-weight: 500;
+      font-size: 0.88rem;
+    }
+
+    /* ── Photo ── */
+    .photo-preview { width: 100%; max-height: 180px; object-fit: cover; margin-top: 10px; display: none; }
+
+    /* ── Toggle ── */
+    .view-toggle { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); width: fit-content; }
+    .view-toggle button {
+      background: var(--surface);
+      color: var(--muted);
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 8px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.68rem;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      transition: all 0.15s;
+    }
+    .view-toggle button:last-child { border-right: none; }
+    .view-toggle button:hover { background: var(--bg); color: var(--text); }
+    .view-toggle button.active { background: var(--navy); color: white; }
+
+    /* ── Map ── */
+    .map-container { height: 400px; overflow: hidden; border: 1px solid var(--border); }
+
+    /* ── Stray grid ── */
+    #stray-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+    /* ── Auth toggle ── */
+    .auth-toggle { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); }
+    .auth-toggle button {
+      flex: 1;
+      background: var(--surface);
+      color: var(--muted);
+      border: none;
+      border-right: 1px solid var(--border);
+      padding: 9px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.72rem;
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .auth-toggle button:last-child { border-right: none; }
+    .auth-toggle button.active { background: var(--navy); color: white; }
+
+    /* ── Fade in ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    #page-home, #page-stray, #page-account, #page-shelters { animation: fadeUp 0.18s ease; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy-dk);
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      border-top: 2px solid var(--gold);
+    }
+    footer strong { color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* ── Report form ── */
+    #report-form-wrap { display: none; }
+    #report-form-wrap.open { display: block; }
+
+    /* ── Section label (replaces h3 in page banners) ── */
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    /* ── Shelter cards ── */
+    .shelter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--teal);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .shelter-card:hover { border-color: var(--teal-lt); }
+    .shelter-header {
+      background: var(--teal);
+      color: white;
+      padding: 18px 20px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .shelter-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .shelter-header h3 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      color: white;
+      margin-bottom: 3px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.3;
+    }
+    .shelter-header .shelter-type {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      opacity: 0.6;
+      position: relative;
+      z-index: 1;
+      font-weight: 600;
+    }
+    .shelter-body { padding: 16px 20px; }
+    .shelter-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.82rem; }
+    .shelter-row-icon { flex-shrink: 0; width: 18px; text-align: center; margin-top: 1px; }
+    .shelter-row-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted-lt); font-weight: 600; margin-bottom: 1px; }
+    .capacity-bar-wrap { background: var(--bg-ruled); height: 4px; margin-top: 4px; overflow: hidden; }
+    .capacity-bar { height: 100%; transition: width 0.4s; }
+    .shelter-animals {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-lt);
+    }
+    .shelter-animals span {
+      background: var(--bg-ruled);
+      color: var(--navy);
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: 1px solid var(--border);
+    }
+    .shelter-footer { display: flex; border-top: 1px solid var(--border-lt); }
+    .shelter-footer a, .shelter-footer button {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 600;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: 'IBM Plex Sans', sans-serif;
+      border-right: 1px solid var(--border-lt);
+      margin: 0;
+      transition: background 0.1s;
+    }
+    .shelter-footer a:last-child, .shelter-footer button:last-child { border-right: none; }
+    .shelter-footer .sf-call { color: var(--teal); }
+    .shelter-footer .sf-call:hover { background: #e6f4f5; }
+    .shelter-footer .sf-map { color: var(--navy); }
+    .shelter-footer .sf-map:hover { background: var(--bg); }
+    .shelter-footer .sf-transfer { color: var(--green); }
+    .shelter-footer .sf-transfer:hover { background: #eaf4ec; }
+
+    /* ── Modals ── */
+    #transfer-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6,14,30,0.65);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #transfer-modal.open { display: flex; }
+    #transfer-modal-inner {
+      background: white;
+      max-width: 480px;
+      width: 94%;
+      border-top: 3px solid var(--teal);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #transfer-modal-inner h2 { font-size: 1.1rem; padding: 22px 24px 0; margin-bottom: 6px; }
+    #transfer-modal-inner p { padding: 0 24px; font-size: 0.84rem; color: var(--muted); margin-bottom: 16px; }
+    #transfer-modal-inner .modal-body { padding: 0 24px 24px; }
+    .modal-close {
+      float: right;
+      margin: 16px 18px 0 0;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      font-size: 0.7rem;
+      margin-top: 0;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+    .modal-close:hover { background: var(--bg); }
+
+    /* ── Shelter search bar ── */
+    .shelter-search-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--teal);
+      padding: 13px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .shelter-search-bar input,
+    .shelter-search-bar select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--teal);
+      font-size: 0.85rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #fafbfc;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    /* ── Document watermark line ── */
+    .doc-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+      position: relative;
+    }
+    .doc-rule::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      top: -8px;
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted-lt);
+      background: var(--bg);
+      padding-right: 10px;
+    }
+
+    /* ── Official notice box ── */
+    .official-notice {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--navy);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      background: var(--surface);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .official-notice-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .official-notice strong {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+    .official-notice p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
 
-<div class="gov-bar"><span>Official Animal Recovery &amp; Reunification Service</span><div class="gov-bar-dot"></div><span>Operated by City Animal Services</span><div class="gov-bar-dot"></div><span>pethelpers.gov</span></div>
+<div class="gov-bar">
+  Official Animal Recovery &amp; Reunification Service
+  <span class="gov-bar-dot"></span>
+  Operated by City Animal Services
+  <span class="gov-bar-dot"></span>
+  <span style="margin-left:auto;opacity:0.35;">pethelpers.gov</span>
+</div>
 
 <header>
-  <div class="header-seal"><div class="seal-circle"><span class="seal-icon">🐾</span><span class="seal-star">★ ★ ★</span></div></div>
-  <div class="header-title-wrap" onclick="showPage('home')"><h1><small>City Animal Services</small>Pet Helpers</h1></div>
-  <div class="header-divider"></div><div class="header-agency"><div class="header-agency-name">Animal Registry Division</div><div class="header-agency-sub">Stray Recovery · Lost &amp; Found · Shelter Network</div></div>
+  <div class="header-seal">
+    <div class="seal-circle">
+      <span class="seal-icon">🐾</span>
+      <span class="seal-star">★ ★ ★</span>
+    </div>
+  </div>
+  <div class="header-title-wrap" onclick="showPage('home')">
+    <h1>
+      <small>City Animal Services</small>
+      Pet Helpers
+    </h1>
+  </div>
+  <div class="header-agency" style="display:none;" id="header-agency-block">
+    <div class="header-agency-name">Animal Registry Division</div>
+    <div class="header-agency-sub">Stray Recovery · Lost &amp; Found · Shelter Network</div>
+  </div>
   <span id="headerRight"></span>
 </header>
 
 <nav>
-  <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
-  <a onclick="showPage('lost')" id="nav-lost">Lost a Pet</a>
-  <a onclick="showPage('lf')" id="nav-lf">Lost &amp; Found</a>
-  <a onclick="showPage('stray')" id="nav-stray">Stray Registry</a>
+  <a onclick="showPage('home')"     id="nav-home"     class="active">Home</a>
+  <a onclick="showPage('lost')"     id="nav-lost">Lost a Pet</a>
+  <a onclick="showPage('stray')"    id="nav-stray">Stray Registry</a>
+  <a onclick="showPage('lf')"       id="nav-lf">Lost &amp; Found</a>
   <a onclick="showPage('shelters')" id="nav-shelters">Shelters</a>
-  <a onclick="showPage('account')" id="nav-account">My Account</a>
+  <a onclick="showPage('account')"  id="nav-account">My Account</a>
 </nav>
 
 <main>
-  <!-- HOME, LOST, STRAY, LF, SHELTERS, ACCOUNT sections identical to original structure, only JS logic modified -->
-  <div id="page-home"><div class="hero"><div class="hero-eyebrow">Animal Recovery &amp; Reunification Service</div><h2>Report a stray.<br>Find its owner.</h2><p>Pet Helpers connects people who've found a stray animal with the owners searching for them.</p><div class="hero-btns"><button class="hero-btn" onclick="showPage('lf')">Pet Recovery Registry</button><button class="hero-btn outline" onclick="showPage('lost')">I Lost My Pet</button><button class="hero-btn outline" onclick="showPage('stray')">Browse Stray Registry</button><button class="hero-btn outline" onclick="showPage('stray');openReportForm()">Report a Stray</button><button class="hero-btn outline" onclick="showPage('shelters')">Find a Shelter</button></div></div><div class="official-notice"><div class="official-notice-icon">🤝</div><div><strong>Community Notice</strong><p>Every stray report you submit is visible to the public. Most lost pets are reunited within 24–48 hours when reported promptly.</p></div></div><div class="facts-card"><h2>Did You Know?</h2><div class="fact-display"><p class="fact-text" id="factText"></p></div><div class="fact-dots" id="factDots"></div><div class="fact-nav"><button onclick="prevFact()">← Prev</button><button onclick="nextFact()">Next →</button></div></div><div class="card" style="padding:0"><h2 style="padding:24px 28px 18px;border-bottom:1px solid var(--border);">How It Works</h2><div class="steps"><div class="step"><div class="step-num">01</div><h3>Spot a Stray</h3><p>Found a stray animal? Submit a report with a photo and location.</p></div><div class="step"><div class="step-num">02</div><h3>Post to Registry</h3><p>Your report is listed publicly so owners can search.</p></div><div class="step"><div class="step-num">03</div><h3>Reunite</h3><p>The owner contacts you directly to arrange a safe pickup.</p></div></div></div><div class="card"><h2>Recent Reports</h2><div id="home-recent">Loading…</div></div></div>
-  
-  <div id="page-lost" style="display:none;"><div class="page-banner"><h2>I Lost My Pet</h2><p>Fill in the details to generate a shareable missing notice.</p></div><div class="card"><form id="lostForm">... same fields ...<button type="submit">Generate Missing Notice</button></form><div id="lost-outputBox" style="display:none;"></div><div id="lost-matches" style="display:none;"></div></div></div>
-  
-  <div id="page-stray" style="display:none;"><div class="page-banner"><h2>Stray Animal Registry</h2><p>Browse reported strays or submit a new report.</p></div><div style="margin-bottom:20px;"><button id="report-toggle-btn" onclick="toggleReportForm()" style="margin:0;background:var(--red);">+ Report a Stray</button></div><div id="report-form-wrap" class="card"><h2>Report a Stray Animal</h2><div id="report-login-prompt"></div><form id="reportForm">...</form><div class="success-msg" id="r-success"></div></div><div class="view-toggle"><button class="active" id="btn-list" onclick="showListView()">List</button><button id="btn-map" onclick="showMapView()">Map</button></div><div id="stray-list-view"><div id="stray-grid"></div></div><div id="stray-map-view" style="display:none;"><div id="stray-map" class="map-container"></div></div></div>
-  
-  <div id="page-lf" style="display:none;"><div class="page-banner"><h2>Pet Recovery Registry</h2><p>All active lost pet reports and found strays in one place.</p></div><div style="display:flex;gap:1px;background:var(--border);margin-bottom:20px;"><div style="flex:1;background:#fff8f8;padding:14px 18px;"><div id="lf-count-lost">—</div><div>Lost</div></div><div style="flex:1;background:#f0f7f2;padding:14px 18px;"><div id="lf-count-found">—</div><div>Found Strays</div></div><div style="flex:1;background:#f4f6fa;padding:14px 18px;"><div id="lf-count-all">—</div><div>Total Reports</div></div></div><div id="lf-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;"></div></div>
-  
-  <div id="page-shelters" style="display:none;"><div class="page-banner"><h2>Animal Shelters</h2><p>Find nearby shelters.</p></div><div id="region-selector-wrap"><button id="region-trigger-btn" onclick="toggleRegionDropdown()">🌍 Select region</button><div id="region-dropdown" style="display:none;"></div></div><div id="shelter-grid"></div></div>
-  
-  <div id="page-account" style="display:none;"><div class="page-banner"><h2>Your Account</h2><p>Sign in or create an account.</p></div><div class="card" id="account-loggedInCard" style="display:none;"><div><div id="account-loggedInName"></div><button onclick="logoutUser()">Sign Out</button></div><div id="account-my-listings"></div></div><div class="card" id="account-authCard"><div class="auth-toggle"><button id="account-btnLogin" onclick="showLoginForm()">Log In</button><button id="account-btnSignup" onclick="showSignupForm()">Sign Up</button></div><form id="account-loginForm"><h2>Welcome back</h2><input type="text" id="account-loginUser" placeholder="Username" required/><input type="password" id="account-loginPass" placeholder="Password" required/><button type="submit">Log In</button><div class="error-msg" id="account-loginError"></div></form><form id="account-signupForm" style="display:none;"><h2>Create an account</h2><input type="text" id="account-signupUser" placeholder="Username" required/><input type="email" id="account-signupEmail" placeholder="Email" required/><input type="password" id="account-signupPass" placeholder="Password (min 4)" required minlength="4"/><button type="submit">Create Account</button><div class="error-msg" id="account-signupError"></div></form></div></div>
+
+  <!-- ===== HOME ===== -->
+  <div id="page-home">
+
+    <div class="hero">
+      <div class="hero-eyebrow">Animal Recovery &amp; Reunification Service</div>
+      <h2>Report a stray.<br>Find its owner.</h2>
+      <p>Pet Helpers connects people who've found a stray animal with the owners searching for them. Submit a report, browse the registry, or find a local shelter.</p>
+      <div class="hero-btns">
+        <button class="hero-btn" onclick="showPage('stray')">Browse the Registry</button>
+        <button class="hero-btn outline" onclick="showPage('lost')">I Lost My Pet</button>
+        <button class="hero-btn outline" onclick="showPage('stray');openReportForm()">Report a Stray</button>
+        <button class="hero-btn outline" onclick="showPage('shelters')">Find a Shelter</button>
+      </div>
+    </div>
+
+    <div class="official-notice">
+      <div class="official-notice-icon">🤝</div>
+      <div>
+        <strong>Community Notice</strong>
+        <p>Every stray report you submit is visible to the public. Most lost pets are reunited within 24–48 hours when reported promptly. Please include a photo and precise location for best results.</p>
+      </div>
+    </div>
+
+    <div class="facts-card">
+      <h2>Did You Know?</h2>
+      <div class="fact-display"><p class="fact-text" id="factText"></p></div>
+      <div class="fact-dots" id="factDots"></div>
+      <div class="fact-nav">
+        <button onclick="prevFact()">← Prev</button>
+        <button onclick="nextFact()">Next →</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <h2 style="padding:24px 28px 18px;margin-bottom:0;border-bottom:1px solid var(--border);">How It Works</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><h3>Spot a Stray</h3><p>Found a stray animal? Submit a report with a photo and location.</p></div>
+        <div class="step"><div class="step-num">02</div><h3>Post to Registry</h3><p>Your report is listed publicly so owners can search and find it.</p></div>
+        <div class="step"><div class="step-num">03</div><h3>Reunite</h3><p>The owner contacts you directly to arrange a safe pickup.</p></div>
+      </div>
+    </div>
+
+    <!-- Shelter highlight on home -->
+    <div class="official-notice" style="border-left-color:var(--teal);margin-bottom:20px;">
+      <div class="official-notice-icon">🏠</div>
+      <div style="flex:1;">
+        <strong style="color:var(--teal);">Shelter Referral Service</strong>
+        <p>Can't care for a stray right now? Find a nearby registered shelter that can take them in safely while the owner is located.</p>
+      </div>
+      <button onclick="showPage('shelters')" style="margin:0;flex-shrink:0;background:var(--teal);border:none;color:white;padding:9px 18px;font-size:0.68rem;letter-spacing:0.8px;align-self:center;">View Shelters →</button>
+    </div>
+
+    <div class="card" style="padding-bottom:8px;">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;">
+        <h2 style="margin-bottom:0;">Recent Reports</h2>
+        <a onclick="showPage('stray')" style="font-size:0.82rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;">View all →</a>
+      </div>
+      <div id="home-recent"><p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Loading…</p></div>
+    </div>
+
+  </div>
+
+  <!-- ===== LOST PET ===== -->
+  <div id="page-lost" style="display:none;">
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Lost Pet Report</div>
+      <h2>I Lost My Pet</h2>
+      <p>Fill in the details to generate a shareable missing notice.</p>
+    </div>
+    <div class="card">
+      <form id="lostForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+          <div>
+            <label for="lost-ownerName">Your name</label>
+            <input type="text" id="lost-ownerName" placeholder="e.g. Sarah" required />
+          </div>
+          <div>
+            <label for="lost-contact">Your phone or email</label>
+            <input type="text" id="lost-contact" placeholder="e.g. 555-0123" required />
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+          <div>
+            <label for="lost-petName">Pet's name</label>
+            <input type="text" id="lost-petName" placeholder="e.g. Biscuit" required />
+          </div>
+          <div>
+            <label for="lost-species">Pet type</label>
+            <select id="lost-species" required>
+              <option value="">— select —</option>
+              <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <label for="lost-description">Colour and markings</label>
+        <input type="text" id="lost-description" placeholder="e.g. golden fur, white patch on chest" required />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+          <div>
+            <label for="lost-location">Last seen location</label>
+            <input type="text" id="lost-location" placeholder="e.g. Oak Street near the park" required />
+          </div>
+          <div>
+            <label for="lost-dateLost">Date lost</label>
+            <input type="date" id="lost-dateLost" required />
+          </div>
+        </div>
+        <label for="lost-reward">Reward (optional)</label>
+        <input type="text" id="lost-reward" placeholder="e.g. $50" />
+        <label for="lost-photo">Photo of your pet</label>
+        <input type="file" id="lost-photo" accept="image/*" />
+        <img id="lost-photoPreview" class="photo-preview" alt="Preview" />
+        <button type="submit" style="margin-top:20px;">Generate Missing Notice</button>
+      </form>
+
+      <div id="lost-outputBox" style="display:none;margin-top:28px;">
+        <div id="lost-poster" style="border:3px solid var(--navy);background:#fff;overflow:hidden;">
+          <div style="background:var(--navy);color:white;text-align:center;padding:14px 20px;">
+            <div style="font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;opacity:0.65;margin-bottom:4px;">Please help find</div>
+            <div id="poster-petName" style="font-family:'IBM Plex Serif',serif;font-size:2rem;font-weight:700;"></div>
+            <div id="poster-species" style="font-size:0.78rem;opacity:0.6;margin-top:3px;text-transform:uppercase;letter-spacing:1px;"></div>
+          </div>
+          <div id="poster-photoWrap" style="display:none;">
+            <img id="lost-outputPhoto" style="width:100%;max-height:260px;object-fit:cover;display:block;" alt="Pet photo" />
+          </div>
+          <div id="poster-noPhoto" style="background:#eef0f4;height:90px;display:flex;align-items:center;justify-content:center;font-size:3rem;">🐾</div>
+          <div style="padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;">
+            <div>
+              <div style="font-size:0.63rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:700;margin-bottom:3px;">Last Seen</div>
+              <div id="poster-location" style="font-size:0.88rem;font-weight:600;"></div>
+            </div>
+            <div>
+              <div style="font-size:0.63rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:700;margin-bottom:3px;">Date Missing</div>
+              <div id="poster-date" style="font-size:0.88rem;font-weight:600;"></div>
+            </div>
+            <div style="grid-column:1/-1;">
+              <div style="font-size:0.63rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:700;margin-bottom:3px;">Description</div>
+              <div id="poster-desc" style="font-size:0.88rem;line-height:1.5;"></div>
+            </div>
+          </div>
+          <div id="poster-rewardBanner" style="display:none;background:var(--gold);color:#1a1f2b;text-align:center;padding:9px;font-weight:700;font-size:0.92rem;letter-spacing:0.5px;"></div>
+          <div style="background:var(--red);color:white;text-align:center;padding:14px 20px;">
+            <div style="font-size:0.63rem;letter-spacing:1.5px;text-transform:uppercase;opacity:0.75;margin-bottom:3px;">If you've seen this pet, please contact</div>
+            <div id="poster-contactText" style="font-size:1.05rem;font-weight:700;"></div>
+          </div>
+        </div>
+        <p id="lost-outputText" style="display:none;"></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+          <button id="lost-copyBtn" type="button" style="margin:0;background:var(--navy);">Copy Message</button>
+          <button id="lost-foundBtn" type="button" onclick="markAsFound()" style="margin:0;background:var(--green);">✅ My Pet Was Found!</button>
+        </div>
+      </div>
+
+      <div id="lost-matches" style="display:none;margin-top:24px;border-top:2px solid var(--border);padding-top:20px;">
+        <h3 style="font-family:'IBM Plex Serif',serif;font-size:1.1rem;font-weight:600;margin-bottom:4px;text-transform:none;letter-spacing:0;color:var(--navy);">Matching strays in the registry</h3>
+        <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px;">These found animals match your pet's type — contact the reporter if you recognise yours.</p>
+        <div id="lost-matches-list"></div>
+        <a onclick="showPage('stray')" style="display:inline-block;margin-top:10px;font-size:0.8rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;">Browse full registry →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STRAY REGISTRY ===== -->
+  <div id="page-stray" style="display:none;">
+
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Public Registry</div>
+      <h2>Stray Animal Registry</h2>
+      <p>Browse reported strays or submit a new report.</p>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <button id="report-toggle-btn" onclick="toggleReportForm()" style="margin:0;background:var(--red);padding:11px 24px;">+ Report a Stray</button>
+    </div>
+
+    <div id="report-form-wrap" class="card" style="margin-bottom:24px;">
+      <h2>Report a Stray Animal</h2>
+      <p style="margin-bottom:18px;color:var(--muted);font-size:0.93rem;">Fill in as much detail as you can. Your listing will appear in the registry immediately.</p>
+      <div id="report-login-prompt" style="display:none;text-align:center;padding:20px 0;">
+        <p style="color:var(--muted);margin-bottom:14px;">You need to be logged in to submit a report.</p>
+        <button onclick="showPage('account')" style="margin:0;background:var(--navy);">Log In / Sign Up</button>
+      </div>
+      <form id="reportForm" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+          <div>
+            <label for="r-name">Your name or shelter</label>
+            <input type="text" id="r-name" placeholder="e.g. Jane Smith" required />
+          </div>
+          <div>
+            <label for="r-phone">Contact number</label>
+            <input type="tel" id="r-phone" placeholder="e.g. 555-0199" required />
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+          <div>
+            <label for="r-petname">Animal's name (if known)</label>
+            <input type="text" id="r-petname" placeholder="e.g. Unknown" required />
+          </div>
+          <div>
+            <label for="r-species">Type of animal</label>
+            <select id="r-species" required>
+              <option value="">— select —</option>
+              <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <label for="r-location">Where was it found?</label>
+        <input type="text" id="r-location" placeholder="e.g. Central Park, New York" required />
+        <label for="r-desc">Description (colour, markings, condition)</label>
+        <textarea id="r-desc" placeholder="e.g. Small brown dog, white patch on chest, friendly"></textarea>
+        <label for="r-photo">Photo</label>
+        <input type="file" id="r-photo" accept="image/*" />
+        <img id="r-photo-preview" class="photo-preview" alt="Preview" />
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+          <button type="submit" id="r-submit-btn" style="margin:0;">Submit Report</button>
+          <button type="button" onclick="toggleReportForm()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);">Cancel</button>
+        </div>
+      </form>
+      <div class="success-msg" id="r-success">✅ Report submitted! <a onclick="applyFilter()" style="cursor:pointer;color:var(--green);text-decoration:underline;">View all reports →</a></div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+      <div style="flex:1;min-width:180px;position:relative;">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#adb5bd;pointer-events:none;">🔍</span>
+        <input type="text" id="s-search" placeholder="Search name, location, description…" oninput="applyFilter()"
+          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'IBM Plex Sans',sans-serif;background:#fafbfc;" />
+      </div>
+      <select id="s-species" onchange="applyFilter()"
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        <option value="">All types</option>
+        <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+      </select>
+      <button onclick="clearSearch()" id="s-clear" style="display:none;margin:0;padding:9px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);font-size:0.78rem;">✕ Clear</button>
+    </div>
+    <div id="s-meta" style="margin-bottom:12px;font-size:0.82rem;color:var(--muted);display:none;"></div>
+
+    <div class="view-toggle" style="margin-bottom:20px;">
+      <button class="active" id="btn-list" onclick="showListView()">List</button>
+      <button id="btn-map" onclick="showMapView()">Map</button>
+    </div>
+
+    <div id="stray-list-view">
+      <div id="stray-grid"></div>
+    </div>
+    <div id="stray-map-view" style="display:none;">
+      <div id="stray-map" class="map-container"></div>
+      <p style="color:#adb5bd;font-size:0.82rem;margin-top:6px;">Only reports with a known location appear on the map.</p>
+    </div>
+
+  </div>
+
+  <!-- ===== LOST & FOUND ===== -->
+  <div id="page-lf" style="display:none;">
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Combined Register</div>
+      <h2>Lost &amp; Found Pets</h2>
+      <p>All active lost pet reports and found strays in one place.</p>
+    </div>
+
+    <div style="display:flex;gap:1px;background:var(--border);margin-bottom:20px;">
+      <div style="flex:1;background:#fff8f8;padding:14px 18px;text-align:center;">
+        <div id="lf-count-lost" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--red);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Lost</div>
+      </div>
+      <div style="flex:1;background:#f0f7f2;padding:14px 18px;text-align:center;">
+        <div id="lf-count-found" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Found Strays</div>
+      </div>
+      <div style="flex:1;background:#f4f6fa;padding:14px 18px;text-align:center;">
+        <div id="lf-count-all" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Total Reports</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+      <div style="flex:1;min-width:180px;position:relative;">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#adb5bd;pointer-events:none;">🔍</span>
+        <input type="text" id="lf-search" placeholder="Search name, location, description…" oninput="loadLF()"
+          style="width:100%;padding:9px 12px 9px 32px;border:1px solid var(--border);border-left:3px solid var(--navy);font-size:0.88rem;font-family:'IBM Plex Sans',sans-serif;background:#fafbfc;" />
+      </div>
+      <select id="lf-type" onchange="loadLF()"
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        <option value="">All reports</option>
+        <option value="lost">🔴 Lost pets</option>
+        <option value="stray">🟢 Found strays</option>
+      </select>
+      <select id="lf-species" onchange="loadLF()"
+        style="padding:9px 14px;border:1px solid var(--border);border-left:3px solid var(--navy);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;background:#fafbfc;flex-shrink:0;">
+        <option value="">All types</option>
+        <option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option>
+      </select>
+    </div>
+
+    <div id="lf-meta" style="margin-bottom:12px;font-size:0.82rem;color:var(--muted);display:none;"></div>
+    <div id="lf-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;"></div>
+  </div>
+
+  <!-- ===== SHELTERS ===== -->
+  <div id="page-shelters" style="display:none;">
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Shelter Network Directory</div>
+      <h2>Animal Shelters</h2>
+      <p>Find nearby shelters that can take in a stray or check on available animals.</p>
+    </div>
+
+    <!-- Region selector trigger -->
+    <div style="margin-bottom:20px;">
+      <button id="region-trigger-btn" onclick="openRegionModal()" style="margin:0;background:var(--navy);padding:11px 22px;display:flex;align-items:center;gap:10px;font-size:0.82rem;">
+        <span style="font-size:1.1rem;" id="region-flag">🌍</span>
+        <span id="region-trigger-label">Select your region</span>
+        <span style="opacity:0.6;font-size:0.75rem;margin-left:4px;">▼</span>
+      </button>
+    </div>
+
+    <!-- Region picker modal -->
+    <div id="region-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-start;justify-content:center;padding-top:80px;">
+      <div id="region-modal-inner" style="background:white;width:92%;max-width:680px;border-top:4px solid var(--teal);box-shadow:0 12px 40px rgba(0,0,0,0.25);max-height:80vh;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:white;z-index:1;">
+          <div>
+            <div style="font-family:'IBM Plex Serif',serif;font-size:1.2rem;font-weight:700;color:var(--navy);">Select a region</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;">30 regions across 6 continents</div>
+          </div>
+          <button onclick="closeRegionModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:6px 14px;font-size:0.78rem;">✕ Close</button>
+        </div>
+        <div style="padding:20px 24px;" id="region-modal-content"></div>
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div style="display:flex;gap:1px;background:var(--border);margin-bottom:20px;">
+      <div style="flex:1;background:#f0f7f8;padding:14px 18px;text-align:center;">
+        <div id="sh-count-shelters" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--teal);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Shelters in Region</div>
+      </div>
+      <div style="flex:1;background:#f0f7f2;padding:14px 18px;text-align:center;">
+        <div id="sh-count-open" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--green);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Open Today</div>
+      </div>
+      <div style="flex:1;background:#f4f6fa;padding:14px 18px;text-align:center;">
+        <div id="sh-count-types" style="font-family:'IBM Plex Serif',serif;font-size:1.8rem;font-weight:700;color:var(--navy);">—</div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-top:2px;">Shelter Types</div>
+      </div>
+    </div>
+
+    <!-- Info banner -->
+    <div style="background:#e8f4f6;border-left:5px solid var(--teal);padding:14px 20px;margin-bottom:20px;font-size:0.88rem;color:#0a4a55;line-height:1.6;">
+      <strong>Bringing in a stray?</strong> Call ahead when possible — shelters may have intake hours. Animals surrendered at a shelter are held for a minimum period so owners can claim them.
+    </div>
+
+    <!-- Search/filter -->
+    <div class="shelter-search-bar">
+      <div style="flex:1;min-width:180px;position:relative;">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#adb5bd;pointer-events:none;">🔍</span>
+        <input type="text" id="sh-search" placeholder="Search shelters by name or area…" oninput="renderShelters()"
+          style="width:100%;padding:9px 12px 9px 32px;" />
+      </div>
+      <select id="sh-filter-type" onchange="renderShelters()"
+        style="padding:9px 14px;flex-shrink:0;">
+        <option value="">All shelter types</option>
+        <option value="Municipal">Municipal</option>
+        <option value="Rescue">Rescue</option>
+        <option value="Humane Society">Humane Society</option>
+        <option value="Foster Network">Foster Network</option>
+      </select>
+      <select id="sh-filter-capacity" onchange="renderShelters()"
+        style="padding:9px 14px;flex-shrink:0;">
+        <option value="">Any capacity</option>
+        <option value="available">Space available</option>
+        <option value="full">Full / limited</option>
+      </select>
+    </div>
+
+    <div id="shelter-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;"></div>
+
+    <!-- Add shelter CTA -->
+    <div style="margin-top:30px;border:2px dashed var(--border);padding:28px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:10px;">🏠</div>
+      <h3 style="text-transform:none;letter-spacing:0;font-size:1rem;margin-bottom:6px;font-family:'IBM Plex Serif',serif;font-weight:600;color:var(--navy);">Are you a shelter or rescue?</h3>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:16px;max-width:360px;margin-left:auto;margin-right:auto;">Register your organisation to appear in this directory and receive stray transfer requests from the community.</p>
+      <button onclick="openAddShelterModal()" style="margin:0;background:var(--teal);padding:10px 24px;">Register Your Shelter</button>
+    </div>
+  </div>
+
+  <!-- ===== ACCOUNT ===== -->
+  <div id="page-account" style="display:none;">
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Resident Portal</div>
+      <h2>Your Account</h2>
+      <p>Sign in or create an account to submit stray reports and manage your listings.</p>
+    </div>
+    <div class="card" id="account-loggedInCard" style="display:none;text-align:center;padding:40px 28px;">
+      <div style="font-size:3.5rem;margin-bottom:12px;">👤</div>
+      <h2 style="margin-bottom:8px;">You are logged in</h2>
+      <p id="account-loggedInName" style="margin:0 0 24px;font-size:1rem;color:var(--muted);font-weight:600;"></p>
+      <button onclick="logoutUser()" style="background:#666;">Sign Out</button>
+    </div>
+    <div class="card" id="account-authCard">
+      <div class="auth-toggle">
+        <button class="active" id="account-btnLogin" onclick="showLoginForm()">Log In</button>
+        <button id="account-btnSignup" onclick="showSignupForm()">Sign Up</button>
+      </div>
+      <form id="account-loginForm">
+        <h2 style="margin-bottom:18px;">Welcome back</h2>
+        <label for="account-loginUser">Username</label>
+        <input type="text" id="account-loginUser" placeholder="Your username" required />
+        <label for="account-loginPass">Password</label>
+        <input type="password" id="account-loginPass" placeholder="Your password" required />
+        <button type="submit">Log In</button>
+        <div class="error-msg" id="account-loginError"></div>
+      </form>
+      <form id="account-signupForm" style="display:none;">
+        <h2 style="margin-bottom:18px;">Create an account</h2>
+        <label for="account-signupUser">Username</label>
+        <input type="text" id="account-signupUser" placeholder="e.g. jane123" required />
+        <label for="account-signupPass">Password</label>
+        <input type="password" id="account-signupPass" placeholder="At least 4 characters" required minlength="4" />
+        <button type="submit">Create Account</button>
+        <div class="error-msg" id="account-signupError"></div>
+      </form>
+    </div>
+  </div>
+
 </main>
 
-<div id="contact-popup"><div><div id="contact-popup-title"></div><div><div id="contact-popup-pet"></div><div id="contact-popup-name"></div><div id="contact-popup-phone"></div><button id="contact-popup-copy">Copy</button><a id="contact-popup-call" href="#">Call Now</a></div><button onclick="closeContactPopup()">✕</button></div></div>
-<div id="transfer-modal"><div><h2>Transfer to Shelter</h2><p id="transfer-modal-desc"></p><div id="transfer-shelter-list"></div><div id="transfer-success" style="display:none;"></div><button onclick="closeTransferModal()">Close</button></div></div>
+<footer>
+  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;flex-wrap:wrap;">
+    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Official Government Service</span>
+    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
+    <strong>Pet Helpers</strong>
+    <span style="width:1px;height:10px;background:rgba(255,255,255,0.15);display:inline-block;"></span>
+    <span style="opacity:0.5;letter-spacing:1px;font-size:0.6rem;text-transform:uppercase;">Animal Recovery &amp; Reunification</span>
+  </div>
+  <div style="font-size:0.6rem;opacity:0.3;letter-spacing:0.8px;">City Animal Services Division &nbsp;·&nbsp; pethelpers.gov &nbsp;·&nbsp; All rights reserved</div>
+</footer>
+
+<!-- ===== TRANSFER TO SHELTER MODAL ===== -->
+<div id="transfer-modal">
+  <div id="transfer-modal-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:22px 24px 0;">
+      <h2 style="padding:0;margin:0;">Transfer to Shelter</h2>
+      <button class="modal-close" onclick="closeTransferModal()">✕ Close</button>
+    </div>
+    <p id="transfer-modal-desc" style="padding:8px 24px 0;">Select a shelter to notify about this animal.</p>
+    <div class="modal-body">
+      <div id="transfer-shelter-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
+      <div id="transfer-success" style="display:none;background:#e6f4ea;border-left:5px solid var(--green);padding:14px 18px;color:#1a4d2e;font-weight:600;font-size:0.9rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD SHELTER MODAL ===== -->
+<div id="add-shelter-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:white;max-width:500px;width:94%;border-top:4px solid var(--teal);box-shadow:0 8px 32px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:22px 24px 0;">
+      <h2 style="padding:0;margin:0;font-size:1.2rem;">Register Your Shelter</h2>
+      <button onclick="closeAddShelterModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:5px 12px;font-size:0.78rem;">✕</button>
+    </div>
+    <div style="padding:16px 24px 24px;">
+      <form id="add-shelter-form">
+        <label for="as-name">Shelter / Organisation name</label>
+        <input type="text" id="as-name" placeholder="e.g. Eastside Animal Rescue" required />
+        <label for="as-type">Type</label>
+        <select id="as-type" required>
+          <option value="">— select —</option>
+          <option>Municipal</option><option>Rescue</option><option>Humane Society</option><option>Foster Network</option>
+        </select>
+        <label for="as-address">Address</label>
+        <input type="text" id="as-address" placeholder="e.g. 123 Maple Ave, Springfield" required />
+        <label for="as-phone">Phone</label>
+        <input type="tel" id="as-phone" placeholder="e.g. 555-0100" required />
+        <label for="as-email">Email</label>
+        <input type="email" id="as-email" placeholder="e.g. info@shelter.org" />
+        <label for="as-hours">Operating hours</label>
+        <input type="text" id="as-hours" placeholder="e.g. Mon–Fri 9am–5pm, Sat 10am–3pm" required />
+        <label for="as-capacity">Current capacity status</label>
+        <select id="as-capacity" required>
+          <option value="">— select —</option>
+          <option value="low">Plenty of space</option>
+          <option value="medium">Moderate — some space available</option>
+          <option value="high">Nearly full</option>
+          <option value="full">Full — limited intake</option>
+        </select>
+        <label for="as-animals">Animals accepted (select all that apply)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;margin-bottom:4px;" id="as-animals-wrap">
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="Dogs" style="width:auto;border:none;border-left:none;" /> Dogs</label>
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="Cats" style="width:auto;border:none;border-left:none;" /> Cats</label>
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="Birds" style="width:auto;border:none;border-left:none;" /> Birds</label>
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="Rabbits" style="width:auto;border:none;border-left:none;" /> Rabbits</label>
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="Small animals" style="width:auto;border:none;border-left:none;" /> Small animals</label>
+          <label style="display:flex;align-items:center;gap:5px;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.88rem;margin:0;cursor:pointer;"><input type="checkbox" value="All animals" style="width:auto;border:none;border-left:none;" /> All animals</label>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" style="margin:0;background:var(--teal);">Submit Registration</button>
+          <button type="button" onclick="closeAddShelterModal()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);">Cancel</button>
+        </div>
+        <div id="as-success" style="display:none;background:#e6f4ea;border-left:5px solid var(--green);padding:12px 16px;margin-top:14px;color:#1a4d2e;font-weight:600;font-size:0.88rem;"></div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  // ========== SUPABASE & GLOBALS ==========
-  const SUPABASE_URL = 'https://ikbyjcjydgpgvvwekdlo.supabase.co';
+  // ── Supabase config ───────────────────────────────────────
+  const SUPABASE_URL  = 'https://ikbyjcjydgpgvvwekdlo.supabase.co';
   const SUPABASE_ANON = 'sb_publishable_64EsJ_0OwBWgmr4fM2A6WA_WNzup2Db';
-  let db; try { db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e) { db = null; }
+
+  (function() {
+    const _fetch = window.fetch.bind(window);
+    window.fetch = function(url, init) {
+      init = init || {};
+      if (init.headers) {
+        const plain = {};
+        if (typeof init.headers.forEach === 'function') init.headers.forEach((v,k) => plain[k]=v);
+        else Object.assign(plain, init.headers);
+        init = Object.assign({}, init, { headers: plain });
+      }
+      return _fetch(url, init);
+    };
+  })();
+
+  let db;
+  try { db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); }
+  catch(e) { console.warn('Supabase init failed:', e); db = null; }
+
   const SESSION_KEY = 'petHelpers_session';
   function getCurrentUser() { return sessionStorage.getItem(SESSION_KEY); }
-  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function errMsg(e) { return e?.message || String(e); }
-  let _cache = {};
-  function bustCache() { Object.keys(_cache).forEach(k=>delete _cache[k]); }
-  async function cachedFetch(key, fn) { if(_cache[key] && Date.now()-_cache[key].ts<60000) return _cache[key].data; const data=await fn(); _cache[key]={data,ts:Date.now()}; return data; }
-  function updateHeader() { const u=getCurrentUser(); document.getElementById('headerRight').innerHTML=u?`<span>Hi, ${esc(u)}</span><a onclick="logoutUser()">Sign Out</a>`:`<a onclick="showPage('account')">Log in</a>`; }
-  const PAGES=['home','lost','stray','lf','shelters','account'];
-  function showPage(name) { PAGES.forEach(p=>{document.getElementById('page-'+p).style.display='none';document.getElementById('nav-'+p)?.classList.remove('active');}); document.getElementById('page-'+name).style.display='block'; document.getElementById('nav-'+name)?.classList.add('active'); if(name==='stray'){applyFilter();checkReportAuth();} if(name==='account')checkAccountPage(); if(name==='home')loadRecent(); if(name==='lf')loadLF(); if(name==='shelters')renderShelters(); if(name==='lost')document.getElementById('lost-outputBox').style.display='none'; updateHeader(); window.scrollTo(0,0); }
 
-  // ========== AUTH ==========
-  async function logoutUser() { sessionStorage.removeItem(SESSION_KEY); checkAccountPage(); updateHeader(); showPage('home'); }
-  function showLoginForm() { document.getElementById('account-loginForm').style.display='block'; document.getElementById('account-signupForm').style.display='none'; document.getElementById('account-btnLogin').classList.add('active'); document.getElementById('account-btnSignup').classList.remove('active'); }
-  function showSignupForm() { document.getElementById('account-loginForm').style.display='none'; document.getElementById('account-signupForm').style.display='block'; document.getElementById('account-btnSignup').classList.add('active'); document.getElementById('account-btnLogin').classList.remove('active'); }
-  document.getElementById('account-signupForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); const username=document.getElementById('account-signupUser').value.trim(); const email=document.getElementById('account-signupEmail').value.trim(); const password=document.getElementById('account-signupPass').value; try{ const {data:existing}=await db.from('users').select('username').eq('username',username).maybeSingle(); if(existing){ alert('Username taken'); return; } await db.from('users').insert({username,password}); localStorage.setItem('email_'+username,email); sessionStorage.setItem(SESSION_KEY,username); checkAccountPage(); updateHeader(); showPage('home'); }catch(ex){ alert('Error: '+errMsg(ex)); } });
-  document.getElementById('account-loginForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); const username=document.getElementById('account-loginUser').value.trim(); const password=document.getElementById('account-loginPass').value; try{ const {data}=await db.from('users').select('username').eq('username',username).eq('password',password).maybeSingle(); if(data){ sessionStorage.setItem(SESSION_KEY,username); checkAccountPage(); updateHeader(); showPage('home'); } else alert('Incorrect username or password.'); }catch(ex){ alert('Error: '+errMsg(ex)); } });
-  function checkAccountPage() { const u=getCurrentUser(); document.getElementById('account-loggedInCard').style.display=u?'block':'none'; document.getElementById('account-authCard').style.display=u?'none':'block'; if(u) loadMyReports(); }
-  async function loadMyReports() { const user=getCurrentUser(); if(!user)return; const container=document.getElementById('account-my-listings'); container.innerHTML='<p>Loading...</p>'; try{ const {data}=await db.from('listings').select('id,pet_name,species,location_text,date,photo,report_type,phone,contact_name,posted_by').eq('posted_by',user).order('created_at',{ascending:false}); const listings=data||[]; if(listings.length===0){ container.innerHTML='<p>No reports yet.</p>'; return; } container.innerHTML=listings.map(p=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);"><div>${p.photo?`<img src="${p.photo}" width="48" height="48" style="object-fit:cover;"/>`:'🐾'}</div><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})<br><small>${esc(p.location_text||'')}</small></div>${p.report_type!=='reunited'?`<button data-id="${p.id}" onclick="markReunited(this)" style="margin:0;background:var(--green);padding:5px 12px;">✅ Mark Reunited</button>`:'<span class="tag claimed">Reunited</span>'}</div>`).join(''); }catch(ex){ container.innerHTML='<p>Error loading reports.</p>'; } }
-
-  // ========== MARK REUNITED — ONLY POSTER ALLOWED ==========
-  async function markReunited(btn) {
-    const id = btn.getAttribute('data-id');
-    if(!id){ alert('Invalid report.'); return; }
-    const currentUser = getCurrentUser();
-    if(!currentUser){ alert('You must be logged in to mark a report as reunited.'); return; }
-    try {
-      const { data: listing, error: fetchErr } = await db.from('listings').select('posted_by, report_type').eq('id', id).maybeSingle();
-      if(fetchErr || !listing) { alert('Report not found.'); return; }
-      if(listing.report_type === 'reunited'){ alert('This report is already marked as reunited.'); return; }
-      if(listing.posted_by !== currentUser){ alert('❌ You can only mark a report as reunited if you submitted it. Only the original reporter can change status.'); return; }
-      const { error } = await db.from('listings').update({ report_type: 'reunited' }).eq('id', id);
-      if(error) throw error;
-      bustCache();
-      loadMyReports();
-      loadLF();      // refresh lost&found page
-      applyFilter(); // refresh stray registry if needed
-      btn.textContent = '✅ Reunited';
-      btn.disabled = true;
-      const card = btn.closest('div[style*="border-top"]');
-      if(card) card.style.borderTopColor = 'var(--green)';
-    } catch(ex){ alert('Error: '+errMsg(ex)); }
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function errMsg(e) {
+    if (!e) return 'Unknown error';
+    if (typeof e === 'string') return e;
+    if (typeof e.message === 'string' && e.message) return e.message;
+    try { return JSON.stringify(e); } catch { return String(e); }
   }
 
-  // ========== LOST & FOUND PAGE — with permission control ==========
-  async function loadLF() {
-    const grid = document.getElementById('lf-grid');
-    grid.innerHTML = '<p>Loading...</p>';
-    const currentUser = getCurrentUser();
+  // ── Header ────────────────────────────────────────────────
+  function updateHeader() {
+    const user = getCurrentUser();
+    document.getElementById('headerRight').innerHTML = user
+      ? `<span>Hi, ${esc(user)}</span><a onclick="logoutUser()">Sign Out</a>`
+      : `<a onclick="showPage('account')">Log in</a>`;
+  }
+
+  // ── Navigation ────────────────────────────────────────────
+  const PAGES = ['home','lost','stray','lf','shelters','account'];
+  function showPage(name) {
+    PAGES.forEach(p => {
+      document.getElementById('page-'  + p).style.display = 'none';
+      document.getElementById('nav-'   + p).classList.remove('active');
+    });
+    document.getElementById('page-'  + name).style.display = 'block';
+    document.getElementById('nav-'   + name).classList.add('active');
+    if (name === 'stray')    { applyFilter(); checkReportAuth(); }
+    if (name === 'account')  checkAccountPage();
+    if (name === 'home')     loadRecent();
+    if (name === 'lf')       loadLF();
+    if (name === 'shelters') renderShelters();
+    if (name === 'lost')     { document.getElementById('lost-outputBox').style.display='none'; }
+    updateHeader();
+    window.scrollTo(0, 0);
+  }
+
+  // ── Lost Pet ──────────────────────────────────────────────
+  let lostPhotoData = null;
+  document.getElementById('lost-photo').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      lostPhotoData = e.target.result;
+      const img = document.getElementById('lost-photoPreview');
+      img.src = lostPhotoData; img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('lostForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const owner   = document.getElementById('lost-ownerName').value.trim();
+    const pet     = document.getElementById('lost-petName').value.trim();
+    const species = document.getElementById('lost-species').value;
+    const desc    = document.getElementById('lost-description').value.trim();
+    const loc     = document.getElementById('lost-location').value.trim();
+    const date    = document.getElementById('lost-dateLost').value;
+    const contact = document.getElementById('lost-contact').value.trim();
+    const reward  = document.getElementById('lost-reward').value.trim();
+    document.getElementById('poster-petName').textContent     = pet;
+    document.getElementById('poster-species').textContent     = species;
+    document.getElementById('poster-location').textContent    = loc;
+    document.getElementById('poster-date').textContent        = date;
+    document.getElementById('poster-desc').textContent        = desc;
+    document.getElementById('poster-contactText').textContent = contact + ' (' + owner + ')';
+    const rewardBanner = document.getElementById('poster-rewardBanner');
+    rewardBanner.style.display = reward ? 'block' : 'none';
+    if (reward) rewardBanner.textContent = '🎁 REWARD OFFERED: ' + reward;
+    const photoWrap = document.getElementById('poster-photoWrap');
+    const noPhoto   = document.getElementById('poster-noPhoto');
+    if (lostPhotoData) {
+      document.getElementById('lost-outputPhoto').src = lostPhotoData;
+      photoWrap.style.display = 'block'; noPhoto.style.display = 'none';
+    } else {
+      photoWrap.style.display = 'none'; noPhoto.style.display = 'flex';
+    }
+    document.getElementById('lost-outputText').textContent =
+`LOST PET — Please help!\n\nHi, my name is ${owner} and my ${species.toLowerCase()} "${pet}" has gone missing.\n\nDescription: ${desc}\nLast seen: ${loc}\nDate lost: ${date}${reward ? '\nReward: ' + reward : ''}\n\nIf you've seen ${pet}, please contact: ${contact}\n\nThank you for sharing!`;
+    document.getElementById('lost-outputBox').style.display = 'block';
+    document.getElementById('lost-outputBox').scrollIntoView({ behavior: 'smooth' });
     try {
-      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by').order('created_at',{ascending:false}).limit(100);
-      const { data, error } = await query;
-      if(error) throw error;
-      const all = data || [];
-      const lostCount = all.filter(p=>p.report_type==='lost').length;
-      const strayCount = all.filter(p=>p.report_type==='stray' || !p.report_type).length;
-      document.getElementById('lf-count-lost').textContent = lostCount;
-      document.getElementById('lf-count-found').textContent = strayCount;
-      document.getElementById('lf-count-all').textContent = all.length;
-      if(!all.length){ grid.innerHTML = '<p>No reports found.</p>'; return; }
-      grid.innerHTML = all.map(p => {
-        const isLost = p.report_type === 'lost';
-        const isReunited = p.report_type === 'reunited';
-        const borderColor = isReunited ? 'var(--green)' : isLost ? 'var(--red)' : 'var(--green)';
-        const badge = isReunited ? '<span style="background:#dff0e8;color:var(--green);padding:3px 9px;">✅ REUNITED</span>' : (isLost ? '<span style="background:#fde8e8;color:var(--red);padding:3px 9px;">🔴 LOST</span>' : '<span style="background:#dff0e8;color:var(--green);padding:3px 9px;">🟢 FOUND</span>');
-        // LOST card: only "Contact Owner" button (never mark reunited directly)
-        if(isLost && !isReunited){
-          return `<div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};"><div>${p.photo?`<img src="${p.photo}" style="height:140px;object-fit:cover;"/>`:'<div style="height:80px;">🐾</div>'}</div><div style="padding:16px;"><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})</div><div>📍 ${esc(p.location_text||'')}</div><div>📅 ${esc(p.date)}</div><div>👤 ${esc(p.contact_name)}</div><div>${p.description?`<p>${esc(p.description)}</p>`:''}</div></div><div style="display:flex;border-top:1px solid var(--border);"><button class="contact-owner-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name)} (${esc(p.species)})" style="flex:1;padding:12px;background:transparent;border:none;cursor:pointer;color:var(--navy);font-weight:600;">📞 Contact Owner</button></div></div>`;
-        }
-        // STRAY card (found stray)
-        if(!isLost && !isReunited){
-          const isPoster = currentUser && p.posted_by === currentUser;
-          return `<div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};"><div>${p.photo?`<img src="${p.photo}" style="height:140px;object-fit:cover;"/>`:'<div style="height:80px;">🐾</div>'}</div><div style="padding:16px;"><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})</div><div>📍 Found: ${esc(p.location_text||'')}</div><div>📅 ${esc(p.date)}</div><div>📞 Reporter: ${esc(p.contact_name)}</div>${p.description?`<p>${esc(p.description)}</p>`:''}</div><div style="display:flex;border-top:1px solid var(--border);"><button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name)} (${esc(p.species)})" data-action="This is my pet" style="flex:1;padding:12px;background:transparent;border-right:1px solid var(--border);cursor:pointer;font-weight:600;">📞 This Is My Pet</button>${isPoster?`<button class="reunite-btn" data-id="${p.id}" style="flex:1;padding:12px;background:transparent;cursor:pointer;color:var(--green);font-weight:600;">✅ Mark Reunited</button>`:`<div style="flex:1;padding:12px;text-align:center;color:var(--muted);font-size:0.7rem;">🔒 Only reporter can mark reunited</div>`}</div></div>`;
-        }
-        // reunited card (disabled)
-        return `<div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--green);opacity:0.8;"><div>${p.photo?`<img src="${p.photo}" style="height:120px;"/>`:'<div>🐾</div>'}</div><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})<br><span>✅ Reunited · ${esc(p.date)}</span></div></div>`;
-      }).join('');
-      // attach reunite button events & contact events (delegation)
-      document.querySelectorAll('.reunite-btn').forEach(btn => btn.onclick = () => markReunited(btn));
-      document.querySelectorAll('.contact-btn, .contact-owner-btn').forEach(btn => btn.onclick = (e) => {
-        const name = btn.getAttribute('data-name');
-        const phone = btn.getAttribute('data-phone');
-        const pet = btn.getAttribute('data-pet');
-        showContactPopup(name, phone, pet, 'Contact Reporter/Owner');
+      await db.from('listings').insert({
+        id: Date.now().toString(), contact_name: owner, phone: contact, pet_name: pet,
+        species, reward, location_text: loc, lat: null, lng: null, description: desc,
+        photo: lostPhotoData, posted_by: getCurrentUser() || owner,
+        date: new Date().toLocaleDateString(), report_type: 'lost'
       });
-    } catch(ex){ grid.innerHTML = `<p>Error: ${errMsg(ex)}</p>`; }
+    } catch(ex) {}
+    loadLostMatches(species);
+  });
+
+  document.getElementById('lost-copyBtn').addEventListener('click', function() {
+    navigator.clipboard.writeText(document.getElementById('lost-outputText').textContent).then(() => {
+      this.textContent = 'Copied!';
+      setTimeout(() => this.textContent = 'Copy Message', 2000);
+    });
+  });
+
+  function markAsFound() {
+    document.getElementById('lost-outputBox').style.display  = 'none';
+    document.getElementById('lost-matches').style.display    = 'none';
+    document.getElementById('lost-outputText').textContent   = '';
+    document.getElementById('poster-petName').textContent    = '';
+    document.getElementById('lost-outputPhoto').src          = '';
+    document.getElementById('poster-photoWrap').style.display = 'none';
+    document.getElementById('poster-noPhoto').style.display   = 'flex';
+    document.getElementById('lostForm').reset();
+    lostPhotoData = null;
+    document.getElementById('lost-photoPreview').style.display = 'none';
   }
 
-  // ========== STRAY REGISTRY (no reunite button there) ==========
-  async function fetchListings(species){ const key='listings:'+(species||'all'); return cachedFetch(key,async()=>{ const q=db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,lat,lng').order('created_at',{ascending:false}).limit(100); if(species)q.eq('species',species); const {data}=await q; return data||[]; }); }
-  async function applyFilter(){ const q=document.getElementById('s-search')?.value.trim()||''; const species=document.getElementById('s-species')?.value||''; const grid=document.getElementById('stray-grid'); if(!grid)return; grid.innerHTML='<p>Loading…</p>'; const all=await fetchListings(species); const straysOnly=all.filter(p=>p.report_type==='stray'||!p.report_type); const filtered=q?straysOnly.filter(p=>[p.pet_name,p.species,p.location_text,p.description,p.contact_name,p.phone].some(f=>f&&f.toLowerCase().includes(q.toLowerCase()))):straysOnly; if(filtered.length===0){ grid.innerHTML='<p>No stray reports found.</p>'; return; }
-    grid.innerHTML=filtered.map(p=>`<div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);"><div>${p.photo?`<img src="${p.photo}" style="height:150px;object-fit:cover;"/>`:'<div style="height:80px;">🐾</div>'}</div><div style="padding:16px;"><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})</div><div>📍 ${esc(p.location_text||'')}</div><div>📅 ${esc(p.date)}</div><div>👤 ${esc(p.contact_name)}</div>${p.description?`<p>${esc(p.description)}</p>`:''}</div><div style="display:flex;border-top:1px solid var(--border);"><button class="contact-btn" data-name="${esc(p.contact_name)}" data-phone="${esc(p.phone)}" data-pet="${esc(p.pet_name)} (${esc(p.species)})" style="flex:1;background:transparent;border-right:1px solid var(--border);cursor:pointer;">📞 Call</button><button onclick="openTransferModal('${esc(p.pet_name)}','${esc(p.species)}')" style="flex:1;background:transparent;border-right:1px solid var(--border);cursor:pointer;">🏠 Shelter</button><button onclick="claimStray(this)" style="flex:1;background:transparent;cursor:pointer;">✅ My Pet</button></div></div>`).join('');
-    document.querySelectorAll('.contact-btn').forEach(btn=>btn.onclick=()=>showContactPopup(btn.dataset.name,btn.dataset.phone,btn.dataset.pet,'Contact finder'));
+  async function loadLostMatches(species) {
+    const box  = document.getElementById('lost-matches');
+    const list = document.getElementById('lost-matches-list');
+    box.style.display = 'none';
+    try {
+      const { data } = await db.from('listings').select('*').eq('species', species).order('created_at', { ascending: false }).limit(3);
+      if (!data || data.length === 0) return;
+      box.style.display = 'block';
+      list.innerHTML = data.map(p => `
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);">
+          ${p.photo ? `<img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);" />`
+                    : `<div style="width:48px;height:48px;background:#eef0f4;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid var(--border);">🐾</div>`}
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.9rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);">— ${esc(p.species)}</span></div>
+            ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
+            <div style="font-size:0.78rem;margin-top:3px;"><a href="tel:${esc(p.phone)}" style="color:var(--red);font-weight:700;">${esc(p.phone)}</a> — ${esc(p.contact_name)}</div>
+          </div>
+        </div>`).join('');
+    } catch(ex) {}
   }
-  function claimStray(btn){ const bar=btn.parentElement; bar.innerHTML='<div style="flex:1;padding:12px;background:#e6f4ea;color:#1a4d2e;">🎉 Contact the finder above to arrange pickup!</div>'; }
-  function openReportForm(){ document.getElementById('report-form-wrap').classList.add('open'); document.getElementById('report-toggle-btn').style.display='none'; }
-  function toggleReportForm(){ const wrap=document.getElementById('report-form-wrap'); const open=wrap.classList.toggle('open'); document.getElementById('report-toggle-btn').style.display=open?'none':'inline-block'; if(open) checkReportAuth(); }
-  function checkReportAuth(){ const u=getCurrentUser(); document.getElementById('report-login-prompt').style.display=u?'none':'block'; document.getElementById('reportForm').style.display=u?'block':'none'; }
-  let reportPhoto=null; document.getElementById('r-photo')?.addEventListener('change',function(e){ const f=e.target.files[0]; if(!f)return; const fr=new FileReader(); fr.onload=ev=>{ reportPhoto=ev.target.result; document.getElementById('r-photo-preview').src=reportPhoto; document.getElementById('r-photo-preview').style.display='block'; }; fr.readAsDataURL(f); });
-  async function geocode(addr){ try{ const res=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addr)}&format=json&limit=1`); const data=await res.json(); if(data.length) return {lat:parseFloat(data[0].lat),lng:parseFloat(data[0].lon)}; }catch(e){} return null; }
-  document.getElementById('reportForm')?.addEventListener('submit', async(e)=>{ e.preventDefault(); const btn=document.getElementById('r-submit-btn'); btn.textContent='Submitting...'; btn.disabled=true; const location=document.getElementById('r-location').value.trim(); const coords=await geocode(location); try{ const {error}=await db.from('listings').insert({ id:Date.now().toString(), contact_name:document.getElementById('r-name').value.trim(), phone:document.getElementById('r-phone').value.trim(), pet_name:document.getElementById('r-petname').value.trim(), species:document.getElementById('r-species').value, reward:'', location_text:location, lat:coords?.lat??null, lng:coords?.lng??null, description:document.getElementById('r-desc').value.trim(), photo:reportPhoto, posted_by:getCurrentUser(), date:new Date().toLocaleDateString(), report_type:'stray' }); if(error) alert('Error: '+errMsg(error)); else { document.getElementById('r-success').style.display='block'; setTimeout(()=>{ document.getElementById('r-success').style.display='none'; toggleReportForm(); },2000); bustCache(); loadRecent(); applyFilter(); } }catch(ex){ alert('Error: '+errMsg(ex)); } btn.textContent='Submit Report'; btn.disabled=false; });
-  async function loadRecent(){ const el=document.getElementById('home-recent'); if(!el)return; try{ const data=await cachedFetch('recent',async()=>{ const {data}=await db.from('listings').select('pet_name,species,location_text,date,photo').order('created_at',{ascending:false}).limit(3); return data||[]; }); if(!data.length){ el.innerHTML='<p>No reports yet.</p>'; return; } el.innerHTML=data.map(p=>`<div style="display:flex;gap:14px;border-bottom:1px solid var(--border);padding:10px 0;"><div>${p.photo?`<img src="${p.photo}" width="50" height="50" style="object-fit:cover;">`:'🐾'}</div><div><strong>${esc(p.pet_name)}</strong> (${esc(p.species)})<br>${esc(p.location_text||'')}<br><small>${esc(p.date)}</small></div></div>`).join(''); }catch(e){ el.innerHTML='<p>Could not load reports.</p>'; } }
 
-  // ========== CONTACT POPUP ==========
-  function showContactPopup(name,phone,pet,action){ document.getElementById('contact-popup-title').textContent=action||'Contact'; document.getElementById('contact-popup-name').textContent=name; document.getElementById('contact-popup-phone').textContent=phone; document.getElementById('contact-popup-pet').textContent=pet; document.getElementById('contact-popup-call').href='tel:'+phone; document.getElementById('contact-popup').style.display='flex'; }
-  function closeContactPopup(){ document.getElementById('contact-popup').style.display='none'; }
-  function copyContactPhone(){ const p=document.getElementById('contact-popup-phone').textContent; navigator.clipboard.writeText(p); const btn=document.getElementById('contact-popup-copy'); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1500); }
+  // ── Report form toggle ────────────────────────────────────
+  function openReportForm() {
+    const wrap = document.getElementById('report-form-wrap');
+    wrap.classList.add('open');
+    document.getElementById('report-toggle-btn').style.display = 'none';
+    wrap.scrollIntoView({ behavior: 'smooth' });
+  }
+  function toggleReportForm() {
+    const wrap = document.getElementById('report-form-wrap');
+    const open = wrap.classList.toggle('open');
+    document.getElementById('report-toggle-btn').style.display = open ? 'none' : 'inline-block';
+    if (open) { checkReportAuth(); wrap.scrollIntoView({ behavior: 'smooth' }); }
+  }
+  function checkReportAuth() {
+    const user = getCurrentUser();
+    document.getElementById('report-login-prompt').style.display = user ? 'none'  : 'block';
+    document.getElementById('reportForm').style.display          = user ? 'block' : 'none';
+  }
 
-  // ========== SHELTERS (reduced for brevity, same as original) ==========
-  const SHELTER_REGIONS = { /* original full data kept */ };
+  let reportPhoto = null;
+  document.getElementById('r-photo').addEventListener('change', function() {
+    const file = this.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      reportPhoto = e.target.result;
+      const img = document.getElementById('r-photo-preview');
+      img.src = reportPhoto; img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  async function geocode(address) {
+    try {
+      const res  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`);
+      const data = await res.json();
+      if (data.length > 0) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    } catch {}
+    return null;
+  }
+
+  document.getElementById('reportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('r-submit-btn');
+    btn.textContent = 'Submitting…'; btn.disabled = true;
+    const location = document.getElementById('r-location').value.trim();
+    const coords   = await geocode(location);
+    try {
+      const { error } = await db.from('listings').insert({
+        id: Date.now().toString(),
+        contact_name: document.getElementById('r-name').value.trim(),
+        phone:        document.getElementById('r-phone').value.trim(),
+        pet_name:     document.getElementById('r-petname').value.trim(),
+        species:      document.getElementById('r-species').value,
+        reward: '', location_text: location,
+        lat: coords?.lat ?? null, lng: coords?.lng ?? null,
+        description: document.getElementById('r-desc').value.trim(),
+        photo: reportPhoto, posted_by: getCurrentUser(),
+        date: new Date().toLocaleDateString()
+      });
+      if (error) { alert('Could not save: ' + errMsg(error)); }
+      else {
+        this.reset(); reportPhoto = null;
+        document.getElementById('r-photo-preview').style.display = 'none';
+        document.getElementById('r-success').style.display = 'block';
+        setTimeout(() => { document.getElementById('r-success').style.display = 'none'; toggleReportForm(); }, 3000);
+        loadRecent(); applyFilter();
+      }
+    } catch(ex) { alert('Error: ' + errMsg(ex)); }
+    btn.textContent = 'Submit Report'; btn.disabled = false;
+  });
+
+  async function fetchListings(species) {
+    try {
+      let q = db.from('listings').select('*').order('created_at', { ascending: false });
+      if (species) q = q.eq('species', species);
+      const { data, error } = await q;
+      if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
+      return data || [];
+    } catch(ex) { console.error('Fetch exception:', errMsg(ex)); return []; }
+  }
+
+  async function applyFilter() {
+    const q       = (document.getElementById('s-search')?.value || '').trim();
+    const species = document.getElementById('s-species')?.value || '';
+    const grid    = document.getElementById('stray-grid');
+    const meta    = document.getElementById('s-meta');
+    const clearBtn = document.getElementById('s-clear');
+    grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
+    const all      = await fetchListings(species);
+    const ql       = q.toLowerCase();
+    const filtered = q ? all.filter(p =>
+      [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
+        .some(f => f && f.toLowerCase().includes(ql))
+    ) : all;
+    if (q || species) {
+      meta.style.display = 'block';
+      meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}${q ? ` for "${q}"` : ''}${species ? ` · ${species}` : ''}`;
+      clearBtn.style.display = 'block';
+    } else {
+      meta.style.display = 'none';
+      clearBtn.style.display = 'none';
+    }
+    if (filtered.length === 0) {
+      grid.innerHTML = `<p style="color:#adb5bd;text-align:center;padding:40px 0;grid-column:1/-1;">No reports found${q ? ` for "${q}"` : ''}.</p>`;
+      return;
+    }
+    const hi = (str) => {
+      if (!q || !str) return esc(str || '');
+      const idx = str.toLowerCase().indexOf(ql);
+      if (idx === -1) return esc(str);
+      return esc(str.slice(0,idx)) + '<mark style="background:#fff3cd;padding:0 1px;">' + esc(str.slice(idx, idx+q.length)) + '</mark>' + esc(str.slice(idx+q.length));
+    };
+    grid.innerHTML = filtered.map(p => `
+      <div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)'">
+        ${p.photo
+          ? `<img src="${p.photo}" style="width:100%;height:160px;object-fit:cover;display:block;" />`
+          : `<div style="height:80px;background:linear-gradient(135deg,#eef0f4,#dde2ea);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🐾</div>`}
+        <div style="padding:16px 18px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+            <div>
+              <div style="font-family:'IBM Plex Serif',serif;font-size:1.05rem;font-weight:700;color:var(--navy);">${hi(p.pet_name)}</div>
+              <div style="font-size:0.8rem;color:var(--muted);margin-top:1px;">${hi(p.species)}</div>
+            </div>
+            <span class="tag" style="margin:0;flex-shrink:0;">${esc(p.species)}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-bottom:12px;">
+            ${p.location_text ? `<div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Found near</div><div style="font-size:0.83rem;">${hi(p.location_text)}</div></div>` : ''}
+            <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Reported by</div><div style="font-size:0.83rem;">${hi(p.contact_name)}</div></div>
+            <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Date</div><div style="font-size:0.83rem;">${esc(p.date)}</div></div>
+          </div>
+          ${p.description ? `<p style="font-size:0.82rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--border);padding-left:10px;margin-bottom:12px;">${hi(p.description)}</p>` : ''}
+        </div>
+        <div style="display:flex;border-top:1px solid var(--border);">
+          <a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--navy);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;border-right:1px solid var(--border);" onmouseover="this.style.background='#eef0f4'" onmouseout="this.style.background=''">📞 Call</a>
+          <button onclick="openTransferModal('${esc(p.pet_name)}', '${esc(p.species)}')" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--teal);border:none;border-right:1px solid var(--border);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;" onmouseover="this.style.background='#e6f4f5'" onmouseout="this.style.background=''">🏠 Shelter</button>
+          <button onclick="claimStray(this)" style="flex:1;padding:12px;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:0;background:transparent;color:var(--green);border:none;cursor:pointer;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">✅ My Pet</button>
+        </div>
+      </div>`
+    ).join('');
+    if (document.getElementById('stray-map-view').style.display !== 'none') renderMap(filtered);
+  }
+
+  function clearSearch() {
+    document.getElementById('s-search').value  = '';
+    document.getElementById('s-species').value = '';
+    applyFilter();
+  }
+
+  function claimStray(btn) {
+    const card = btn.closest('div[style*="border-top:3px"]');
+    const bar  = btn.parentElement;
+    bar.innerHTML = `<div style="flex:1;padding:12px 16px;background:#e6f4ea;color:#1a4d2e;font-size:0.82rem;font-weight:700;text-align:center;">🎉 Contact the finder above to arrange pickup!</div>`;
+    if (card) card.style.borderTopColor = 'var(--green)';
+  }
+
+  let leafletMap = null;
+  function showListView() {
+    document.getElementById('stray-list-view').style.display = 'block';
+    document.getElementById('stray-map-view').style.display  = 'none';
+    document.getElementById('btn-list').classList.add('active');
+    document.getElementById('btn-map').classList.remove('active');
+  }
+  function showMapView() {
+    document.getElementById('stray-list-view').style.display = 'none';
+    document.getElementById('stray-map-view').style.display  = 'block';
+    document.getElementById('btn-map').classList.add('active');
+    document.getElementById('btn-list').classList.remove('active');
+    applyFilter();
+    if (leafletMap) leafletMap.invalidateSize();
+  }
+  function renderMap(listings) {
+    const pts = listings.filter(p => p.lat && p.lng);
+    if (!leafletMap) {
+      const c = pts.length > 0 ? [pts[0].lat, pts[0].lng] : [20,0];
+      leafletMap = L.map('stray-map').setView(c, pts.length > 0 ? 13 : 2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(leafletMap);
+    }
+    leafletMap.eachLayer(l => { if (l instanceof L.Marker) leafletMap.removeLayer(l); });
+    const bounds = [];
+    pts.forEach(p => {
+      L.marker([p.lat, p.lng]).addTo(leafletMap).bindPopup(`<strong>${esc(p.pet_name)}</strong> (${esc(p.species)})<br>${p.photo?`<img src="${p.photo}" style="width:110px;margin:6px 0;display:block;"/>`:''}${esc(p.phone)}<br><em>${esc(p.contact_name)}</em>`);
+      bounds.push([p.lat, p.lng]);
+    });
+    if (bounds.length > 0) leafletMap.fitBounds(bounds, { padding: [40,40] });
+  }
+
+  async function loadLF() {
+    const grid    = document.getElementById('lf-grid');
+    const meta    = document.getElementById('lf-meta');
+    const q       = (document.getElementById('lf-search')?.value || '').trim().toLowerCase();
+    const typeFilter    = document.getElementById('lf-type')?.value || '';
+    const speciesFilter = document.getElementById('lf-species')?.value || '';
+    grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:36px 0;grid-column:1/-1;">Loading…</p>';
+    try {
+      let query = db.from('listings').select('*').order('created_at', { ascending: false });
+      if (typeFilter)    query = query.eq('report_type', typeFilter);
+      if (speciesFilter) query = query.eq('species', speciesFilter);
+      const { data, error } = await query;
+      if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
+      const all = data || [];
+      const lostCount  = all.filter(p => p.report_type === 'lost').length;
+      const strayCount = all.filter(p => p.report_type !== 'lost').length;
+      document.getElementById('lf-count-lost').textContent  = lostCount;
+      document.getElementById('lf-count-found').textContent = strayCount;
+      document.getElementById('lf-count-all').textContent   = all.length;
+      const ql = q.toLowerCase();
+      const filtered = q ? all.filter(p =>
+        [p.pet_name, p.species, p.location_text, p.description, p.contact_name, p.phone]
+          .some(f => f && f.toLowerCase().includes(ql))
+      ) : all;
+      if (q || typeFilter || speciesFilter) {
+        meta.style.display = 'block';
+        meta.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+      } else { meta.style.display = 'none'; }
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:40px 0;grid-column:1/-1;">No reports found.</p>';
+        return;
+      }
+      const hi = str => {
+        if (!q || !str) return esc(str || '');
+        const idx = str.toLowerCase().indexOf(ql);
+        if (idx === -1) return esc(str);
+        return esc(str.slice(0,idx)) + '<mark style="background:#fff3cd;padding:0 1px;">' + esc(str.slice(idx,idx+q.length)) + '</mark>' + esc(str.slice(idx+q.length));
+      };
+      grid.innerHTML = filtered.map(p => {
+        const isLost     = p.report_type === 'lost';
+        const borderColor = isLost ? 'var(--red)' : 'var(--green)';
+        const badge      = isLost
+          ? `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#fde8e8;color:var(--red);padding:3px 9px;">🔴 LOST</span>`
+          : `<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;background:#dff0e8;color:var(--green);padding:3px 9px;">🟢 FOUND</span>`;
+        const actionLabel = isLost
+          ? `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--red);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background=''">📞 I Found This Pet</a>`
+          : `<a href="tel:${esc(p.phone)}" style="flex:1;padding:12px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--green);text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;" onmouseover="this.style.background='#e6f4ea'" onmouseout="this.style.background=''">📞 This Is My Pet</a>`;
+        return `
+          <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${borderColor};overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            ${p.photo ? `<img src="${p.photo}" style="width:100%;height:150px;object-fit:cover;display:block;" />`
+                      : `<div style="height:70px;background:linear-gradient(135deg,#eef0f4,#dde2ea);display:flex;align-items:center;justify-content:center;font-size:2.2rem;">🐾</div>`}
+            <div style="padding:14px 16px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+                <div>
+                  <div style="font-family:'IBM Plex Serif',serif;font-size:1rem;font-weight:700;color:var(--navy);">${hi(p.pet_name)}</div>
+                  <div style="font-size:0.78rem;color:var(--muted);">${hi(p.species)}</div>
+                </div>
+                ${badge}
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:0.82rem;margin-bottom:10px;">
+                ${p.location_text ? `<div><div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">${isLost ? 'Last seen' : 'Found near'}</div><div>${hi(p.location_text)}</div></div>` : ''}
+                <div><div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">${isLost ? 'Owner' : 'Reported by'}</div><div>${hi(p.contact_name)}</div></div>
+                <div><div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Date</div><div>${esc(p.date)}</div></div>
+                ${p.reward ? `<div><div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">Reward</div><div style="color:var(--red);font-weight:700;">${esc(p.reward)}</div></div>` : ''}
+              </div>
+              ${p.description ? `<p style="font-size:0.8rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--border);padding-left:9px;">${hi(p.description)}</p>` : ''}
+            </div>
+            <div style="display:flex;border-top:1px solid var(--border);">
+              ${actionLabel}
+            </div>
+          </div>`;
+      }).join('');
+    } catch(ex) {
+      grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(ex)}</p>`;
+    }
+  }
+
+  async function loadRecent() {
+    const el = document.getElementById('home-recent');
+    if (!el) return;
+    try {
+      const { data } = await db.from('listings').select('*').order('created_at', { ascending: false }).limit(3);
+      if (!data || data.length === 0) {
+        el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">No reports yet.</p>';
+        return;
+      }
+      el.innerHTML = data.map(p => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);">
+          ${p.photo ? `<img src="${p.photo}" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);" />`
+                    : `<div style="width:52px;height:52px;background:#eef0f4;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1px solid var(--border);">🐾</div>`}
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.92rem;">${esc(p.pet_name)} <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">— ${esc(p.species)}</span></div>
+            ${p.location_text ? `<div style="font-size:0.8rem;color:var(--muted);">${esc(p.location_text)}</div>` : ''}
+            <div style="font-size:0.74rem;color:#adb5bd;margin-top:2px;">Posted ${esc(p.date)}</div>
+          </div>
+          <span class="tag" style="flex-shrink:0;">${esc(p.species)}</span>
+        </div>`).join('') +
+        `<div style="padding-top:12px;text-align:right;"><a onclick="showPage('stray')" style="font-size:0.8rem;font-weight:700;color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;">View all →</a></div>`;
+    } catch(ex) {
+      el.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:24px 0;font-size:0.9rem;">Could not load reports.</p>';
+    }
+  }
+
+  // ── Account ───────────────────────────────────────────────
+  function checkAccountPage() {
+    const user = getCurrentUser();
+    document.getElementById('account-loggedInCard').style.display = user ? 'block' : 'none';
+    document.getElementById('account-authCard').style.display     = user ? 'none'  : 'block';
+    if (user) document.getElementById('account-loggedInName').textContent = 'Hello, ' + user + '!';
+  }
+  function logoutUser() {
+    sessionStorage.removeItem(SESSION_KEY);
+    checkAccountPage(); updateHeader(); showPage('home');
+  }
+  function showLoginForm() {
+    document.getElementById('account-loginForm').style.display  = 'block';
+    document.getElementById('account-signupForm').style.display = 'none';
+    document.getElementById('account-btnLogin').classList.add('active');
+    document.getElementById('account-btnSignup').classList.remove('active');
+  }
+  function showSignupForm() {
+    document.getElementById('account-loginForm').style.display  = 'none';
+    document.getElementById('account-signupForm').style.display = 'block';
+    document.getElementById('account-btnSignup').classList.add('active');
+    document.getElementById('account-btnLogin').classList.remove('active');
+  }
+  document.getElementById('account-signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const err = document.getElementById('account-signupError');
+    const username = document.getElementById('account-signupUser').value.trim();
+    const password = document.getElementById('account-signupPass').value;
+    btn.textContent = 'Creating…'; btn.disabled = true; err.style.display = 'none';
+    const reset = msg => { err.textContent = msg; err.style.display = 'block'; btn.textContent = 'Create Account'; btn.disabled = false; };
+    try {
+      const { data: existing } = await db.from('users').select('username').eq('username', username).maybeSingle();
+      if (existing) { reset('That username is already taken.'); return; }
+      const { error } = await db.from('users').insert({ username, password });
+      if (error) { reset('Sign-up failed: ' + errMsg(error)); return; }
+      sessionStorage.setItem(SESSION_KEY, username);
+      checkAccountPage(); updateHeader(); showPage('home');
+    } catch(ex) { reset('Error: ' + errMsg(ex)); }
+  });
+  document.getElementById('account-loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const err = document.getElementById('account-loginError');
+    const username = document.getElementById('account-loginUser').value.trim();
+    const password = document.getElementById('account-loginPass').value;
+    btn.textContent = 'Signing in…'; btn.disabled = true; err.style.display = 'none';
+    const reset = msg => { err.textContent = msg; err.style.display = 'block'; btn.textContent = 'Log In'; btn.disabled = false; };
+    try {
+      const { data } = await db.from('users').select('username').eq('username', username).eq('password', password).maybeSingle();
+      if (data) { sessionStorage.setItem(SESSION_KEY, username); checkAccountPage(); updateHeader(); showPage('home'); }
+      else reset('Incorrect username or password.');
+    } catch(ex) { reset('Error: ' + errMsg(ex)); }
+  });
+
+  // ── Facts ─────────────────────────────────────────────────
+  const FACTS = [
+    '🐶 About 1 in 3 pets will get lost at some point in their lifetime.',
+    '🏷️ Pets with ID tags are 3× more likely to be returned home safely.',
+    '📸 Posting a photo increases the chance of finding an owner by over 50%.',
+    '🐱 Cats are more likely to hide close to where they were found.',
+    '🐕 Dogs often follow familiar smells — posting near where they were found helps.',
+    '📞 Calling local shelters within the first 24 hours gives the best chance of reunion.',
+    '🌍 Most lost pets are found within a few miles of their home.',
+    '🤝 Neighbours are the #1 way lost pets are found — sharing online works!',
+    '🐾 Microchipped pets are twice as likely to be reunited with their owners.',
+    '⏱️ The first 12 hours are the most important — act fast!',
+    '🏠 Animal shelters hold found pets for a minimum period so owners can reclaim them.',
+    '🔍 Shelters are the first place most people look when searching for a missing pet.',
+  ];
+  let factIndex = 0, factTimer;
+  function showFact(i) {
+    factIndex = (i + FACTS.length) % FACTS.length;
+    const el = document.getElementById('factText');
+    if (el) { el.style.animation='none'; el.offsetHeight; el.style.animation='factFade 0.3s ease'; el.textContent=FACTS[factIndex]; }
+    const dots = document.getElementById('factDots');
+    if (dots) dots.querySelectorAll('.fact-dot').forEach((d,j) => d.classList.toggle('active', j===factIndex));
+    clearInterval(factTimer);
+    factTimer = setInterval(() => showFact(factIndex+1), 5000);
+  }
+  function nextFact() { showFact(factIndex+1); }
+  function prevFact() { showFact(factIndex-1); }
+  function initFacts() {
+    const dots = document.getElementById('factDots');
+    if (!dots) return;
+    dots.innerHTML = FACTS.map((_,i) => `<div class="fact-dot${i===0?' active':''}" onclick="showFact(${i})"></div>`).join('');
+    showFact(0);
+  }
+
+  // ── REAL SHELTER DATA BY REGION ───────────────────────────
+  const SHELTER_REGIONS = {
+
+    // ── NORTH AMERICA — CANADA ─────────────────────────────
+    'Toronto, Canada': [
+      { id:101, name:'Toronto Animal Services — North Shelter', type:'Municipal', address:'1300 Sheppard Ave W, Toronto, ON M3K 2A6', phone:'(416) 338-8723', email:'tas@toronto.ca', hours:'Mon–Sun 10:30am–6:30pm (appointment required)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits'], website:'https://www.toronto.ca/community-people/animals-pets/animal-shelters/', mapsQuery:'1300 Sheppard Ave W Toronto', open:true, note:'Call 416-338-PAWS (7297) to book. Three locations across the city.' },
+      { id:102, name:'Toronto Animal Services — East Shelter', type:'Municipal', address:'821 Progress Ave, Toronto, ON M1H 2X4', phone:'(416) 338-7539', email:'tas@toronto.ca', hours:'Mon–Sun 10:30am–6:30pm (appointment required)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits'], website:'https://www.toronto.ca/community-people/animals-pets/animal-shelters/', mapsQuery:'821 Progress Ave Toronto', open:true, note:'Appointment required. After-hours: 416-338-PETS (7387).' },
+      { id:103, name:'Toronto Humane Society', type:'Humane Society', address:'11 River St, Toronto, ON M5A 4C2', phone:'(416) 392-2273', email:'info@torontohumanesociety.com', hours:'Mon–Fri 12pm–7pm · Sat–Sun 11am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Birds','Small animals'], website:'https://www.torontohumanesociety.com', mapsQuery:'11 River St Toronto', open:true, note:'Canada\'s largest open-admission humane society. Accepts strays and surrenders.' },
+    ],
+    'Vancouver, Canada': [
+      { id:201, name:'BC SPCA — Vancouver Community Animal Centre', type:'Humane Society', address:'1205 E 7th Ave, Vancouver, BC V5T 1R1', phone:'(604) 879-7721', email:'vancouver@spca.bc.ca', hours:'Tue–Sun 10am–5pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://spca.bc.ca/locations/vancouver/', mapsQuery:'1205 E 7th Ave Vancouver BC', open:true, note:'Emergency line (8am–midnight): (604) 879-7343. After-hours helpline: 1-855-622-7722.' },
+      { id:202, name:'Vancouver Animal Services', type:'Municipal', address:'1280 Raymur Ave, Vancouver, BC V6A 3T4', phone:'(604) 871-6888', email:'animalservices@vancouver.ca', hours:'By appointment only · Closed on holidays', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://vancouver.ca/home-property-development/animal-services.aspx', mapsQuery:'1280 Raymur Ave Vancouver BC', open:true, note:'City of Vancouver municipal shelter. Call or book online before visiting.' },
+      { id:203, name:'BC SPCA — Burnaby Community Animal Centre', type:'Humane Society', address:'3202 Norland Ave, Burnaby, BC V5B 3A8', phone:'(604) 879-7721', email:'burnaby@spca.bc.ca', hours:'Tue–Sun 10am–5pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://spca.bc.ca/locations/burnaby/', mapsQuery:'3202 Norland Ave Burnaby BC', open:true, note:'Serves Greater Vancouver / Burnaby. Emergency helpline: 1-855-622-7722.' },
+    ],
+    'Montreal, Canada': [
+      { id:211, name:'SPCA de Montréal', type:'Humane Society', address:'5215 Rue Jean-Talon O, Montréal, QC H4P 1X4', phone:'(514) 735-2711', email:'info@spca.com', hours:'Mon–Sun 11am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.spca.com', mapsQuery:'5215 Rue Jean-Talon O Montreal QC', open:true, note:'Montréal\'s principal humane society since 1869. French & English service.' },
+      { id:212, name:'Berger Blanc Montréal', type:'Municipal', address:'4536 Rue Ste-Catherine E, Montréal, QC H1V 1Y9', phone:'(514) 881-5122', email:'info@bergerblanc.com', hours:'Mon–Sun 10am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.bergerblanc.com', mapsQuery:'4536 Rue Ste-Catherine E Montreal QC', open:true, note:'Municipal stray intake for Montreal. Call ahead for surrender appointments.' },
+    ],
+
+    // ── NORTH AMERICA — USA ────────────────────────────────
+    'New York City, USA': [
+      { id:301, name:'Animal Care Centers of NYC — Manhattan', type:'Municipal', address:'326 E 110th St, New York, NY 10029', phone:'(212) 788-4000', email:'info@nycacc.org', hours:'Mon–Sun 10am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.nycacc.org', mapsQuery:'326 E 110th St New York NY', open:true, note:'NYC\'s largest municipal shelter. Required by law to accept all strays from all five boroughs.' },
+      { id:302, name:'ASPCA Adoption Center', type:'Humane Society', address:'424 E 92nd St, New York, NY 10128', phone:'(212) 876-7700', email:'adoptions@aspca.org', hours:'Mon–Fri 11am–7pm · Sat–Sun 10am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.aspca.org', mapsQuery:'424 E 92nd St New York NY', open:true, note:'America\'s oldest humane society, founded 1866. Stray intake via NYC ACC.' },
+      { id:303, name:'Humane Society of New York', type:'Humane Society', address:'306 E 59th St, New York, NY 10022', phone:'(212) 752-4842', email:'info.hsny@verizon.net', hours:'Clinic 7 days 9:30am–4pm · Adoptions by appt', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://humanesocietyny.org', mapsQuery:'306 E 59th St New York NY', open:true, note:'Over 100 years serving NYC animals. Affordable vet clinic open to the public.' },
+    ],
+    'Los Angeles, USA': [
+      { id:311, name:'LA Animal Services — South LA Care Center', type:'Municipal', address:'1850 W 60th St, Los Angeles, CA 90047', phone:'(888) 452-7381', email:'laas@lacity.org', hours:'Tue–Fri 8am–5pm · Sat–Sun 11am–5pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://www.laanimalservices.com', mapsQuery:'1850 W 60th St Los Angeles CA', open:true, note:'One of 6 LA city shelters. Walk-ins welcome Tue–Sun.' },
+      { id:312, name:'LA County Animal Care & Control — Carson', type:'Municipal', address:'216 Victoria St, Carson, CA 90745', phone:'(562) 345-7729', email:'info@animalcare.lacounty.gov', hours:'Mon–Fri 8am–5pm · Sat–Sun 10am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','All animals'], website:'https://animalcare.lacounty.gov', mapsQuery:'216 Victoria St Carson CA', open:true, note:'No appointment needed for stray intake during business hours.' },
+      { id:313, name:'Best Friends Animal Society — LA', type:'Rescue', address:'15321 Brand Blvd, Mission Hills, CA 91345', phone:'(818) 643-3989', email:'la@bestfriends.org', hours:'Mon–Sun 11am–7pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://bestfriends.org/los-angeles', mapsQuery:'15321 Brand Blvd Mission Hills CA', open:true, note:'Leading no-kill rescue organization. Mission Hills is the primary LA adoption center.' },
+    ],
+    'Chicago, USA': [
+      { id:321, name:'Chicago Animal Care and Control', type:'Municipal', address:'2741 S Western Ave, Chicago, IL 60608', phone:'(312) 744-5000', email:'AskCACC@cityofchicago.org', hours:'Mon–Fri 11am–7pm · Sat 10am–5pm · Sun 12pm–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://www.chicago.gov/cacc', mapsQuery:'2741 S Western Ave Chicago IL', open:true, note:'Chicago\'s official city shelter. Accepts all strays from city residents.' },
+      { id:322, name:'Anti-Cruelty Society', type:'Humane Society', address:'157 W Grand Ave, Chicago, IL 60654', phone:'(312) 644-8338', email:'info@anticruelty.org', hours:'Mon–Fri 12pm–7pm · Sat–Sun 11am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://anticruelty.org', mapsQuery:'157 W Grand Ave Chicago IL', open:true, note:'Chicago\'s oldest humane society, founded 1899. On-site vet clinic.' },
+      { id:323, name:'PAWS Chicago — Lincoln Park', type:'Rescue', address:'1997 N Clybourn Ave, Chicago, IL 60614', phone:'(773) 935-7297', email:'info@pawschicago.org', hours:'Mon–Fri 12pm–7pm · Sat–Sun 10am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.pawschicago.org', mapsQuery:'1997 N Clybourn Ave Chicago IL', open:true, note:'Midwest\'s largest no-kill shelter. Saves 90%+ of animals in their care.' },
+    ],
+    'Houston, USA': [
+      { id:331, name:'BARC Animal Shelter & Adoptions', type:'Municipal', address:'3300 Carr St, Houston, TX 77026', phone:'(832) 395-9084', email:'barc@houstontx.gov', hours:'Tue–Thu 12pm–6pm · Fri–Sun 12pm–5pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://www.houstontx.gov/barc/', mapsQuery:'3300 Carr St Houston TX', open:true, note:'City of Houston\'s municipal shelter. Cares for 22,000+ animals annually.' },
+      { id:332, name:'Houston SPCA', type:'Humane Society', address:'900 Portway Dr, Houston, TX 77024', phone:'(713) 869-7722', email:'info@houstonspca.org', hours:'Fri–Mon 9am–5pm · Tue–Thu 9am–7pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Birds','All animals'], website:'https://houstonspca.org', mapsQuery:'900 Portway Dr Houston TX', open:true, note:'One of the oldest and largest SPCAs in the US. Full-service animal care campus.' },
+      { id:333, name:'Houston Humane Society', type:'Humane Society', address:'14700 Almeda Rd, Houston, TX 77053', phone:'(713) 433-6421', email:'info@houstonhumane.org', hours:'Mon–Sun 11am–6pm (Sat closes 5:30pm)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.houstonhumane.org', mapsQuery:'14700 Almeda Rd Houston TX', open:true, note:'Founded 1958. 100% donation-supported. On-site animal wellness clinic.' },
+    ],
+    'Dallas, USA': [
+      { id:341, name:'Dallas Animal Services', type:'Municipal', address:'1818 N Westmoreland Rd, Dallas, TX 75212', phone:'(214) 670-6800', email:'animal.services@dallascityhall.com', hours:'Sun 11am–6pm · Mon/Tue/Thu/Fri 11am–7pm · Wed 1pm–7pm · Sat 11am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://dallascityhall.com/departments/dallas-animal-services/', mapsQuery:'1818 N Westmoreland Rd Dallas TX', open:true, note:'Only open-intake facility in Dallas. Accepts all pets regardless of space or condition.' },
+      { id:342, name:'SPCA of Texas', type:'Humane Society', address:'2400 Lone Star Dr, Dallas, TX 75212', phone:'(214) 742-7722', email:'spca@spca.org', hours:'Mon–Sun 12pm–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits'], website:'https://spca.org', mapsQuery:'2400 Lone Star Dr Dallas TX', open:true, note:'Founded 1938. North Texas\' leading animal welfare agency. Walk-ins welcome.' },
+    ],
+    'Seattle, USA': [
+      { id:351, name:'Seattle Animal Shelter', type:'Municipal', address:'2061 15th Ave W, Seattle, WA 98119', phone:'(206) 386-7387', email:'animalcare@seattle.gov', hours:'Tue–Sun 1pm–5pm · Mon by appointment', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.seattle.gov/animal-shelter', mapsQuery:'2061 15th Ave W Seattle WA', open:true, note:'93% live-release rate. No time or space limits. Spay/neuter clinic on-site.' },
+      { id:352, name:'Seattle Humane', type:'Humane Society', address:'13212 SE Eastgate Way, Bellevue, WA 98005', phone:'(425) 641-0080', email:'info@seattlehumane.org', hours:'Mon–Sun 11am–6pm (Thu–Sat until 8pm)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.seattlehumane.org', mapsQuery:'13212 SE Eastgate Way Bellevue WA', open:true, note:'Puget Sound\'s largest private animal shelter. Pet food bank available.' },
+    ],
+    'Miami, USA': [
+      { id:361, name:'Miami-Dade Animal Services', type:'Municipal', address:'3599 NW 79th Ave, Doral, FL 33166', phone:'(305) 468-5900', email:'mdas@miamidade.gov', hours:'Mon–Fri 10am–6:30pm · Sat–Sun 9am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://www.miamidade.gov/animals/', mapsQuery:'3599 NW 79th Ave Doral FL', open:true, note:'Miami-Dade\'s main animal services center. On-site wellness clinic.' },
+      { id:362, name:'Humane Society of Greater Miami', type:'Humane Society', address:'16101 W Dixie Hwy, North Miami Beach, FL 33160', phone:'(305) 696-0800', email:'info@humanesocietymiami.org', hours:'Mon–Sun 11am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://humanesocietymiami.org', mapsQuery:'16101 W Dixie Hwy North Miami Beach FL', open:true, note:'South Florida\'s oldest and largest non-profit humane society, founded 1936.' },
+    ],
+    'Phoenix, USA': [
+      { id:371, name:'Maricopa County Animal Care & Control — West', type:'Municipal', address:'2500 S 27th Ave, Phoenix, AZ 85009', phone:'(602) 506-7387', email:'pets@maricopa.gov', hours:'Mon–Fri 11am–7pm · Sat–Sun 10am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','All animals'], website:'https://www.maricopa.gov/animals', mapsQuery:'2500 S 27th Ave Phoenix AZ', open:true, note:'Maricopa County\'s largest open-intake shelter. Two locations — East and West.' },
+      { id:372, name:'Arizona Humane Society', type:'Humane Society', address:'1521 W Dobbins Rd, Phoenix, AZ 85041', phone:'(602) 997-7585', email:'info@azhumane.org', hours:'Mon–Sat 11am–6pm · Sun 11am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.azhumane.org', mapsQuery:'1521 W Dobbins Rd Phoenix AZ', open:true, note:'Largest humane society in the Southwest. Emergency animal medical hospital on-site.' },
+    ],
+
+    // ── UK & IRELAND ───────────────────────────────────────
+    'London, UK': [
+      { id:401, name:'Battersea Dogs & Cats Home', type:'Humane Society', address:'4 Battersea Park Road, London SW8 4AA', phone:'0800 001 4444', email:'info@battersea.org.uk', hours:'Mon–Sun 10:30am–5pm (appointment required)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.battersea.org.uk', mapsQuery:'4 Battersea Park Road London SW8', open:true, note:'Founded 1860. UK\'s most famous rescue centre. Appointment required.' },
+      { id:402, name:'Dogs Trust — Harefield', type:'Rescue', address:'Denham Lane, Harefield, Uxbridge UB9 6EX', phone:'0300 303 0292', email:'harefield@dogstrust.org.uk', hours:'Mon–Sun 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs'], website:'https://www.dogstrust.org.uk/rehoming/our-centres/harefield', mapsQuery:'Dogs Trust Harefield Uxbridge', open:true, note:'16-acre site with 75 purpose-built kennels. Dogs only.' },
+      { id:403, name:'RSPCA — National Cruelty Helpline', type:'Humane Society', address:'Parkside, Chart Way, Horsham, West Sussex RH12 1GY', phone:'0300 1234 999', email:'info@rspca.org.uk', hours:'24 hours / 7 days (emergency)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['All animals'], website:'https://www.rspca.org.uk/whatwedo/yourlocal', mapsQuery:'RSPCA Horsham West Sussex', open:true, note:'Call 0300 1234 999 any time. Use the RSPCA locator to find your nearest branch.' },
+      { id:404, name:'Blue Cross — Hammersmith', type:'Humane Society', address:'2 Bagleys Lane, London SW6 2QA', phone:'0300 777 1897', email:'info@bluecross.org.uk', hours:'Mon–Fri 9am–5pm (appointment)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.bluecross.org.uk', mapsQuery:'2 Bagleys Lane London SW6', open:true, note:'Free vet care for those who cannot afford treatment. Rehoming and support services.' },
+    ],
+    'Manchester, UK': [
+      { id:411, name:'Dogs Trust — Manchester', type:'Rescue', address:'Moss Lane, Heyrod, Stalybridge SK15 3QQ', phone:'0300 303 0292', email:'manchester@dogstrust.org.uk', hours:'Mon–Sun 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs'], website:'https://www.dogstrust.org.uk/rehoming/our-centres/manchester', mapsQuery:'Dogs Trust Heyrod Stalybridge Manchester', open:true, note:'Rehoming centre for Greater Manchester. Dogs only. Walk-ins welcome in visiting hours.' },
+      { id:412, name:'RSPCA Greater Manchester Animal Hospital', type:'Humane Society', address:'411 Eccles New Road, Salford, M5 5NN', phone:'0300 1234 999', email:'info@rspca.org.uk', hours:'Mon–Fri 9am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','All animals'], website:'https://www.rspca.org.uk/whatwedo/yourlocal', mapsQuery:'411 Eccles New Road Salford Manchester', open:true, note:'Full veterinary care and rehoming services for the Greater Manchester area.' },
+    ],
+    'Dublin, Ireland': [
+      { id:421, name:'Dublin SPCA', type:'Humane Society', address:'Mount Venus Road, Rathfarnham, Dublin 16', phone:'+353 1 499 4700', email:'info@dspca.ie', hours:'Mon–Sun 10am–4:30pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.dspca.ie', mapsQuery:'Mount Venus Road Rathfarnham Dublin', open:true, note:'Ireland\'s oldest and largest animal welfare charity, founded 1840. Walk-ins welcome.' },
+      { id:422, name:'Dogs Trust Ireland — Dublin', type:'Rescue', address:'Finglas Road, Ashbourne, Co. Meath A84 YP62', phone:'+353 1 879 1000', email:'info@dogstrust.ie', hours:'Mon–Sun 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs'], website:'https://www.dogstrust.ie', mapsQuery:'Dogs Trust Ireland Ashbourne Meath', open:true, note:'Ireland\'s largest dog welfare charity. Never puts healthy dogs down.' },
+    ],
+
+    // ── EUROPE ─────────────────────────────────────────────
+    'Paris, France': [
+      { id:501, name:'SPA de Paris — Refuge de Gennevilliers', type:'Humane Society', address:'60 Rue Georges Boisseau, 92230 Gennevilliers', phone:'+33 1 47 99 87 87', email:'infos@la-spa.fr', hours:'Tue–Fri 12pm–6pm · Sat–Sun 10am–6pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.la-spa.fr', mapsQuery:'60 Rue Georges Boisseau Gennevilliers Paris', open:true, note:'La SPA is France\'s largest animal protection organization, founded 1845.' },
+      { id:502, name:'Fondation 30 Millions d\'Amis', type:'Rescue', address:'39 Rue du Docteur Blanche, 75016 Paris', phone:'+33 1 56 59 56 59', email:'contact@30millionsdamis.fr', hours:'Mon–Fri 9am–6pm (admin only)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','All animals'], website:'https://www.30millionsdamis.fr', mapsQuery:'39 Rue du Docteur Blanche Paris 75016', open:true, note:'Advocacy and rescue network. For emergencies call their SOS hotline or contact la-spa.fr for intake.' },
+    ],
+    'Berlin, Germany': [
+      { id:511, name:'Tierheim Berlin', type:'Municipal', address:'Hausvaterweg 39, 13057 Berlin', phone:'+49 30 76 888 0', email:'info@tierheim-berlin.de', hours:'Mon–Sun 10am–5pm (Tue until 6pm)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Birds','All animals'], website:'https://www.tierheim-berlin.de', mapsQuery:'Hausvaterweg 39 Berlin Falkenberg', open:true, note:'One of the world\'s largest animal shelters. Over 1,300 animals in permanent care. Admission free.' },
+    ],
+    'Amsterdam, Netherlands': [
+      { id:521, name:'Dierenbescherming Amsterdam', type:'Humane Society', address:'Transformatorweg 14 H, 1014 AK Amsterdam', phone:'+31 20 679 6222', email:'info@dierenbeschermingamsterdam.nl', hours:'Mon–Fri 12pm–5pm · Sat–Sun 11am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.dierenbeschermingamsterdam.nl', mapsQuery:'Transformatorweg 14 Amsterdam', open:true, note:'Amsterdam\'s main animal welfare organisation. Call ahead for stray intake.' },
+    ],
+    'Madrid, Spain': [
+      { id:531, name:'RAIA — Refugio de Animales de Arganzuela', type:'Municipal', address:'Calle del Puerto de la Morcuera s/n, 28011 Madrid', phone:'+34 915 88 12 44', email:'raia@madrid.es', hours:'Mon–Fri 10am–2pm & 4pm–7pm · Sat–Sun 10am–2pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.madrid.es/portales/munimadrid/es/inicio/medio-ambiente/animales/refugio-de-animales-de-madrid-raia/', mapsQuery:'Calle del Puerto de la Morcuera Madrid', open:true, note:'Madrid\'s official municipal animal shelter.' },
+    ],
+    'Rome, Italy': [
+      { id:541, name:'Muratella Dog Shelter — Roma Capitale', type:'Municipal', address:'Via della Muratella 1, 00054 Fiumicino RM', phone:'+39 06 456 78 900', email:'canile.muratella@comune.roma.it', hours:'Mon–Sun 10am–12:30pm · Mon/Wed/Fri also 3pm–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs'], website:'https://www.comune.roma.it/web/it/animali.page', mapsQuery:'Via della Muratella Fiumicino Roma', open:true, note:'Rome\'s largest municipal dog shelter. Also visit canile-ciampino.org for cats.' },
+    ],
+
+    // ── ASIA-PACIFIC ───────────────────────────────────────
+    'Sydney, Australia': [
+      { id:601, name:'RSPCA NSW — Sydney Adoption Centre', type:'Humane Society', address:'201 Rookwood Rd, Yagoona, NSW 2199', phone:'(02) 9770 7577', email:'sydneyshelter@rspcansw.org.au', hours:'Tue–Sun 9:30am–3:15pm · Mon Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Birds','All animals'], website:'https://www.rspcansw.org.au', mapsQuery:'201 Rookwood Rd Yagoona NSW', open:true, note:'Largest animal shelter in NSW. Accepts surrenders and strays. Vet clinic on site.' },
+      { id:602, name:'Sydney Dogs & Cats Home', type:'Rescue', address:'1a Bonnie Doon St, Glebe, NSW 2037', phone:'(02) 9587 9611', email:'admin@sydneydogsandcatshome.org.au', hours:'Mon–Fri 10am–5pm · Sat 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.sydneydogsandcatshome.org.au', mapsQuery:'1a Bonnie Doon St Glebe NSW', open:true, note:'No-kill shelter in inner Sydney. Accepts strays and surrenders.' },
+      { id:603, name:'Animal Welfare League NSW', type:'Humane Society', address:'1 Blinds Rd, Kemps Creek, NSW 2178', phone:'(02) 8899 4863', email:'info@awlnsw.com.au', hours:'Mon–Sun 10am–3pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Horses'], website:'https://www.awlnsw.com.au', mapsQuery:'1 Blinds Rd Kemps Creek NSW', open:true, note:'Large shelter including horses and livestock. Call before bringing in a stray.' },
+    ],
+    'Melbourne, Australia': [
+      { id:611, name:'RSPCA Victoria — Burwood East', type:'Humane Society', address:'3 Burwood Hwy, Burwood East, VIC 3151', phone:'(03) 9224 2222', email:'info@rspcavic.org.au', hours:'Mon–Fri 9am–4:30pm · Sat 8:30am–5pm · Sun 9am–4:30pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://rspcavic.org', mapsQuery:'3 Burwood Hwy Burwood East VIC', open:true, note:'Walk-ins welcome. Vet clinic and grooming on-site. Cruelty line: (03) 9224 2222.' },
+      { id:612, name:'Lost Dogs Home — North Melbourne', type:'Rescue', address:'2 Gracie St, North Melbourne, VIC 3051', phone:'(03) 9329 2755', email:'info@lostdogshome.com.au', hours:'Mon–Sun 9am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.lostdogshome.com.au', mapsQuery:'2 Gracie St North Melbourne VIC', open:true, note:'Melbourne\'s leading stray animal facility. 24-hour secure animal arrival bay.' },
+      { id:613, name:'Peninsula Humane Society', type:'Humane Society', address:'Cnr Frankston-Flinders Rd & McNamara Rd, Baxter, VIC 3911', phone:'(03) 5978 7553', email:'info@peninsulahumanesociety.com.au', hours:'Mon–Sun 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits'], website:'https://www.peninsulahumanesociety.com.au', mapsQuery:'Frankston-Flinders Rd Baxter VIC', open:true, note:'Serving the Mornington Peninsula. Over 70 years of animal welfare.' },
+    ],
+    'Brisbane, Australia': [
+      { id:621, name:'RSPCA Queensland — Wacol Shelter', type:'Humane Society', address:'139 Wacol Station Rd, Wacol, QLD 4076', phone:'(07) 3426 9999', email:'info@rspcaqld.org.au', hours:'Mon–Sun 9am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Birds','All animals'], website:'https://www.rspcaqld.org.au', mapsQuery:'139 Wacol Station Rd Wacol QLD', open:true, note:'Queensland\'s largest RSPCA shelter. Adoption, surrenders and stray intake.' },
+      { id:622, name:'Brisbane Animal Care Centre (BACC)', type:'Municipal', address:'360 MacGregor Rd, MacGregor, QLD 4109', phone:'(07) 3403 8888', email:'animalcare@brisbane.qld.gov.au', hours:'Mon–Fri 8am–4pm · Sat–Sun 9am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.brisbane.qld.gov.au/community-and-safety/animals-in-brisbane/animal-care-centre', mapsQuery:'360 MacGregor Rd MacGregor QLD', open:true, note:'Brisbane City Council\'s official animal care centre. Stray intake and adoptions.' },
+    ],
+    'Auckland, New Zealand': [
+      { id:631, name:'SPCA Auckland — Mangere Centre', type:'Humane Society', address:'50 Westney Road, Mangere, Auckland 2022', phone:'(09) 256 7300', email:'auckland@spca.nz', hours:'Mon–Sun 10am–4pm (adoptions by appointment)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.spca.nz/centre/auckland-centre', mapsQuery:'50 Westney Road Mangere Auckland', open:true, note:'New Zealand\'s largest SPCA, founded 1883. Up to 500 cats and 200 dogs at peak times.' },
+      { id:632, name:'Auckland Council Animal Management', type:'Municipal', address:'135 Wrights Road, Mangere, Auckland', phone:'(09) 301 0101', email:'animalmanagement@aucklandcouncil.govt.nz', hours:'Mon–Sun 8am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.aucklandcouncil.govt.nz/dogs-animals', mapsQuery:'135 Wrights Road Mangere Auckland', open:true, note:'City stray intake service. Found dogs held here while owners are located.' },
+    ],
+    'Tokyo, Japan': [
+      { id:641, name:'Tokyo Metropolitan Animal Care and Consultation Center', type:'Municipal', address:'2-1-3 Taito, Taito-ku, Tokyo 110-0016', phone:'+81 3 3833 0166', email:'', hours:'Mon–Fri 9am–5pm (closed national holidays)', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.fukushihoken.metro.tokyo.lg.jp/douso/', mapsQuery:'Animal Care Consultation Center Taito Tokyo', open:true, note:'Tokyo\'s official municipal animal welfare center. Dogs and cats surrendered here are offered for adoption.' },
+      { id:642, name:'JSPCA Animal Welfare Hospital', type:'Humane Society', address:'1-1-21 Nakameguro, Meguro-ku, Tokyo 153-0061', phone:'+81 3 3711 7855', email:'contact@jspca.or.jp', hours:'Mon–Sat 9am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','All animals'], website:'https://www.jspca.or.jp', mapsQuery:'JSPCA Nakameguro Tokyo', open:true, note:'Japan SPCA\'s main Tokyo facility. Welfare hospital and adoption services.' },
+    ],
+    'Singapore': [
+      { id:651, name:'SPCA Singapore', type:'Humane Society', address:'50 Sungei Tengah Road, Singapore 699012', phone:'+65 6287 5355', email:'info@spca.org.sg', hours:'Mon–Sat 9am–4pm · Sun 10am–4pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.spca.org.sg', mapsQuery:'50 Sungei Tengah Road Singapore', open:true, note:'Singapore\'s main animal welfare organisation since 1959. Surrenders by appointment.' },
+      { id:652, name:'Animal Lovers League', type:'Rescue', address:'Block 15, Woodlands Industrial Park E1, #03-01, Singapore 757719', phone:'+65 6362 0118', email:'enquiry@all.org.sg', hours:'Wed–Sun 11am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://all.org.sg', mapsQuery:'Woodlands Industrial Park E1 Singapore', open:true, note:'No-kill rescue and shelter in Woodlands. Focused on rehoming strays.' },
+    ],
+
+    // ── SOUTH AMERICA ──────────────────────────────────────
+    'São Paulo, Brazil': [
+      { id:701, name:'Centro de Controle de Zoonoses (CCZ) — SP', type:'Municipal', address:'Rua Grafite 225, Freguesia do Ó, São Paulo, SP 02922-020', phone:'+55 11 3396-9451', email:'ccz@prefeitura.sp.gov.br', hours:'Mon–Fri 8am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.prefeitura.sp.gov.br/cidade/secretarias/saude/vigilancia_em_saude/doencas_e_agravos/zoonoses/index.php', mapsQuery:'Centro de Controle de Zoonoses Sao Paulo', open:true, note:'City of São Paulo\'s official stray animal control and welfare center.' },
+      { id:702, name:'ONG Latidos de Amor', type:'Rescue', address:'R. João Moura 582, Jardins, São Paulo, SP', phone:'+55 11 3081 6682', email:'contato@latidosdeamor.org.br', hours:'Mon–Sat 10am–5pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.latidosdeamor.org.br', mapsQuery:'ONG Latidos de Amor Sao Paulo', open:true, note:'Well-known São Paulo rescue and adoption organization. Foster-based network.' },
+    ],
+    'Buenos Aires, Argentina': [
+      { id:711, name:'Centro de Zoonosis — GCBA', type:'Municipal', address:'Av. Coronel Roca 4501, Villa Lugano, Buenos Aires', phone:'+54 11 4686-1333', email:'zoonosis@buenosaires.gob.ar', hours:'Mon–Fri 8am–6pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats'], website:'https://www.buenosaires.gob.ar/bienestar-animal', mapsQuery:'Av Coronel Roca 4501 Villa Lugano Buenos Aires', open:true, note:'Buenos Aires city stray control and welfare centre. Free microchipping and sterilization.' },
+    ],
+
+    // ── AFRICA ─────────────────────────────────────────────
+    'Cape Town, South Africa': [
+      { id:801, name:'Cape of Good Hope SPCA', type:'Humane Society', address:'Otto Du Plessis Drive, Groenkloof, Cape Town 8001', phone:'+27 21 480 7200', email:'info@spca-ct.co.za', hours:'Mon–Fri 8am–4:30pm · Sat 8am–2pm · Sun 9am–1pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits','Small animals'], website:'https://www.spca-ct.co.za', mapsQuery:'Otto Du Plessis Drive Groenkloof Cape Town', open:true, note:'Cape Town\'s main SPCA. Accepts strays and surrenders. 24-hour emergency line available.' },
+      { id:802, name:'Animal Welfare Society of SA — Grassy Park', type:'Humane Society', address:'Ottery Road, Grassy Park, Cape Town 7941', phone:'+27 21 701 7655', email:'info@aws.org.za', hours:'Mon–Fri 8am–4pm · Sat 8am–12pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','Rabbits'], website:'https://www.aws.org.za', mapsQuery:'Ottery Road Grassy Park Cape Town', open:true, note:'Serves the southern suburbs of Cape Town. Low-cost vet services available.' },
+    ],
+    'Johannesburg, South Africa': [
+      { id:811, name:'SPCA Johannesburg', type:'Humane Society', address:'43 Privately Owned Road, Braamfontein, Johannesburg 2001', phone:'+27 11 438 5000', email:'info@spca-johannesburg.co.za', hours:'Mon–Fri 8am–4:30pm · Sat 8am–12pm', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs','Cats','All animals'], website:'https://www.spca-johannesburg.co.za', mapsQuery:'SPCA Johannesburg Braamfontein', open:true, note:'Joburg\'s primary animal welfare organisation. Cruelty investigations and adoptions.' },
+    ],
+
+    // ── MIDDLE EAST ────────────────────────────────────────
+    'Dubai, UAE': [
+      { id:901, name:'K9 Friends — Dubai Animal Shelter', type:'Rescue', address:'Street 18, Al Quoz Industrial Area 4, Dubai', phone:'+971 4 347 6868', email:'info@k9friends.com', hours:'Sat–Thu 9am–5pm · Fri Closed', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Dogs'], website:'https://www.k9friends.com', mapsQuery:'K9 Friends Al Quoz Industrial Dubai', open:true, note:'Dubai\'s first and largest dog rescue, founded 2002. Dogs only.' },
+      { id:902, name:'Feline Friends Dubai', type:'Rescue', address:'Al Quoz, Dubai (foster-based network)', phone:'+971 52 965 7744', email:'info@felinefriendsarabia.com', hours:'By appointment', capacity:'medium', capacityNum:null, capacityMax:null, animals:['Cats'], website:'https://www.felinefriendsarabia.com', mapsQuery:'Feline Friends Dubai Al Quoz', open:true, note:'Cats only. Foster-based network across Dubai and Abu Dhabi.' },
+    ],
+
+  };
+
   const REGION_KEYS = Object.keys(SHELTER_REGIONS);
-  let activeRegion = REGION_KEYS[0];
-  function renderShelters(){ /* original shelter render function - unchanged */ }
-  function openTransferModal(pet,species){ document.getElementById('transfer-modal').classList.add('open'); document.getElementById('transfer-shelter-list').innerHTML='<p>Select shelter...</p>'; }
-  function closeTransferModal(){ document.getElementById('transfer-modal').classList.remove('open'); }
-  function toggleRegionDropdown(){ const dd=document.getElementById('region-dropdown'); dd.style.display=dd.style.display==='none'?'block':'none'; }
-  
-  // facts
-  const FACTS=['🐶 1 in 3 pets get lost.','🏷️ ID tags triple return rate.','📸 Photo increases chance by 50%.','🐱 Cats hide close by.','🐕 Dogs follow familiar smells.','📞 Call shelters first 24h.','🌍 Most found within miles.','🤝 Neighbours are key.','🐾 Microchips double reunion rate.','⏱️ First 12h crucial.','🏠 Shelters hold strays.','🔍 Shelters are first search.'];
-  let factIndex=0, factTimer;
-  function showFact(i){ factIndex=(i+FACTS.length)%FACTS.length; document.getElementById('factText').textContent=FACTS[factIndex]; const dots=document.getElementById('factDots'); if(dots) dots.querySelectorAll('.fact-dot').forEach((d,j)=>d.classList.toggle('active',j===factIndex)); clearInterval(factTimer); factTimer=setInterval(()=>showFact(factIndex+1),5000); }
-  function initFacts(){ const dots=document.getElementById('factDots'); if(dots) dots.innerHTML=FACTS.map((_,i)=>`<div class="fact-dot${i===0?' active':''}" onclick="showFact(${i})"></div>`).join(''); showFact(0); }
-  
-  // map dummy functions
-  function showListView(){ document.getElementById('stray-list-view').style.display='block'; document.getElementById('stray-map-view').style.display='none'; }
-  function showMapView(){ document.getElementById('stray-list-view').style.display='none'; document.getElementById('stray-map-view').style.display='block'; if(leafletMap) leafletMap.invalidateSize(); }
-  let leafletMap=null;
 
-  // init
-  updateHeader(); initFacts(); renderShelters(); loadRecent();
-  window.showPage=showPage; window.markReunited=markReunited; window.logoutUser=logoutUser; window.toggleReportForm=toggleReportForm; window.openReportForm=openReportForm; window.applyFilter=applyFilter; window.clearSearch=()=>{ document.getElementById('s-search').value=''; document.getElementById('s-species').value=''; applyFilter(); }; window.claimStray=claimStray; window.foundThisPet=null; // removed old function
-  window.showContactPopup=showContactPopup; window.closeContactPopup=closeContactPopup; window.copyContactPhone=copyContactPhone; window.openTransferModal=openTransferModal; window.closeTransferModal=closeTransferModal; window.toggleRegionDropdown=toggleRegionDropdown; window.renderShelters=renderShelters; window.showListView=showListView; window.showMapView=showMapView; window.prevFact=()=>showFact(factIndex-1); window.nextFact=()=>showFact(factIndex+1);
-  // ensure lost form works & removed auto-mark found
-  if(document.getElementById('lostForm')) document.getElementById('lostForm').addEventListener('submit', async(e)=>{ e.preventDefault(); alert('Lost notice generated (demo). Only original poster can mark reunited via My Account.'); });
+  // User-registered shelters (added via form, stored in memory for session)
+  const userShelters = [];
+  let activeRegion = REGION_KEYS[0];
+
+  const REGION_CONTINENTS = {
+    'North America': {
+      flag: '🌎',
+      regions: ['Toronto, Canada','Vancouver, Canada','Montreal, Canada','New York City, USA','Los Angeles, USA','Chicago, USA','Houston, USA','Dallas, USA','Seattle, USA','Miami, USA','Phoenix, USA']
+    },
+    'UK & Ireland': {
+      flag: '🇬🇧',
+      regions: ['London, UK','Manchester, UK','Dublin, Ireland']
+    },
+    'Europe': {
+      flag: '🇪🇺',
+      regions: ['Paris, France','Berlin, Germany','Amsterdam, Netherlands','Madrid, Spain','Rome, Italy']
+    },
+    'Asia-Pacific': {
+      flag: '🌏',
+      regions: ['Sydney, Australia','Melbourne, Australia','Brisbane, Australia','Auckland, New Zealand','Tokyo, Japan','Singapore']
+    },
+    'South America': {
+      flag: '🌎',
+      regions: ['São Paulo, Brazil','Buenos Aires, Argentina']
+    },
+    'Africa': {
+      flag: '🌍',
+      regions: ['Cape Town, South Africa','Johannesburg, South Africa']
+    },
+    'Middle East': {
+      flag: '🌍',
+      regions: ['Dubai, UAE']
+    },
+  };
+
+  const REGION_FLAGS = {
+    'Toronto, Canada':'🇨🇦','Vancouver, Canada':'🇨🇦','Montreal, Canada':'🇨🇦',
+    'New York City, USA':'🇺🇸','Los Angeles, USA':'🇺🇸','Chicago, USA':'🇺🇸','Houston, USA':'🇺🇸','Dallas, USA':'🇺🇸','Seattle, USA':'🇺🇸','Miami, USA':'🇺🇸','Phoenix, USA':'🇺🇸',
+    'London, UK':'🇬🇧','Manchester, UK':'🇬🇧','Dublin, Ireland':'🇮🇪',
+    'Paris, France':'🇫🇷','Berlin, Germany':'🇩🇪','Amsterdam, Netherlands':'🇳🇱','Madrid, Spain':'🇪🇸','Rome, Italy':'🇮🇹',
+    'Sydney, Australia':'🇦🇺','Melbourne, Australia':'🇦🇺','Brisbane, Australia':'🇦🇺',
+    'Auckland, New Zealand':'🇳🇿',
+    'Tokyo, Japan':'🇯🇵','Singapore':'🇸🇬',
+    'São Paulo, Brazil':'🇧🇷','Buenos Aires, Argentina':'🇦🇷',
+    'Cape Town, South Africa':'🇿🇦','Johannesburg, South Africa':'🇿🇦',
+    'Dubai, UAE':'🇦🇪',
+  };
+
+  function initRegionButtons() {
+    buildRegionModalContent();
+    setRegion(REGION_KEYS[0], false);
+  }
+
+  function buildRegionModalContent() {
+    const container = document.getElementById('region-modal-content');
+    if (!container) return;
+    let html = '';
+    for (const [continent, info] of Object.entries(REGION_CONTINENTS)) {
+      const available = info.regions.filter(r => SHELTER_REGIONS[r]);
+      if (!available.length) continue;
+      html += `<div style="margin-bottom:22px;">
+        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+          <span>${info.flag}</span> ${esc(continent)}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;">`;
+      for (const region of available) {
+        const flag = REGION_FLAGS[region] || '🌍';
+        const shelterCount = (SHELTER_REGIONS[region] || []).length;
+        html += `<button onclick="selectRegion(${JSON.stringify(region)})"
+          id="rmodal-${region.replace(/[^a-z0-9]/gi,'_')}"
+          style="margin:0;padding:10px 14px;text-align:left;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:all 0.12s;border-radius:0;display:flex;flex-direction:column;gap:3px;"
+          onmouseover="this.style.background='#eef0f4'" onmouseout="if(this.id!='rmodal-active')this.style.background='var(--surface)'">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:1rem;">${flag}</span>
+            <span style="font-weight:700;font-size:0.82rem;">${esc(region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,''))}</span>
+          </div>
+          <div style="font-size:0.7rem;color:var(--muted);">${shelterCount} shelter${shelterCount!==1?'s':''}</div>
+        </button>`;
+      }
+      html += `</div></div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  function openRegionModal() {
+    const modal = document.getElementById('region-modal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    highlightActiveRegionInModal();
+  }
+
+  function closeRegionModal() {
+    document.getElementById('region-modal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function highlightActiveRegionInModal() {
+    document.querySelectorAll('[id^="rmodal-"]').forEach(btn => {
+      btn.style.background = 'var(--surface)';
+      btn.style.borderColor = 'var(--border)';
+      btn.style.color = 'var(--text)';
+    });
+    const id = 'rmodal-' + activeRegion.replace(/[^a-z0-9]/gi,'_');
+    const active = document.getElementById(id);
+    if (active) {
+      active.style.background = 'var(--teal)';
+      active.style.borderColor = 'var(--teal)';
+      active.style.color = 'white';
+    }
+  }
+
+  function selectRegion(region) {
+    setRegion(region, true);
+    closeRegionModal();
+  }
+
+  function setRegion(region, render) {
+    activeRegion = region;
+    const flag = REGION_FLAGS[region] || '🌍';
+    const label = region.replace(/, (?:USA|Canada|UK|Ireland|France|Germany|Netherlands|Spain|Italy|Japan|Australia|New Zealand|Brazil|Argentina|South Africa|UAE)$/,'');
+    const btn = document.getElementById('region-trigger-btn');
+    if (btn) {
+      document.getElementById('region-flag').textContent = flag;
+      document.getElementById('region-trigger-label').textContent = label;
+    }
+    if (render !== false) renderShelters();
+  }
+
+  function capacityColor(level) {
+    return { low: '#2d7a4f', medium: '#e8a010', high: '#c8102e', full: '#8b0000' }[level] || '#666';
+  }
+  function capacityLabel(level) {
+    return { low: 'Space available', medium: 'Moderate', high: 'Nearly full', full: 'Full' }[level] || level;
+  }
+  function capacityPct(num, max) { return Math.round((num / max) * 100); }
+
+  function renderShelters() {
+    const grid = document.getElementById('shelter-grid');
+    const q    = (document.getElementById('sh-search')?.value || '').trim().toLowerCase();
+    const typeF = document.getElementById('sh-filter-type')?.value || '';
+    const capF  = document.getElementById('sh-filter-capacity')?.value || '';
+
+    const regionShelters = SHELTER_REGIONS[activeRegion] || [];
+    const all = [...regionShelters, ...userShelters.filter(s => s._region === activeRegion)];
+
+    const filtered = all.filter(s => {
+      if (typeF && s.type !== typeF) return false;
+      if (capF === 'available' && s.capacity === 'full') return false;
+      if (capF === 'full' && s.capacity !== 'full' && s.capacity !== 'high') return false;
+      if (q && ![s.name, s.address, s.type].some(f => f && f.toLowerCase().includes(q))) return false;
+      return true;
+    });
+
+    // Update stats
+    const openCount = filtered.filter(s => s.open).length;
+    const typeSet = new Set(filtered.map(s => s.type));
+    document.getElementById('sh-count-shelters').textContent = filtered.length;
+    document.getElementById('sh-count-open').textContent = openCount;
+    document.getElementById('sh-count-types').textContent = typeSet.size;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<p style="color:#adb5bd;text-align:center;padding:40px 0;grid-column:1/-1;">No shelters match your search.</p>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(s => {
+      const pct   = s.capacityNum && s.capacityMax ? capacityPct(s.capacityNum, s.capacityMax) : null;
+      const cColor = capacityColor(s.capacity);
+      const openBadge = s.open
+        ? `<span style="font-size:0.64rem;font-weight:700;background:rgba(45,122,79,0.25);color:#b8ffd0;padding:3px 8px;text-transform:uppercase;letter-spacing:0.6px;">● Open</span>`
+        : `<span style="font-size:0.64rem;font-weight:700;background:rgba(200,16,46,0.25);color:#ffc4c4;padding:3px 8px;text-transform:uppercase;letter-spacing:0.6px;">○ Closed</span>`;
+
+      return `
+        <div class="shelter-card">
+          <div class="shelter-header">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+              <div>
+                <div class="shelter-type">${esc(s.type)}</div>
+                <h3>${esc(s.name)}</h3>
+              </div>
+              ${openBadge}
+            </div>
+          </div>
+          <div class="shelter-body">
+            <div class="shelter-row">
+              <span class="shelter-row-icon">📍</span>
+              <div>
+                <div class="shelter-row-label">Address</div>
+                <div style="font-size:0.84rem;">${esc(s.address)}</div>
+              </div>
+            </div>
+            <div class="shelter-row">
+              <span class="shelter-row-icon">🕐</span>
+              <div>
+                <div class="shelter-row-label">Hours</div>
+                <div style="font-size:0.84rem;">${esc(s.hours)}</div>
+              </div>
+            </div>
+            ${s.note ? `
+            <div class="shelter-row">
+              <span class="shelter-row-icon">ℹ️</span>
+              <div style="font-size:0.82rem;color:var(--muted);font-style:italic;line-height:1.5;">${esc(s.note)}</div>
+            </div>` : ''}
+            ${pct !== null ? `
+            <div style="margin-top:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+                <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;">Capacity</div>
+                <div style="font-size:0.76rem;font-weight:700;color:${cColor};">${capacityLabel(s.capacity)} · ${s.capacityNum}/${s.capacityMax}</div>
+              </div>
+              <div class="capacity-bar-wrap">
+                <div class="capacity-bar" style="width:${pct}%;background:${cColor};"></div>
+              </div>
+            </div>` : ''}
+            <div class="shelter-animals">
+              ${s.animals.map(a => `<span>${esc(a)}</span>`).join('')}
+            </div>
+          </div>
+          <div class="shelter-footer">
+            <a href="tel:${esc(s.phone)}" class="sf-call">📞 Call</a>
+            <a href="https://maps.google.com?q=${encodeURIComponent(s.mapsQuery)}" target="_blank" rel="noopener" class="sf-map">🗺️ Map</a>
+            <button onclick="openTransferModal('', '', ${s.id})" class="sf-transfer">🐾 Transfer Animal</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Transfer modal ────────────────────────────────────────
+  let _transferPetName = '', _transferSpecies = '';
+  function openTransferModal(petName, species, targetShelterId) {
+    _transferPetName = petName;
+    _transferSpecies = species;
+    const modal = document.getElementById('transfer-modal');
+    const list  = document.getElementById('transfer-shelter-list');
+    const succ  = document.getElementById('transfer-success');
+    const desc  = document.getElementById('transfer-modal-desc');
+    succ.style.display = 'none';
+    desc.textContent = petName
+      ? `Select a shelter to transfer ${petName} (${species}) to.`
+      : 'Select which animal to transfer, and confirm the shelter.';
+
+    const allShelters = [...(SHELTER_REGIONS[activeRegion] || []), ...userShelters].filter(s => s.capacity !== 'full');
+    if (allShelters.length === 0) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:0.88rem;">No shelters currently have space available.</p>';
+    } else {
+      list.innerHTML = allShelters.map(s => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border:1px solid var(--border);background:#fafbfc;gap:10px;">
+          <div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--navy);">${esc(s.name)}</div>
+            <div style="font-size:0.78rem;color:var(--muted);">${esc(s.address)} · ${esc(s.phone)}</div>
+            <div style="font-size:0.72rem;margin-top:2px;font-weight:700;color:${capacityColor(s.capacity)};">${capacityLabel(s.capacity)}</div>
+          </div>
+          ${targetShelterId && targetShelterId === s.id
+            ? `<button onclick="confirmTransfer(${s.id})" style="margin:0;background:var(--teal);padding:8px 14px;font-size:0.74rem;flex-shrink:0;">Confirm</button>`
+            : `<button onclick="confirmTransfer(${s.id})" style="margin:0;background:var(--teal);padding:8px 14px;font-size:0.74rem;flex-shrink:0;">Select</button>`}
+        </div>`).join('');
+    }
+
+    // If a specific shelter was targeted, highlight it
+    modal.classList.add('open');
+  }
+  function closeTransferModal() {
+    document.getElementById('transfer-modal').classList.remove('open');
+  }
+  function confirmTransfer(shelterId) {
+    const allShelters = [...(SHELTER_REGIONS[activeRegion] || []), ...userShelters];
+    const shelter = allShelters.find(s => s.id === shelterId);
+    if (!shelter) return;
+    const succ = document.getElementById('transfer-success');
+    const list = document.getElementById('transfer-shelter-list');
+    const animalDesc = _transferPetName ? `${_transferPetName} (${_transferSpecies})` : 'the animal';
+    succ.style.display = 'block';
+    succ.innerHTML = `✅ Transfer request sent to <strong>${esc(shelter.name)}</strong>!<br><span style="font-weight:400;font-size:0.88rem;">Please call <a href="tel:${esc(shelter.phone)}" style="color:var(--green);">${esc(shelter.phone)}</a> to confirm intake for ${esc(animalDesc)}.</span>`;
+    list.style.opacity = '0.4';
+    list.style.pointerEvents = 'none';
+  }
+  // Close region modal on backdrop click
+  document.getElementById('region-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeRegionModal();
+  });
+
+  // Close transfer modal on backdrop click
+  document.getElementById('transfer-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeTransferModal();
+  });
+
+  // ── Add shelter modal ─────────────────────────────────────
+  function openAddShelterModal() {
+    document.getElementById('add-shelter-modal').style.display = 'flex';
+    document.getElementById('as-success').style.display = 'none';
+    document.getElementById('add-shelter-form').reset();
+  }
+  function closeAddShelterModal() {
+    document.getElementById('add-shelter-modal').style.display = 'none';
+  }
+  document.getElementById('add-shelter-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeAddShelterModal();
+  });
+  document.getElementById('add-shelter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const checkedAnimals = [...document.querySelectorAll('#as-animals-wrap input:checked')].map(c => c.value);
+    const newShelter = {
+      id: Date.now(),
+      _region: activeRegion,
+      name:        document.getElementById('as-name').value.trim(),
+      type:        document.getElementById('as-type').value,
+      address:     document.getElementById('as-address').value.trim(),
+      phone:       document.getElementById('as-phone').value.trim(),
+      email:       document.getElementById('as-email').value.trim(),
+      hours:       document.getElementById('as-hours').value.trim(),
+      capacity:    document.getElementById('as-capacity').value,
+      capacityNum: null, capacityMax: null,
+      animals:     checkedAnimals.length ? checkedAnimals : ['All animals'],
+      website: '#', mapsQuery: document.getElementById('as-address').value.trim(),
+      open: true, note: 'Newly registered — please call to confirm intake availability.'
+    };
+    userShelters.push(newShelter);
+    const succ = document.getElementById('as-success');
+    succ.style.display = 'block';
+    succ.textContent = `✅ ${newShelter.name} has been added to the directory!`;
+    setTimeout(() => { closeAddShelterModal(); renderShelters(); }, 2200);
+  });
+
+  // ── Init ──────────────────────────────────────────────────
+  updateHeader();
+  initFacts();
+  initRegionButtons();
+  loadRecent();
+  applyFilter();
 </script>
-<footer><div>© City Animal Services — pethelpers.gov</div></footer>
 </body>
 </html>
