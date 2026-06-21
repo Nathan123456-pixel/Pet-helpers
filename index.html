@@ -510,7 +510,7 @@
 
     /* ── Fade in ── */
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    #page-home, #page-stray, #page-account, #page-shelters { animation: fadeIn 0.12s; }
+    #page-home, #page-stray, #page-account, #page-shelters, #page-community { animation: fadeIn 0.12s; }
 
     /* ── Breadcrumb bar — real sites have these ── */
     .breadcrumb {
@@ -713,6 +713,7 @@
   <a onclick="showPage('stray')"    id="nav-stray">Stray Registry</a>
   <a onclick="showPage('lf')"       id="nav-lf">Lost Pet Registry</a>
   <a onclick="showPage('shelters')" id="nav-shelters">Shelters</a>
+  <a onclick="showPage('community')" id="nav-community">Community</a>
   <a onclick="showPage('account')"  id="nav-account">My Account</a>
 </nav>
 
@@ -854,6 +855,9 @@
         <input type="file" id="lost-photo" accept="image/*" />
         <p class="help-text">Include a recent, clear photo. This is the most important field.</p>
         <img id="lost-photoPreview" class="photo-preview" alt="Preview" />
+        <div id="lost-ai-warning" style="display:none;background:var(--gold-lt);border:1px solid var(--gold);border-left:4px solid var(--gold);padding:10px 14px;margin-top:10px;font-family:Arial,sans-serif;font-size:12.5px;color:#5c4a10;">
+          <strong>⚠️ AI check:</strong> <span class="ai-warning-text"></span>
+        </div>
         <button type="submit" style="margin-top:20px;">Generate Missing Notice</button>
       </form>
 
@@ -970,6 +974,9 @@
         <input type="file" id="r-photo" accept="image/*" />
         <p class="help-text">A clear photo significantly increases the chance of reunion. Max 5MB.</p>
         <img id="r-photo-preview" class="photo-preview" alt="Preview" />
+        <div id="r-ai-warning" style="display:none;background:var(--gold-lt);border:1px solid var(--gold);border-left:4px solid var(--gold);padding:10px 14px;margin-top:10px;font-family:Arial,sans-serif;font-size:12.5px;color:#5c4a10;">
+          <strong>⚠️ AI check:</strong> <span class="ai-warning-text"></span>
+        </div>
         <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
           <button type="submit" id="r-submit-btn" style="margin:0;">Submit Report</button>
           <button type="button" onclick="toggleReportForm()" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);">Cancel</button>
@@ -1239,6 +1246,47 @@
     </div>
   </div>
 
+  <!-- ===== COMMUNITY CHAT ===== -->
+  <div id="page-community" style="display:none;">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> <span>›</span> Community</div>
+    <div class="page-banner">
+      <div class="page-banner-eyebrow">Community Board</div>
+      <h2>Community Chat</h2>
+      <p>A public space for tips, updates, and conversation between neighbors helping each other's pets.</p>
+    </div>
+
+    <!-- Community reassurance -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--navy);padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:1.2rem;flex-shrink:0;">💬</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">This board is public</div>
+        <div style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Anyone can read messages here, and any logged-in user can post. Please don't share personal contact details — use the contact buttons on individual reports for that instead.</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding-bottom:16px;">
+      <div id="community-login-prompt" style="display:none;text-align:center;padding:20px 0;">
+        <p style="color:var(--muted);margin-bottom:14px;">You need to be logged in to post a message.</p>
+        <button onclick="showPage('account')" style="margin:0;background:var(--navy);">Log In / Sign Up</button>
+      </div>
+      <form id="community-form" style="display:none;">
+        <label for="community-input">Post a message</label>
+        <textarea id="community-input" placeholder="Share a tip, an update, or ask the community for help…" maxlength="500" required></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span style="font-family:Arial,sans-serif;font-size:11px;color:var(--muted-lt);">Max 500 characters</span>
+          <button type="submit" id="community-submit-btn" style="margin:0;">Post</button>
+        </div>
+        <div class="error-msg" id="community-error"></div>
+      </form>
+    </div>
+
+    <div style="font-family:Arial,sans-serif;font-size:11px;color:var(--muted-lt);margin-bottom:10px;display:flex;justify-content:space-between;">
+      <span id="community-meta"></span>
+      <span class="timestamp">🕐 Refreshes automatically</span>
+    </div>
+    <div id="community-list"></div>
+  </div>
+
 </main>
 
 <footer style="background:#0f1e35;color:rgba(255,255,255,0.4);font-family:Arial,sans-serif;font-size:12px;border-top:3px solid #8a6914;">
@@ -1255,6 +1303,7 @@
         <a onclick="showPage('lost')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Report a Lost Pet</a>
         <a onclick="showPage('lf')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Lost Pet Registry</a>
         <a onclick="showPage('shelters')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Find a Shelter</a>
+        <a onclick="showPage('community')" style="color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;">Community Chat</a>
       </div>
     </div>
     <div>
@@ -1407,6 +1456,50 @@
     try { return JSON.stringify(e); } catch { return String(e); }
   }
 
+  // ── AI photo/description match check ────────────────────
+  // Uses Claude's vision API to sanity-check that an uploaded photo
+  // plausibly matches the typed description before a report is saved.
+  // Returns { matches: bool, reason: string } — never throws; on any
+  // failure it returns matches:true (fails open) so a flaky AI call
+  // never blocks someone from reporting a real pet.
+  async function verifyPhotoMatchesDescription(photoDataUrl, description, species) {
+    if (!photoDataUrl || !description) return { matches: true, reason: '', skipped: true };
+    try {
+      const commaIdx = photoDataUrl.indexOf(',');
+      const meta = photoDataUrl.slice(5, commaIdx); // e.g. "image/jpeg;base64"
+      const mediaType = meta.split(';')[0] || 'image/jpeg';
+      const base64Data = photoDataUrl.slice(commaIdx + 1);
+
+      const prompt = `You are checking a lost/found pet report for consistency. The reporter typed this description: "${description}" and said the species/type is "${species}". Look at the attached photo. Does the photo plausibly match the typed description and species? Minor wording differences are fine — only flag a real mismatch (e.g. description says "black cat" but photo shows a golden dog, or species says "Dog" but photo shows a bird). Respond with ONLY a JSON object, nothing else, in this exact format: {"matches": true or false, "reason": "one short sentence explaining why"}`;
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 200,
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } },
+              { type: "text", text: prompt }
+            ]
+          }]
+        })
+      });
+      if (!response.ok) return { matches: true, reason: '', skipped: true };
+      const data = await response.json();
+      const textBlock = (data.content || []).find(b => b.type === 'text');
+      if (!textBlock) return { matches: true, reason: '', skipped: true };
+      const cleaned = textBlock.text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(cleaned);
+      return { matches: parsed.matches !== false, reason: parsed.reason || '', skipped: false };
+    } catch (ex) {
+      // AI check is best-effort only — never block a real report over a network/parsing hiccup
+      return { matches: true, reason: '', skipped: true };
+    }
+  }
+
   // ── Header ────────────────────────────────────────────────
   async function updateHeader() {
     const user = getCurrentUser();
@@ -1427,7 +1520,7 @@
   }
 
   // ── Navigation ────────────────────────────────────────────
-  const PAGES = ['home','lost','stray','lf','shelters','account'];
+  const PAGES = ['home','lost','stray','lf','shelters','community','account'];
   function showPage(name) {
     PAGES.forEach(p => {
       document.getElementById('page-'  + p).style.display = 'none';
@@ -1440,6 +1533,7 @@
     if (name === 'home')     { loadRecent(); loadReunited(); }
     if (name === 'lf')       loadLF();
     if (name === 'shelters') renderShelters();
+    if (name === 'community') { loadCommunityMessages(); checkCommunityAuth(); }
     if (name === 'lost')     { document.getElementById('lost-outputBox').style.display='none'; }
     updateHeader();
     window.scrollTo(0, 0);
@@ -1468,6 +1562,29 @@
     const date    = document.getElementById('lost-dateLost').value;
     const contact = document.getElementById('lost-contact').value.trim();
     const reward  = document.getElementById('lost-reward').value.trim();
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const aiWarning = document.getElementById('lost-ai-warning');
+    aiWarning.style.display = 'none';
+
+    let aiVerified = null;
+    if (lostPhotoData) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '🔎 Checking photo against description…';
+      const check = await verifyPhotoMatchesDescription(lostPhotoData, desc, species);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Generate Missing Notice';
+      aiVerified = check.skipped ? null : check.matches;
+      if (!check.skipped && !check.matches) {
+        aiWarning.style.display = 'block';
+        aiWarning.querySelector('.ai-warning-text').textContent =
+          check.reason || "The photo doesn't seem to match the description you typed.";
+        if (!confirm('Our AI check flagged a possible mismatch between your photo and description:\n\n"' + (check.reason || 'Photo may not match description.') + '"\n\nDo you want to submit anyway?')) {
+          return;
+        }
+      }
+    }
+
     document.getElementById('poster-petName').textContent     = pet;
     document.getElementById('poster-species').textContent     = species;
     document.getElementById('poster-location').textContent    = loc;
@@ -1494,7 +1611,8 @@
         id: Date.now().toString(), contact_name: owner, phone: contact, pet_name: pet,
         species, reward, location_text: loc, lat: null, lng: null, description: desc,
         photo: lostPhotoData, posted_by: getCurrentUser() || owner,
-        date: new Date().toLocaleDateString(), report_type: 'lost'
+        date: new Date().toLocaleDateString(), report_type: 'lost',
+        ai_verified: aiVerified
       });
     } catch(ex) {}
     loadLostMatches(species);
@@ -1525,7 +1643,7 @@
     const list = document.getElementById('lost-matches-list');
     box.style.display = 'none';
     try {
-      const { data } = await db.from('listings').select('*').eq('species', species).order('created_at', { ascending: false }).limit(3);
+      const { data } = await db.from('listings').select('*').eq('species', species).eq('report_type', 'stray').order('created_at', { ascending: false }).limit(3);
       if (!data || data.length === 0) return;
       box.style.display = 'block';
       list.innerHTML = data.map(p => `
@@ -1584,6 +1702,28 @@
   document.getElementById('reportForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('r-submit-btn');
+    const species = document.getElementById('r-species').value;
+    const description = document.getElementById('r-desc').value.trim();
+    const aiWarning = document.getElementById('r-ai-warning');
+    aiWarning.style.display = 'none';
+
+    let aiVerified = null;
+    if (reportPhoto) {
+      btn.disabled = true;
+      btn.textContent = '🔎 Checking photo against description…';
+      const check = await verifyPhotoMatchesDescription(reportPhoto, description, species);
+      aiVerified = check.skipped ? null : check.matches;
+      if (!check.skipped && !check.matches) {
+        aiWarning.style.display = 'block';
+        aiWarning.querySelector('.ai-warning-text').textContent =
+          check.reason || "The photo doesn't seem to match the description you typed.";
+        btn.textContent = 'Submit Report'; btn.disabled = false;
+        if (!confirm('Our AI check flagged a possible mismatch between your photo and description:\n\n"' + (check.reason || 'Photo may not match description.') + '"\n\nDo you want to submit anyway?')) {
+          return;
+        }
+      }
+    }
+
     btn.textContent = 'Submitting…'; btn.disabled = true;
     const location = document.getElementById('r-location').value.trim();
     const coords   = await geocode(location);
@@ -1593,17 +1733,19 @@
         contact_name: document.getElementById('r-name').value.trim(),
         phone:        document.getElementById('r-phone').value.trim(),
         pet_name:     document.getElementById('r-petname').value.trim(),
-        species:      document.getElementById('r-species').value,
+        species,
         reward: '', location_text: location,
         lat: coords?.lat ?? null, lng: coords?.lng ?? null,
-        description: document.getElementById('r-desc').value.trim(),
+        description,
         photo: reportPhoto, posted_by: getCurrentUser(),
-        date: new Date().toLocaleDateString(), report_type: 'stray'
+        date: new Date().toLocaleDateString(), report_type: 'stray',
+        ai_verified: aiVerified
       });
       if (error) { alert('Could not save: ' + errMsg(error)); }
       else {
         this.reset(); reportPhoto = null;
         document.getElementById('r-photo-preview').style.display = 'none';
+        aiWarning.style.display = 'none';
         document.getElementById('r-success').style.display = 'block';
         setTimeout(() => { document.getElementById('r-success').style.display = 'none'; toggleReportForm(); }, 3000);
         bustCache();
@@ -1628,7 +1770,7 @@
     const key = 'listings:' + (species || 'all');
     return cachedFetch(key, async () => {
       try {
-        let q = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,lat,lng,posted_by').order('created_at', { ascending: false }).limit(100);
+        let q = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,lat,lng,posted_by,ai_verified').eq('report_type', 'stray').order('created_at', { ascending: false }).limit(100);
         if (species) q = q.eq('species', species);
         const { data, error } = await q;
         if (error) { console.error('Fetch error:', JSON.stringify(error)); return []; }
@@ -1682,7 +1824,10 @@
               <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:bold;color:var(--text);">${hi(p.pet_name)}</div>
               <div style="font-size:0.8rem;color:var(--muted);margin-top:1px;">${hi(p.species)}</div>
             </div>
-            <span class="tag" style="margin:0;flex-shrink:0;">${esc(p.species)}</span>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+              <span class="tag" style="margin:0;">${esc(p.species)}</span>
+              ${p.ai_verified === true ? `<span title="AI confirmed the photo matches the description" style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:var(--green-lt);color:var(--green);padding:2px 7px;border:1px solid #b8dfc4;">🤖 AI Verified</span>` : ''}
+            </div>
           </div>
           ${p.location_text ? `<div style="font-size:0.83rem;color:var(--muted);margin-bottom:6px;">📍 ${hi(p.location_text)}</div>` : ''}
           ${p.description ? `<p style="font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${hi(p.description)}</p>` : ''}
@@ -1759,7 +1904,7 @@
     const speciesFilter = document.getElementById('lf-species')?.value || '';
     grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading reports…</h3><p>Please wait while we fetch the latest listings.</p></div>';
     try {
-      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by').in('report_type', ['lost','reunited']).order('created_at', { ascending: false }).limit(100);
+      let query = db.from('listings').select('id,pet_name,species,location_text,description,contact_name,phone,date,photo,report_type,reward,posted_by,ai_verified').in('report_type', ['lost','reunited']).order('created_at', { ascending: false }).limit(100);
       if (speciesFilter) query = query.eq('species', speciesFilter);
       const { data, error } = await query;
       if (error) { grid.innerHTML = `<p style="color:var(--red);padding:20px;grid-column:1/-1;">Error: ${errMsg(error)}</p>`; return; }
@@ -1815,7 +1960,10 @@
                   <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:bold;color:var(--text);">${hi(p.pet_name)}</div>
                   <div style="font-size:0.78rem;color:var(--muted);">${hi(p.species)}</div>
                 </div>
-                ${badge}
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                  ${badge}
+                  ${p.ai_verified === true ? `<span title="AI confirmed the photo matches the description" style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;background:var(--green-lt);color:var(--green);padding:2px 7px;border:1px solid #b8dfc4;">🤖 AI Verified</span>` : ''}
+                </div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:0.82rem;margin-bottom:10px;">
                 ${p.location_text ? `<div><div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:700;margin-bottom:2px;">${isLost ? 'Last seen' : 'Found near'}</div><div>${hi(p.location_text)}</div></div>` : ''}
@@ -1840,7 +1988,7 @@
     if (!el) return;
     try {
       const data = await cachedFetch('recent', async () => {
-        const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').order('created_at', { ascending: false }).limit(3);
+        const { data } = await db.from('listings').select('pet_name,species,location_text,date,photo').eq('report_type', 'stray').order('created_at', { ascending: false }).limit(3);
         return data || [];
       });
       if (!data || data.length === 0) {
@@ -1931,6 +2079,79 @@
       await db.from('notifications').update({ read: true }).eq('id', id);
       loadNotifications();
     } catch(ex) {}
+  }
+
+  // ── Community chat ───────────────────────────────────────
+  function checkCommunityAuth() {
+    const user = getCurrentUser();
+    document.getElementById('community-login-prompt').style.display = user ? 'none'  : 'block';
+    document.getElementById('community-form').style.display          = user ? 'block' : 'none';
+  }
+
+  async function loadCommunityMessages() {
+    const list = document.getElementById('community-list');
+    const meta = document.getElementById('community-meta');
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><h3>Loading messages…</h3><p>Please wait while we fetch the conversation.</p></div>';
+    try {
+      const { data, error } = await db.from('community_messages').select('*').order('created_at', { ascending: false }).limit(100);
+      if (error) { list.innerHTML = `<p style="color:var(--red);padding:20px;">Error: ${errMsg(error)}</p>`; return; }
+      const all = data || [];
+      meta.textContent = `${all.length} message${all.length !== 1 ? 's' : ''}`;
+      if (all.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><h3>No messages yet</h3><p>Be the first to start the conversation.</p></div>';
+        return;
+      }
+      const user = getCurrentUser();
+      list.innerHTML = all.map(m => `
+        <div class="card" style="padding:14px 18px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;">
+            <span style="font-family:Georgia,serif;font-weight:bold;font-size:0.92rem;color:var(--navy);">${esc(m.username)}</span>
+            <span style="font-family:Arial,sans-serif;font-size:11px;color:var(--muted-lt);flex-shrink:0;">${m.created_at ? new Date(m.created_at).toLocaleString() : ''}</span>
+          </div>
+          <p style="font-family:Arial,sans-serif;font-size:13.5px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word;">${esc(m.message)}</p>
+          ${user && user === m.username
+            ? `<div style="text-align:right;margin-top:8px;"><button onclick="deleteCommunityMessage(${m.id}, this)" style="margin:0;background:transparent;color:var(--muted);border:1px solid var(--border);padding:4px 10px;font-size:11px;">🗑️ Delete</button></div>`
+            : ''}
+        </div>`).join('');
+    } catch(ex) {
+      list.innerHTML = `<p style="color:var(--red);padding:20px;">Error: ${errMsg(ex)}</p>`;
+    }
+  }
+
+  document.getElementById('community-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const user = getCurrentUser();
+    const err  = document.getElementById('community-error');
+    const btn  = document.getElementById('community-submit-btn');
+    const input = document.getElementById('community-input');
+    const message = input.value.trim();
+    err.style.display = 'none';
+    if (!user) { err.textContent = 'You must be logged in to post.'; err.style.display = 'block'; return; }
+    if (!message) return;
+    btn.disabled = true; btn.textContent = 'Posting…';
+    try {
+      const { error } = await db.from('community_messages').insert({ username: user, message });
+      if (error) { err.textContent = 'Could not post: ' + errMsg(error); err.style.display = 'block'; }
+      else { input.value = ''; loadCommunityMessages(); }
+    } catch(ex) {
+      err.textContent = 'Error: ' + errMsg(ex); err.style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = 'Post';
+  });
+
+  async function deleteCommunityMessage(id, btn) {
+    const user = getCurrentUser();
+    if (!user) return;
+    if (!confirm('Delete this message? This cannot be undone.')) return;
+    btn.disabled = true;
+    try {
+      const { error, count } = await db.from('community_messages').delete({ count: 'exact' }).eq('id', id).eq('username', user);
+      if (error) { alert('Could not delete: ' + errMsg(error)); btn.disabled = false; return; }
+      if (!count) { alert("This message couldn't be deleted — you may not be the original poster."); btn.disabled = false; return; }
+      loadCommunityMessages();
+    } catch(ex) {
+      alert('Error: ' + errMsg(ex)); btn.disabled = false;
+    }
   }
 
   function logoutUser() {
